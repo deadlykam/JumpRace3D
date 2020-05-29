@@ -10,7 +10,8 @@ public class BasicCharacter : MonoBehaviour
     [Header("Basic Character Properties")]
 
     [Tooltip("This value behaves for both jump and gravity")]
-    public float speed; // Jump and gravity value
+    public float SpeedHorizontal; // The forward speed
+    public float SpeedVertical;   // Jump and gravity value
 
     public float HeightNormal;  // Normal height of a jump
     public float HeightPerfect; // Perfect height of a jump
@@ -58,12 +59,20 @@ public class BasicCharacter : MonoBehaviour
     }
 
     /// <summary>
+    /// This method makes the character go forward.
+    /// </summary>
+    protected virtual void HorizontalMovement()
+    {
+        transform.Translate(Vector3.forward * SpeedHorizontal * Time.deltaTime);
+    }
+
+    /// <summary>
     /// This method makes the basic character to fall down or jump up.
     /// </summary>
     private void VerticalMovement()
     {
         // Moving the character vertically
-        transform.Translate(Vector3.up * speed * _acceleration * Time.deltaTime);
+        transform.Translate(Vector3.up * SpeedVertical * _acceleration * Time.deltaTime);
 
         // Condition to check if the character should start
         // falling down
