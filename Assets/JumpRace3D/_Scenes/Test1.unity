@@ -634,6 +634,16 @@ PrefabInstance:
       propertyPath: m_Name
       value: DummyPlayerModel
       objectReference: {fileID: 0}
+    - target: {fileID: 8503663298184330665, guid: db403e46d00805944bd9fe75417c260f,
+        type: 3}
+      propertyPath: RotationSpeed
+      value: 200
+      objectReference: {fileID: 0}
+    - target: {fileID: 8503663298184330665, guid: db403e46d00805944bd9fe75417c260f,
+        type: 3}
+      propertyPath: HeightPerfect
+      value: 12
+      objectReference: {fileID: 0}
     - target: {fileID: 8503663298184330668, guid: db403e46d00805944bd9fe75417c260f,
         type: 3}
       propertyPath: m_LocalPosition.x
