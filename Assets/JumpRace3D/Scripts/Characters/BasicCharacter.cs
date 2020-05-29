@@ -53,23 +53,6 @@ public class BasicCharacter : MonoBehaviour
     }
 
     /// <summary>
-    /// This method handles the BasicCharacter update and must be called by
-    /// the child class
-    /// </summary>
-    protected void UpdateBasicCharacter()
-    {
-        VerticalMovement();
-    }
-
-    /// <summary>
-    /// This method makes the character go forward.
-    /// </summary>
-    protected virtual void HorizontalMovement()
-    {
-        transform.Translate(Vector3.forward * SpeedHorizontal * Time.deltaTime);
-    }
-
-    /// <summary>
     /// This method makes the basic character to fall down or jump up.
     /// </summary>
     private void VerticalMovement()
@@ -111,19 +94,33 @@ public class BasicCharacter : MonoBehaviour
     }
 
     /// <summary>
-    /// This method checks for collisions
+    /// This method handles the BasicCharacter update and must be called by
+    /// the child class
+    /// </summary>
+    protected void UpdateBasicCharacter()
+    {
+        VerticalMovement();
+    }
+
+    /// <summary>
+    /// This method makes the character go forward.
+    /// </summary>
+    protected virtual void HorizontalMovement()
+    {
+        transform.Translate(Vector3.forward * SpeedHorizontal * Time.deltaTime);
+    }
+
+    /// <summary>
+    /// This method checks for collisions.
     /// </summary>
     /// <param name="other">The collided object, of type Collider</param>
-    private void OnTriggerEnter(Collider other)
+    protected virtual void OnTriggerEnter(Collider other)
     {
         // Condition to check if bouncy stage collided
         // and making character jump
         if (other.CompareTag("BouncyStage"))
         {
             _targetDir = 1; // Making the player jump
-
-            // Rotating the player
-            RotateCharacter(other.GetComponent<BouncyStage>().LinkedStage);
         }
     }
 }
