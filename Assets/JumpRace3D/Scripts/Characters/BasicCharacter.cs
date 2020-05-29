@@ -10,10 +10,12 @@ public class BasicCharacter : MonoBehaviour
     [Header("Basic Character Properties")]
 
     [Tooltip("This value behaves for both jump and gravity")]
-    public float speed; // Jump and gravity value
+    public float SpeedHorizontal; // The forward speed
+    public float SpeedVertical;   // Jump and gravity value
 
-    public float HeightNormal;  // Normal height of a jump
-    public float HeightPerfect; // Perfect height of a jump
+    public float HeightNormal;    // Normal height of a jump
+    public float HeightPerfect;   // Perfect height of a jump
+    private float _heightCurrent; // The current height from the bounced stage
 
     [Tooltip("The jump acceleration transition. 0 = instant transition, 1 = transition")]
     [Range(0, 1)]
@@ -35,7 +37,10 @@ public class BasicCharacter : MonoBehaviour
                                  // Values:
                                  //  1 = Jumping up
                                  // -1 = Falling down
-    
+
+    private Vector3 _characterPosition = Vector3.zero; // Needed to avoid 
+                                                       // unnecessary GC
+
     // Start is called before the first frame update
     void Start()
     {
@@ -49,25 +54,16 @@ public class BasicCharacter : MonoBehaviour
     }
 
     /// <summary>
-    /// This method handles the BasicCharacter update and must be called by
-    /// the child class
-    /// </summary>
-    protected void UpdateBasicCharacter()
-    {
-        VerticalMovement();
-    }
-
-    /// <summary>
     /// This method makes the basic character to fall down or jump up.
     /// </summary>
     private void VerticalMovement()
     {
         // Moving the character vertically
-        transform.Translate(Vector3.up * speed * _acceleration * Time.deltaTime);
+        transform.Translate(Vector3.up * SpeedVertical * _acceleration * Time.deltaTime);
 
         // Condition to check if the character should start
         // falling down
-        if (transform.position.y >= HeightNormal) _targetDir = -1;
+        if (transform.position.y >= _heightCurrent) _targetDir = -1;
 
         // Smoothing the acceleration of the character
         _acceleration = Mathf.SmoothDamp(_acceleration,
@@ -81,13 +77,54 @@ public class BasicCharacter : MonoBehaviour
     }
 
     /// <summary>
-    /// This method checks for collisions
+    /// This method rotates the character.
+    /// </summary>
+    /// <param name="target">The target position needed for
+    ///                      calculating character direction, 
+    ///                      of type Vector3</param>
+    private void RotateCharacter(Vector3 target)
+    {
+        // Fixing character position for calculating
+        // accurate rotation
+        _characterPosition.Set(transform.position.x,
+                               0,
+                               transform.position.z);
+
+        // Looking at the target instantly
+        transform.rotation = Quaternion.LookRotation(target - _characterPosition);
+    }
+
+    /// <summary>
+    /// This method handles the BasicCharacter update and must be called by
+    /// the child class
+    /// </summary>
+    protected void UpdateBasicCharacter()
+    {
+        VerticalMovement();
+    }
+
+    /// <summary>
+    /// This method makes the character go forward.
+    /// </summary>
+    protected virtual void HorizontalMovement()
+    {
+        transform.Translate(Vector3.forward * SpeedHorizontal * Time.deltaTime);
+    }
+
+    /// <summary>
+    /// This method checks for collisions.
     /// </summary>
     /// <param name="other">The collided object, of type Collider</param>
-    private void OnTriggerEnter(Collider other)
+    protected virtual void OnTriggerEnter(Collider other)
     {
         // Condition to check if bouncy stage collided
         // and making character jump
-        if (other.CompareTag("BouncyStage")) _targetDir = 1;
+        if (other.CompareTag("BouncyStage"))
+        {
+            _targetDir = 1; // Making the player jump
+
+            // Getting the normal height
+            _heightCurrent = transform.position.y + HeightNormal;
+        }
     }
 }
