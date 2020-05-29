@@ -125,6 +125,27 @@ public class BasicCharacter : MonoBehaviour
 
             // Getting the normal height
             _heightCurrent = transform.position.y + HeightNormal;
+
+            // Hiding the booster
+            other.GetComponent<BouncyStage>().SetBooster(false);
+        }
+        // Condition to check if booster collided
+        // and making character jump
+        else if (other.CompareTag("Booster"))
+        {
+            _targetDir = 1; // Making the player jump
+
+            // Getting the normal height
+            _heightCurrent = transform.position.y + HeightPerfect;
+
+            other.gameObject.SetActive(false); // Hiding the booster
+        }
+        // Condition to check if to show booster
+        else if (other.CompareTag("PlayerDetector"))
+        {
+            // Showing the booster
+            other.transform.parent.GetComponent<BouncyStage>()
+                .SetBooster(true);
         }
     }
 }
