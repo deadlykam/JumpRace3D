@@ -441,8 +441,8 @@ GameObject:
   - component: {fileID: 1976157660}
   - component: {fileID: 1976157659}
   - component: {fileID: 1976157658}
-  - component: {fileID: 1976157661}
   - component: {fileID: 1976157657}
+  - component: {fileID: 1976157661}
   m_Layer: 8
   m_Name: DummyPlayerModel
   m_TagString: Player
@@ -549,10 +549,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 1976157655}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 69144d151ac27a44ea2e3a4b31297a12, type: 3}
+  m_Script: {fileID: 11500000, guid: 400cdd844a22d3b4ea8db385ca0067c4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 5
+  SpeedHorizontal: 1
+  SpeedVertical: 5
   HeightNormal: 6
   HeightPerfect: 8
   JumpSmooth: 0.05
