@@ -13,8 +13,9 @@ public class BasicCharacter : MonoBehaviour
     public float SpeedHorizontal; // The forward speed
     public float SpeedVertical;   // Jump and gravity value
 
-    public float HeightNormal;  // Normal height of a jump
-    public float HeightPerfect; // Perfect height of a jump
+    public float HeightNormal;    // Normal height of a jump
+    public float HeightPerfect;   // Perfect height of a jump
+    private float _heightCurrent; // The current height from the bounced stage
 
     [Tooltip("The jump acceleration transition. 0 = instant transition, 1 = transition")]
     [Range(0, 1)]
@@ -62,7 +63,7 @@ public class BasicCharacter : MonoBehaviour
 
         // Condition to check if the character should start
         // falling down
-        if (transform.position.y >= HeightNormal) _targetDir = -1;
+        if (transform.position.y >= _heightCurrent) _targetDir = -1;
 
         // Smoothing the acceleration of the character
         _acceleration = Mathf.SmoothDamp(_acceleration,
@@ -121,6 +122,9 @@ public class BasicCharacter : MonoBehaviour
         if (other.CompareTag("BouncyStage"))
         {
             _targetDir = 1; // Making the player jump
+
+            // Getting the normal height
+            _heightCurrent = transform.position.y + HeightNormal;
         }
     }
 }
