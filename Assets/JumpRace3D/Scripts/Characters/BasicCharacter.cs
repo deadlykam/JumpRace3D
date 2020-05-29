@@ -36,7 +36,10 @@ public class BasicCharacter : MonoBehaviour
                                  // Values:
                                  //  1 = Jumping up
                                  // -1 = Falling down
-    
+
+    private Vector3 _characterPosition = Vector3.zero; // Needed to avoid 
+                                                       // unnecessary GC
+
     // Start is called before the first frame update
     void Start()
     {
@@ -90,6 +93,24 @@ public class BasicCharacter : MonoBehaviour
     }
 
     /// <summary>
+    /// This method rotates the character.
+    /// </summary>
+    /// <param name="target">The target position needed for
+    ///                      calculating character direction, 
+    ///                      of type Vector3</param>
+    private void RotateCharacter(Vector3 target)
+    {
+        // Fixing character position for calculating
+        // accurate rotation
+        _characterPosition.Set(transform.position.x,
+                               0,
+                               transform.position.z);
+
+        // Looking at the target instantly
+        transform.rotation = Quaternion.LookRotation(target - _characterPosition);
+    }
+
+    /// <summary>
     /// This method checks for collisions
     /// </summary>
     /// <param name="other">The collided object, of type Collider</param>
@@ -97,6 +118,12 @@ public class BasicCharacter : MonoBehaviour
     {
         // Condition to check if bouncy stage collided
         // and making character jump
-        if (other.CompareTag("BouncyStage")) _targetDir = 1;
+        if (other.CompareTag("BouncyStage"))
+        {
+            _targetDir = 1; // Making the player jump
+
+            // Rotating the player
+            RotateCharacter(other.GetComponent<BouncyStage>().LinkedStage);
+        }
     }
 }
