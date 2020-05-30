@@ -99,6 +99,8 @@ public class StageGenerator : MonoBehaviour
         {
             if (!_isPlaceCharacters) // Characters not placed
             {
+                //InterpolateCurve();
+
                 // Setting the player position
                 Player.Instance.SetStartPosition(_stagePosition);
                 Player.Instance.StartCharacter(); /* <-- This will NOT be called 
@@ -206,12 +208,53 @@ public class StageGenerator : MonoBehaviour
         OffsetStage = (Random.Range(0, 10) < 5) ? OffsetStage * -1 : OffsetStage;
     }
     
+    private void InterpolateCurve()
+    {
+        for(int i = 2; i < StageLinks.positionCount; i++)
+        {
+            if (i + 4 < StageLinks.positionCount)
+            {
+                StageLinks.SetPosition(i,
+                    CalculateQuadraticBezierCurve(StageLinks.GetPosition(i),
+                                                  StageLinks.GetPosition(i + 2),
+                                                  StageLinks.GetPosition(i + 4),
+                                                  0));
+
+                StageLinks.SetPosition(i,
+                    CalculateQuadraticBezierCurve(StageLinks.GetPosition(i),
+                                                  StageLinks.GetPosition(i + 2),
+                                                  StageLinks.GetPosition(i + 4),
+                                                  0.25f));
+
+                StageLinks.SetPosition(i,
+                    CalculateQuadraticBezierCurve(StageLinks.GetPosition(i),
+                                                  StageLinks.GetPosition(i + 2),
+                                                  StageLinks.GetPosition(i + 4),
+                                                  0.5f));
+
+                StageLinks.SetPosition(i,
+                    CalculateQuadraticBezierCurve(StageLinks.GetPosition(i),
+                                                  StageLinks.GetPosition(i + 2),
+                                                  StageLinks.GetPosition(i + 4),
+                                                  0.75f));
+
+                StageLinks.SetPosition(i,
+                    CalculateQuadraticBezierCurve(StageLinks.GetPosition(i),
+                                                  StageLinks.GetPosition(i + 2),
+                                                  StageLinks.GetPosition(i + 4),
+                                                  1));
+            }
+            else break;
+        }
+    }
+
     /// <summary>
     /// This method calculates how many points needed in a LineRenderer.
     /// </summary>
     private void CalculateNumberOfLines()
     {
-        StageLinks.positionCount = (2 * (Level * StageNumber)) - 1;
+        /*StageLinks.positionCount = (2 * (Level * StageNumber)) - 1;*/
+        StageLinks.positionCount = ((Level * StageNumber) * 5) - 4;
         _linePointerIndex = 0; // Resetting the index
     }
 
@@ -242,14 +285,67 @@ public class StageGenerator : MonoBehaviour
             _linePoint = Vector3.zero; // Resetting the line point
 
             // Calculating the average point
-            _linePoint.Set(stage.LinkedStage.x,
+            _linePoint.Set(stage.transform.position.x,
                           (stage.transform.position.y + stage.LinkedStage.y) / 2,
                           (stage.transform.position.z + stage.LinkedStage.z) / 2);
 
-            AddLinkPoint(_linePoint); // Adding the average point
-        }
+            /*_linePoint.Set((stage.transform.position.x + stage.LinkedStage.x) / 2,
+                          (stage.transform.position.y + stage.LinkedStage.y) / 2,
+                          stage.LinkedStage.z);*/
 
-        AddLinkPoint(stage.transform.position); // Adding the self point.
+           /* _linePoint.Set((stage.transform.position.x + stage.LinkedStage.x) / 2,
+                          (stage.transform.position.y + stage.LinkedStage.y) / 2,
+                          (stage.transform.position.z + stage.LinkedStage.z) / 2);*/
+
+
+            AddLinkPoint(CalculateQuadraticBezierCurve(stage.LinkedStage, 
+                                                       _linePoint, 
+                                                       stage.transform.position,
+                                                       0.125f));
+
+            AddLinkPoint(CalculateQuadraticBezierCurve(stage.LinkedStage,
+                                                       _linePoint,
+                                                       stage.transform.position,
+                                                       0.25f));
+            
+            AddLinkPoint(CalculateQuadraticBezierCurve(stage.LinkedStage,
+                                                       _linePoint,
+                                                       stage.transform.position,
+                                                       0.5f));
+
+            AddLinkPoint(CalculateQuadraticBezierCurve(stage.LinkedStage,
+                                                       _linePoint,
+                                                       stage.transform.position,
+                                                       0.75f));
+
+            AddLinkPoint(CalculateQuadraticBezierCurve(stage.LinkedStage,
+                                                       _linePoint,
+                                                       stage.transform.position,
+                                                       1f));
+
+            // AddLinkPoint(_linePoint); // Adding the average point
+        }
+        else AddLinkPoint(stage.transform.position); // Adding the self point.
+    }
+
+    /// <summary>
+    /// This method calculates the Quadratic Bezier Curve points
+    /// </summary>
+    /// <param name="p0">The first point of the curve, of type Vector3</param>
+    /// <param name="p1">The middle point of the curve, of type Vector3</param>
+    /// <param name="p2">The last point of the curve, of type Vector3</param>
+    /// <param name="t">The gradient of the curve, range 0 - 1,
+    ///                   0 = first point
+    ///                 0.5 = middle point
+    ///                   1 = last point,
+    ///                 of type float</param>
+    /// <returns></returns>
+    private Vector3 CalculateQuadraticBezierCurve(Vector3 p0, Vector3 p1, 
+        Vector3 p2, float t)
+    {
+        // Equation for the Quadratic Bezeir points
+        //return ((2 * (1 - t)) * p0) + (2 * (1 - t) * t * p1) + ((t * 2) * p2);
+        return (Mathf.Pow(1 - t, 2) * p0) + (2 * (1 - t) * t * p1) + (Mathf.Pow(t, 2) * p2);
     }
 
     /// <summary>
