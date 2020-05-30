@@ -37,6 +37,11 @@ public class BasicCharacter : MonoBehaviour
                                  // Values:
                                  //  1 = Jumping up
                                  // -1 = Falling down
+                                 //  0 = Stop vertival movement
+
+    private bool _isVerticalMovement = true; // This flag controls the
+                                             // vertical movement of the
+                                             // character
 
     private Vector3 _characterPosition = Vector3.zero; // Needed to avoid 
                                                        // unnecessary GC
@@ -58,22 +63,25 @@ public class BasicCharacter : MonoBehaviour
     /// </summary>
     private void VerticalMovement()
     {
-        // Moving the character vertically
-        transform.Translate(Vector3.up * SpeedVertical * _acceleration * Time.deltaTime);
+        if (_isVerticalMovement) // Checking if vertical movement is allowed
+        {
+            // Moving the character vertically
+            transform.Translate(Vector3.up * SpeedVertical * _acceleration * Time.deltaTime);
 
-        // Condition to check if the character should start
-        // falling down
-        if (transform.position.y >= _heightCurrent) _targetDir = -1;
+            // Condition to check if the character should start
+            // falling down
+            if (transform.position.y >= _heightCurrent) _targetDir = -1;
 
-        // Smoothing the acceleration of the character
-        _acceleration = Mathf.SmoothDamp(_acceleration,
-                                         _targetDir,
-                                         ref _verticalVelocity,
-                                         // Checking which smooth
-                                         // acceleration to use
-                                         _targetDir == 1 ?
-                                         JumpSmooth :
-                                         GravitySmooth);
+            // Smoothing the acceleration of the character
+            _acceleration = Mathf.SmoothDamp(_acceleration,
+                                             _targetDir,
+                                             ref _verticalVelocity,
+                                             // Checking which smooth
+                                             // acceleration to use
+                                             _targetDir == 1 ?
+                                             JumpSmooth :
+                                             GravitySmooth);
+        }
     }
 
     /// <summary>
@@ -146,6 +154,13 @@ public class BasicCharacter : MonoBehaviour
             // Showing the booster
             other.transform.parent.GetComponent<BouncyStage>()
                 .SetBooster(true);
+        }
+        // Condition to check if end stage reached
+        else if (other.CompareTag("EndStage"))
+        {
+            _isVerticalMovement = false; // Stopping vertical movement
+
+            //TODO: The game has ended. Give end scene here
         }
     }
 }
