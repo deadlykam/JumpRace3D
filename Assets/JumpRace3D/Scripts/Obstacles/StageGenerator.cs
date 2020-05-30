@@ -31,8 +31,11 @@ public class StageGenerator : MonoBehaviour
     [Min(1)]
     public int Level; // The number of levels during a gameplay
     private int _levelCurrent = 0; // Current levels generated
+    private Vector3 _linePoint; // For storing the current line point.
+                                // Needed mainly to avoid GC
     
     [Tooltip("The number of stages in a level")]
+    [Min(1)]
     public int StageNumber; // Number of stages that will be generated
                             // in a level
 
@@ -42,6 +45,10 @@ public class StageGenerator : MonoBehaviour
 
     private int _stageIndex; // The index of the stage object 
                              // to generate
+
+    [Tooltip("The LineRenderer for linking the bouncy stages")]
+    public LineRenderer StageLinks;
+    private int _linePointerIndex;
 
     // Stores all the stage object requests
     private List<StageObjectRequest> _stageObjectRequests 
@@ -61,7 +68,8 @@ public class StageGenerator : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+        CalculateNumberOfLines(); // Calculating the number of points needed
+                                  // for line renderer
     }
 
     void Update()
@@ -91,8 +99,6 @@ public class StageGenerator : MonoBehaviour
         {
             if (!_isPlaceCharacters) // Characters not placed
             {
-                Debug.Log(_stagePosition);
-
                 // Setting the player position
                 Player.Instance.SetStartPosition(_stagePosition);
                 Player.Instance.StartCharacter(); /* <-- This will NOT be called 
@@ -145,7 +151,7 @@ public class StageGenerator : MonoBehaviour
     private void AddStageObject(int index)
     {
         _offsetStageCurrent += OffsetStage; // Getting the new stage
-                                    // distance value
+                                            // distance value
 
         _stagePosition = Vector3.zero; // Resetting the value
                                        // to get accurate
@@ -170,6 +176,15 @@ public class StageGenerator : MonoBehaviour
 
         // Removing the stage object from the available list
         BouncyStagesAvailable.GetChild(index).SetParent(StageObjectsUsed);
+
+        // Linking the position of the current stage with the previous stage
+        StageObjectsUsed.GetChild(StageObjectsUsed.childCount - 1)
+            .GetComponent<BouncyStage>().LinkedStage =
+            StageObjectsUsed.GetChild(StageObjectsUsed.childCount - 2).position;
+
+        // Adding the self and average points
+        AddLinkPoint(StageObjectsUsed.GetChild(StageObjectsUsed.childCount - 1)
+            .GetComponent<BouncyStage>());
     }
 
     /// <summary>
@@ -189,6 +204,52 @@ public class StageGenerator : MonoBehaviour
 
         // 50% probability to change the direction of the distance offset
         OffsetStage = (Random.Range(0, 10) < 5) ? OffsetStage * -1 : OffsetStage;
+    }
+    
+    /// <summary>
+    /// This method calculates how many points needed in a LineRenderer.
+    /// </summary>
+    private void CalculateNumberOfLines()
+    {
+        StageLinks.positionCount = (2 * (Level * StageNumber)) - 1;
+        _linePointerIndex = 0; // Resetting the index
+    }
+
+    /// <summary>
+    /// This method adds a point to the line renderer.
+    /// </summary>
+    /// <param name="point">The point to add, of type Vector3</param>
+    private void AddLinkPoint(Vector3 point)
+    {
+        // Adding the line point
+        StageLinks.SetPosition(_linePointerIndex, point);
+
+        _linePointerIndex++; // Incrementing for adding
+                             // the next point
+    }
+
+    /// <summary>
+    /// This method adds 1 or 2 points to the line renderer which are
+    /// self point and the average point.
+    /// </summary>
+    /// <param name="stage">The stage from which to add a point, 
+    ///                     of type BouncyStage</param>
+    private void AddLinkPoint(BouncyStage stage)
+    {
+        // Condition for adding the average point
+        if (StageObjectsUsed.childCount > 2)
+        {
+            _linePoint = Vector3.zero; // Resetting the line point
+
+            // Calculating the average point
+            _linePoint.Set(stage.LinkedStage.x,
+                          (stage.transform.position.y + stage.LinkedStage.y) / 2,
+                          (stage.transform.position.z + stage.LinkedStage.z) / 2);
+
+            AddLinkPoint(_linePoint); // Adding the average point
+        }
+
+        AddLinkPoint(stage.transform.position); // Adding the self point.
     }
 
     /// <summary>
