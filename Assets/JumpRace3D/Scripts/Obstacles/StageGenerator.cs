@@ -56,6 +56,8 @@ public class StageGenerator : MonoBehaviour
     private bool _isProcessing = false; // Flag to check if a stage object
                                         // generation is being processed
 
+    private bool _isPlaceCharacters = false; // Flag to check 
+    
     // Start is called before the first frame update
     void Start()
     {
@@ -84,6 +86,26 @@ public class StageGenerator : MonoBehaviour
                 }
             }
             else GenerateNewLevel(); // Starting a new level generation
+        }
+        else // Condition for placing characters and stage generation done
+        {
+            if (!_isPlaceCharacters) // Characters not placed
+            {
+                Debug.Log(_stagePosition);
+
+                // Setting the player position
+                Player.Instance.SetStartPosition(_stagePosition);
+                Player.Instance.StartCharacter(); /* <-- This will NOT be called 
+                                                         from here. This will be
+                                                         called from tapping the
+                                                         screen for the first
+                                                         time in a gameplay.
+                                                         REMOVE LATER!*/
+
+                //TODO: Set the enemy characters here
+
+                _isPlaceCharacters = true; // Characters placed
+            }
         }
 
     }
