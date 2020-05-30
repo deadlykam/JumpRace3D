@@ -5,12 +5,15 @@ using UnityEngine;
 public class BouncyStage : MonoBehaviour
 {
     [Header("Bouncy Stage Properties")]
-
-    [Tooltip("[depricated]This is the position of linked stage which is needed" +
-             " for character direction calculation")]
-    public Vector3 LinkedStage; // The position of the linked stage
-
+    
     public GameObject Booster;
+
+    private Vector3 _linkedStage; // The position of the linked stage
+    public Vector3 LinkedStage
+    {
+        get { return _linkedStage; }
+        set { _linkedStage = value; }
+    }
 
     /// <summary>
     /// This method hides/shows the booster.
