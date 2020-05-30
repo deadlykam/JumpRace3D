@@ -6974,7 +6974,7 @@ MonoBehaviour:
   OffsetSide: 7
   Level: 10
   StageNumber: 5
-  StageLinks: {fileID: 0}
+  StageLinks: {fileID: 900565780}
 --- !u!1001 &1544516027
 PrefabInstance:
   m_ObjectHideFlags: 0
