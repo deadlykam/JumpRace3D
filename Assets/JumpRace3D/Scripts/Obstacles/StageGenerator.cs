@@ -11,7 +11,28 @@ public class StageGenerator : MonoBehaviour
     public Transform StageObjectsUsed;      // Transform containing all
                                             // the used objects
 
-    public int StageNumber; // The starting stage number;
+    [Tooltip("The amount of distance between each stages.")]
+    public float OffsetStage; // Distance between each stages
+    private float _offsetStageCurrent = 0; // Current Distance offset
+
+    [Tooltip("The stage height offset when going up.")]
+    public float OffsetHeight; // Height offset of stages
+
+    [Tooltip("The horizontal offset for each stages in the same level.")]
+    public float OffsetSide; // Horizontal offset of stages
+
+    private Vector3 _stagePosition; // For storing the new stage object
+                                    // position. Needed mainly to avoid
+                                    // GC
+
+    [Tooltip("The number of levels during a gameplay, Level != 0")]
+    [Min(1)]
+    public int Level; // The number of levels during a gameplay
+    private int _levelCurrent = 0; // Current levels generated
+    
+    [Tooltip("The number of stages in a level")]
+    public int StageNumber; // Number of stages that will be generated
+                            // in a level
 
     private int _stageGeneratedCounter = 0; // The counter used for 
                                             // tracking the number of 
@@ -41,19 +62,26 @@ public class StageGenerator : MonoBehaviour
 
     void Update()
     {
-        // Checking if stage limit not reached
-        if (_stageGeneratedCounter < StageNumber)
+        // Condition to check if level generation is NOT done
+        if (_levelCurrent < Level)
         {
-            if (!_isProcessing) // Checking if no stage object being processed
+            // Checking if stage limit NOT reached
+            if (_stageGeneratedCounter < StageNumber)
             {
-                if (!_isRequest) // Checking if no requests available
-                    SetRequest();// Getting a request
-                else // Request is available
+                if (!_isProcessing) // Checking if no stage object being processed
                 {
-                    _isProcessing = true; // Processing started
-                    ProcessRequests(); // Processing the request
+                    if (!_isRequest) // Checking if no requests available
+                    {
+                        SetRequest();// Getting a request
+                    }
+                    else // Request is available
+                    {
+                        _isProcessing = true; // Processing started
+                        ProcessRequests(); // Processing the request
+                    }
                 }
             }
+            else GenerateNewLevel(); // Starting a new level generation
         }
 
     }
@@ -74,8 +102,6 @@ public class StageGenerator : MonoBehaviour
     /// </summary>
     private void ProcessRequests()
     {
-        
-
         // Getting the current stage object request
         _stageObjectRequestCurrent = _stageObjectRequests[0];
         _stageObjectRequests.RemoveAt(0); // Removing the stage
@@ -94,9 +120,40 @@ public class StageGenerator : MonoBehaviour
     /// <param name="index">The index of the stage object, of type int</param>
     private void AddStageObject(int index)
     {
+        _offsetStageCurrent += OffsetStage; // Getting the new stage
+                                    // distance value
+
+        _stagePosition = Vector3.zero; // Resetting the value
+                                       // to get accurate
+                                       // calculation
+
+        // Setting up the new stage object position
+        _stagePosition.Set(OffsetSide,
+                           OffsetHeight,
+                           _offsetStageCurrent);
+
+        // Setting the stage object position
+        BouncyStagesAvailable.GetChild(index).position = _stagePosition;
+
+        // Showing the stage object
         BouncyStagesAvailable.GetChild(index).gameObject.SetActive(true);
+
+        // Removing the stage object from the available list
         BouncyStagesAvailable.GetChild(index).SetParent(StageObjectsUsed);
-        //TODO: move the stage object
+    }
+
+    /// <summary>
+    /// This method starts a new level generation.
+    /// </summary>
+    private void GenerateNewLevel()
+    {
+        _stageGeneratedCounter = 0;
+        _levelCurrent++;
+
+        // TODO: implement the height offset here
+
+        // 50% probability to change the direction of the distance offset
+        //OffsetZ = (Random.Range(0, 10) < 5) ? OffsetZ * -1 : OffsetZ;
     }
 
     /// <summary>
