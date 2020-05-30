@@ -21,6 +21,7 @@ public class StageGenerator : MonoBehaviour
 
     [Tooltip("The horizontal offset for each stages in the same level.")]
     public float OffsetSide; // Horizontal offset of stages
+    private float _offsetSideCurrent; // Current side offset
 
     private Vector3 _stagePosition; // For storing the new stage object
                                     // position. Needed mainly to avoid
@@ -128,8 +129,14 @@ public class StageGenerator : MonoBehaviour
                                        // to get accurate
                                        // calculation
 
+        // Condition to change the x-axis position randomly
+        if(_stageGeneratedCounter != 0) _offsetSideCurrent += 
+                                        Random.Range(
+                                            -OffsetSide, 
+                                            OffsetSide);
+
         // Setting up the new stage object position
-        _stagePosition.Set(OffsetSide,
+        _stagePosition.Set(_offsetSideCurrent,
                            _offsetHeightCurrent,
                            _offsetStageCurrent);
 
@@ -154,8 +161,12 @@ public class StageGenerator : MonoBehaviour
 
         _offsetHeightCurrent += OffsetHeight; // Getting new level height
 
+        // 50% probability to go +ve or -ve in the x-axis
+        _offsetSideCurrent += (Random.Range(0, 10) < 5) ? 
+                              OffsetSide * -1 : OffsetSide;
+
         // 50% probability to change the direction of the distance offset
-        //OffsetZ = (Random.Range(0, 10) < 5) ? OffsetZ * -1 : OffsetZ;
+        OffsetStage = (Random.Range(0, 10) < 5) ? OffsetStage * -1 : OffsetStage;
     }
 
     /// <summary>
