@@ -13,6 +13,10 @@ public class BasicCharacter : MonoBehaviour
     public float SpeedHorizontal; // The forward speed
     public float SpeedVertical;   // Jump and gravity value
 
+    [Tooltip("Starting offset of the character")]
+    public Vector3 StartOffset;   // This is the starting offset
+                                  // of the character
+
     public float HeightNormal;    // Normal height of a jump
     public float HeightPerfect;   // Perfect height of a jump
     private float _heightCurrent; // The current height from the bounced stage
@@ -39,9 +43,9 @@ public class BasicCharacter : MonoBehaviour
                                  // -1 = Falling down
                                  //  0 = Stop vertival movement
 
-    private bool _isVerticalMovement = true; // This flag controls the
-                                             // vertical movement of the
-                                             // character
+    private bool _isVerticalMovement = false; // This flag controls the
+                                              // vertical movement of the
+                                              // character
 
     private Vector3 _characterPosition = Vector3.zero; // Needed to avoid 
                                                        // unnecessary GC
@@ -118,6 +122,34 @@ public class BasicCharacter : MonoBehaviour
     {
         transform.Translate(Vector3.forward * SpeedHorizontal * Time.deltaTime);
     }
+
+    /// <summary>
+    /// This method sets the position of the character.
+    /// </summary>
+    /// <param name="x">The x-axis position, of type float</param>
+    /// <param name="y">The y-axis position, of type float</param>
+    /// <param name="z">The z-axis position, of type float</param>
+    public virtual void SetStartPosition(float x, float y, float z)
+    {
+        transform.position = Vector3.zero; // Resetting the position
+        transform.position.Set(x, y, z);   // Applying the new position
+    }
+
+    /// <summary>
+    /// This method sets the position of the character.
+    /// </summary>
+    /// <param name="x">The start position, of type Vector3</param>
+    public virtual void SetStartPosition(Vector3 position)
+    {
+        // Setting the starting position of the character
+        // with StartOffset
+        transform.position = position + StartOffset;
+    }
+
+    /// <summary>
+    /// This method starts the character's vertical movement.
+    /// </summary>
+    public virtual void StartCharacter() { _isVerticalMovement = true; }
 
     /// <summary>
     /// This method checks for collisions.
