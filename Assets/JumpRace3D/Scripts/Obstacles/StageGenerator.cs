@@ -23,9 +23,9 @@ public class StageGenerator : MonoBehaviour
     public float OffsetSide; // Horizontal offset of stages
     private float _offsetSideCurrent; // Current side offset
 
-    private Vector3 _stagePosition; // For storing the new stage object
-                                    // position. Needed mainly to avoid
-                                    // GC
+    private Vector3 _stagePosition; // For storing the calculated stage
+                                    // object position. Needed mainly to
+                                    // avoid GC
 
     [Tooltip("The number of levels during a gameplay, Level != 0")]
     [Min(1)]
@@ -45,6 +45,18 @@ public class StageGenerator : MonoBehaviour
 
     private int _stageIndex; // The index of the stage object 
                              // to generate
+
+    Vector3 _stagePosCurrent = Vector3.zero; // For storing current
+                                             // stage position which
+                                             // will be needed for
+                                             // calculation. Needed
+                                             // to avoid GC
+
+    Vector3 _stagePosPrevious = Vector3.zero; // For storing current
+                                              // stage position which
+                                              // will be needed for
+                                              // calculation. Needed
+                                              // to avoid GC
 
     [Tooltip("The LineRenderer for linking the bouncy stages")]
     public LineRenderer StageLinks;
@@ -181,6 +193,25 @@ public class StageGenerator : MonoBehaviour
         StageObjectsUsed.GetChild(StageObjectsUsed.childCount - 1)
             .GetComponent<BouncyStage>().LinkedStage =
             StageObjectsUsed.GetChild(StageObjectsUsed.childCount - 2).position;
+
+        // Calculating the new position of the current stage
+        _stagePosCurrent.Set(StageObjectsUsed.GetChild(StageObjectsUsed.childCount - 1)
+                            .transform.position.x,
+                            0,
+                            StageObjectsUsed.GetChild(StageObjectsUsed.childCount - 1)
+                            .transform.position.z);
+
+        // Calculating the new position of the previous stage
+        _stagePosPrevious.Set(StageObjectsUsed.GetChild(StageObjectsUsed.childCount - 2)
+                            .transform.position.x,
+                            0,
+                            StageObjectsUsed.GetChild(StageObjectsUsed.childCount - 2)
+                            .transform.position.z);
+
+        // Rotating the current stage to face the previous stage
+        StageObjectsUsed.GetChild(StageObjectsUsed.childCount - 1)
+                            .transform.rotation = Quaternion.LookRotation(
+                                _stagePosPrevious - _stagePosCurrent);
 
         // Adding the self and average points
         AddLinkPoint(StageObjectsUsed.GetChild(StageObjectsUsed.childCount - 1)
