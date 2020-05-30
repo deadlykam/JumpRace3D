@@ -17,6 +17,7 @@ public class StageGenerator : MonoBehaviour
 
     [Tooltip("The stage height offset when going up.")]
     public float OffsetHeight; // Height offset of stages
+    private float _offsetHeightCurrent = 0; // Current Height offset
 
     [Tooltip("The horizontal offset for each stages in the same level.")]
     public float OffsetSide; // Horizontal offset of stages
@@ -129,7 +130,7 @@ public class StageGenerator : MonoBehaviour
 
         // Setting up the new stage object position
         _stagePosition.Set(OffsetSide,
-                           OffsetHeight,
+                           _offsetHeightCurrent,
                            _offsetStageCurrent);
 
         // Setting the stage object position
@@ -147,10 +148,11 @@ public class StageGenerator : MonoBehaviour
     /// </summary>
     private void GenerateNewLevel()
     {
-        _stageGeneratedCounter = 0;
-        _levelCurrent++;
+        _stageGeneratedCounter = 0; // Resetting stage counter for next level
 
-        // TODO: implement the height offset here
+        _levelCurrent++; // Starting new level
+
+        _offsetHeightCurrent += OffsetHeight; // Getting new level height
 
         // 50% probability to change the direction of the distance offset
         //OffsetZ = (Random.Range(0, 10) < 5) ? OffsetZ * -1 : OffsetZ;
