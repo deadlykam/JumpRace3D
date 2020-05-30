@@ -10,6 +10,22 @@ public class Player : BasicAnimation
     [Header("Player Properties")]
     public float RotationSpeed;
 
+    public static Player Instance;
+
+    
+    void Awake()
+    {
+        if (Instance == null) // NOT initialized
+        {
+            Instance = this; // Initializing the instance
+
+            DontDestroyOnLoad(gameObject); // Making it available
+                                           // throughout the game
+        }
+        else Destroy(gameObject); // Already initialized and
+                                  // destroying duplicate
+    }
+
     // Start is called before the first frame update
     void Start()
     {
