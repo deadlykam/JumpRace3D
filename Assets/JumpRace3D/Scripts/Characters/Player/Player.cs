@@ -66,11 +66,54 @@ public class Player : BasicAnimation
     }
 
     /// <summary>
+    /// This method finishes the race for the player
+    /// </summary>
+    protected override void RaceFinished()
+    {
+        base.RaceFinished();
+
+        Debug.Log("Raced Finished!");
+
+        //TODO: The game has ended. Give end scene here
+    }
+
+    /// <summary>
     /// This method checks for collisions.
     /// </summary>
     /// <param name="other">The collided object, of type Collider</param>
     protected override void OnTriggerEnter(Collider other)
     {
         base.OnTriggerEnter(other);
+
+        // Condition to check if bouncy stage collided
+        // and showing 3D texts
+        if (other.CompareTag("BouncyStage"))
+        {
+            Jump(HeightNormal); // Jumping normal height
+
+            // Hiding the booster
+            other.GetComponent<BouncyStage>().SetBooster(false);
+
+            // Generating 3D text from the currently hit stage
+            Stage3DTextManager.Instance.Generate3DTexts(
+                other.transform.GetComponent<BouncyStage>());
+        }
+        else if (other.CompareTag("Booster"))
+        {
+            Jump(HeightPerfect); // Jumping perfect height
+
+            other.gameObject.SetActive(false); // Hiding the booster
+
+            // Generating 3D text from the currently hit stage
+            Stage3DTextManager.Instance.Generate3DTexts(
+                other.transform.parent.GetComponent<BouncyStage>());
+        }
+        // Condition to check if to show booster
+        else if (other.CompareTag("PlayerDetector"))
+        {
+            // Showing the booster
+            other.transform.parent.GetComponent<BouncyStage>()
+                .SetBooster(true);
+        }
     }
 }

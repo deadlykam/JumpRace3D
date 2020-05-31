@@ -46,6 +46,9 @@ public class StageGenerator : MonoBehaviour
     private int _stageIndex; // The index of the stage object 
                              // to generate
 
+    private int _stageNumberCounter = 1; // Needed to set the number of
+                                         // the stage
+
     Vector3 _stagePosCurrent = Vector3.zero; // For storing current
                                              // stage position which
                                              // will be needed for
@@ -122,6 +125,12 @@ public class StageGenerator : MonoBehaviour
 
                 //TODO: Set the enemy characters here
 
+                // Starting the 3D text from the starting stage
+                Stage3DTextManager.Instance
+                    .Generate3DTexts(StageObjectsUsed.GetChild(
+                        StageObjectsUsed.childCount - 1)
+                        .GetComponent<BouncyStage>());
+
                 _isPlaceCharacters = true; // Characters placed
             }
         }
@@ -188,11 +197,16 @@ public class StageGenerator : MonoBehaviour
 
         // Removing the stage object from the available list
         BouncyStagesAvailable.GetChild(index).SetParent(StageObjectsUsed);
-
+        
         // Linking the position of the current stage with the previous stage
         StageObjectsUsed.GetChild(StageObjectsUsed.childCount - 1)
             .GetComponent<BouncyStage>().LinkedStage =
-            StageObjectsUsed.GetChild(StageObjectsUsed.childCount - 2).position;
+            StageObjectsUsed.GetChild(StageObjectsUsed.childCount - 2)
+            .GetComponent<BouncyStage>();
+
+        // Setting the the stage number of the stage
+        StageObjectsUsed.GetChild(StageObjectsUsed.childCount - 1)
+            .GetComponent<BouncyStage>().StageNumber = _stageNumberCounter++;
 
         // Calculating the new position of the current stage
         _stagePosCurrent.Set(StageObjectsUsed.GetChild(StageObjectsUsed.childCount - 1)
@@ -273,9 +287,13 @@ public class StageGenerator : MonoBehaviour
             _linePoint = Vector3.zero; // Resetting the line point
 
             // Calculating the average point
-            _linePoint.Set(stage.LinkedStage.x,
-                          (stage.transform.position.y + stage.LinkedStage.y) / 2,
-                          (stage.transform.position.z + stage.LinkedStage.z) / 2);
+            _linePoint.Set(stage.LinkedStagePosition.x,
+
+                          (stage.transform.position.y 
+                          + stage.LinkedStagePosition.y) / 2,
+
+                          (stage.transform.position.z 
+                          + stage.LinkedStagePosition.z) / 2);
 
             AddLinkPoint(_linePoint); // Adding the average point
         }
