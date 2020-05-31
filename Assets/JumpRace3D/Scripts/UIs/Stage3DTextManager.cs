@@ -75,6 +75,8 @@ public class Stage3DTextManager : MonoBehaviour
             // Setting up the stage number of the stage
             _Text3Ds[_text3DPointer].SetText("" + _stageCurrent.StageNumber);
 
+            //TODO: Give special effect when 3D texts are shown
+
             // Getting the next stage
             _stageCurrent = _stageCurrent.LinkedStage;
 
