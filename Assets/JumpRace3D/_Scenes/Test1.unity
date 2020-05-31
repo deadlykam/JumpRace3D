@@ -1535,7 +1535,7 @@ GameObject:
   - component: {fileID: 350482305}
   - component: {fileID: 350482306}
   - component: {fileID: 350482307}
-  m_Layer: 8
+  m_Layer: 12
   m_Name: FloorDetector
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -7240,7 +7240,7 @@ MonoBehaviour:
   OffsetStage: -10
   OffsetHeight: 5
   OffsetSide: 7
-  Level: 10
+  Level: 5
   StageNumber: 5
   StageLinks: {fileID: 900565780}
 --- !u!1001 &1544516027
@@ -9892,16 +9892,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1785445014}
     m_Modifications:
-    - target: {fileID: 2213792502367266296, guid: 9974ea07fb9b717469855d61380bce6d,
-        type: 3}
-      propertyPath: LinkedStage.x
-      value: 5.96
-      objectReference: {fileID: 0}
-    - target: {fileID: 2213792502367266296, guid: 9974ea07fb9b717469855d61380bce6d,
-        type: 3}
-      propertyPath: LinkedStage.z
-      value: 7.71
-      objectReference: {fileID: 0}
     - target: {fileID: 3740575056967864996, guid: 9974ea07fb9b717469855d61380bce6d,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -9961,16 +9951,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: DummyStage
-      objectReference: {fileID: 0}
-    - target: {fileID: 5355973201957646249, guid: 9974ea07fb9b717469855d61380bce6d,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7557032285249747630, guid: 9974ea07fb9b717469855d61380bce6d,
-        type: 3}
-      propertyPath: m_Layer
-      value: 9
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 9974ea07fb9b717469855d61380bce6d, type: 3}
