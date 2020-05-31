@@ -21,8 +21,8 @@ TagManager:
   - Player
   - Stage
   - NPC
-  - 
-  - 
+  - PlayerDetector
+  - FloorDetector
   - 
   - 
   - 
