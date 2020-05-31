@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class StageGenerator : MonoBehaviour
 {
-    [Header("Stage Generator Properties")]
+    [Header("Stage Properties")]
     public Transform BouncyStagesAvailable; // Transform containing all
                                             // the bouncy stages
 
@@ -61,6 +61,28 @@ public class StageGenerator : MonoBehaviour
                                               // calculation. Needed
                                               // to avoid GC
 
+    [Header("Obstacle Properties")]
+    public Transform ObstacleContainer; // Container containing obstacles
+
+    private int _sizeObstacle // The size of the obstacle container
+    { get { return ObstacleContainer.childCount; } }
+
+    private int _pointerObstacle = 0; // The index pointer for the
+                                      // obstacle container
+
+    // Flag to check if obstacles are available
+    private bool _isObstacleAvailable
+    { get { return _pointerObstacle < _sizeObstacle; } }
+
+    [Tooltip("The offset after which an obstacle will be generate. " +
+        "0 < OffsetObstacle")]
+    [Min(1)]
+    public int OffsetObstacle; // The times after which an obstacle
+                               // will be generated
+
+    private int _offsetObstacle = 1; // The current offset value
+
+    [Header("Stage Link Properties")]
     [Tooltip("The LineRenderer for linking the bouncy stages")]
     public LineRenderer StageLinks;
     private int _linePointerIndex;
@@ -208,14 +230,16 @@ public class StageGenerator : MonoBehaviour
         StageObjectsUsed.GetChild(StageObjectsUsed.childCount - 1)
             .GetComponent<BouncyStage>().StageNumber = _stageNumberCounter++;
 
-        // Calculating the new position of the current stage
+        // Calculating the new position of the current stage, needed for
+        // calculating the direction
         _stagePosCurrent.Set(StageObjectsUsed.GetChild(StageObjectsUsed.childCount - 1)
                             .transform.position.x,
                             0,
                             StageObjectsUsed.GetChild(StageObjectsUsed.childCount - 1)
                             .transform.position.z);
 
-        // Calculating the new position of the previous stage
+        // Calculating the new position of the previous stage, needed for
+        // calculating the direction
         _stagePosPrevious.Set(StageObjectsUsed.GetChild(StageObjectsUsed.childCount - 2)
                             .transform.position.x,
                             0,
@@ -286,19 +310,76 @@ public class StageGenerator : MonoBehaviour
         {
             _linePoint = Vector3.zero; // Resetting the line point
 
-            // Calculating the average point
-            _linePoint.Set(stage.LinkedStagePosition.x,
+            /*TODO: The average point should be absolute average
+                    for the obstacles. This is needed because
+                    the obstacle needs to pass through the line
+                    completely and also for not looking weird.
+                    Give if else conditions for the current
+                    average calculation for this. Also
+                    obstacle should be placed here and just 
+                    shown instead of moving it to the stages
+                    container. Also the _linPoint is the position
+                    to place, also use VEC3 _stagePosPrevious and
+                    VEC3 _stagePosCurrent to get the rotation
+                    of the obstacle or just take it from the
+                    currently added stage. Also use a counter
+                    to keep track on the obstacles used. Maybe
+                    for that a container is needed.
+             */
+            
+            // Condition for adding obstacles
+            if (_offsetObstacle == OffsetObstacle 
+                && _isObstacleAvailable)
+            {
+                // Calculating the average point
+                _linePoint.Set((stage.transform.position.x
+                              + stage.LinkedStagePosition.x) / 2,
 
-                          (stage.transform.position.y 
-                          + stage.LinkedStagePosition.y) / 2,
+                              (stage.transform.position.y
+                              + stage.LinkedStagePosition.y) / 2,
 
-                          (stage.transform.position.z 
-                          + stage.LinkedStagePosition.z) / 2);
+                              (stage.transform.position.z
+                              + stage.LinkedStagePosition.z) / 2);
+
+                // Setting the position
+                ObstacleContainer.GetChild(_pointerObstacle)
+                    .position = _linePoint;
+
+                // Setting the rotation of the obstacle, the value
+                // is taken from the last stage placed because that
+                // and the obstacle should have the same rotation
+                ObstacleContainer.GetChild(_pointerObstacle)
+                    .rotation = StageObjectsUsed
+                                .GetChild(StageObjectsUsed.childCount - 1)
+                                .transform.rotation;
+
+                // Showing the obstacle
+                ObstacleContainer.GetChild(_pointerObstacle)
+                    .gameObject.SetActive(true);
+
+                _pointerObstacle++; // Pointing to the next obstacle
+            }
+            else // NOT adding obstacles
+            {
+                // Calculating the average point
+                _linePoint.Set(stage.LinkedStagePosition.x,
+
+                              (stage.transform.position.y
+                              + stage.LinkedStagePosition.y) / 2,
+
+                              (stage.transform.position.z
+                              + stage.LinkedStagePosition.z) / 2);
+            }
 
             AddLinkPoint(_linePoint); // Adding the average point
         }
 
         AddLinkPoint(stage.transform.position); // Adding the self point.
+
+        // Incrementing the offset obstacle counter
+        _offsetObstacle = _offsetObstacle + 1 > OffsetObstacle ? 
+                          1 : 
+                          _offsetObstacle + 1;
     }
 
     /// <summary>
