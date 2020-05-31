@@ -122,6 +122,40 @@ public class BasicCharacter : MonoBehaviour
     {
         transform.Translate(Vector3.forward * SpeedHorizontal * Time.deltaTime);
     }
+    
+    /// <summary>
+    /// This method makes the character jump.
+    /// </summary>
+    /// <param name="height">The maximum height of the jump,
+    ///                      of type float</param>
+    protected void Jump(float height)
+    {
+        _targetDir = 1; // Making the player jump
+
+        // Getting the height
+        _heightCurrent = transform.position.y + height;
+    }
+
+    /// <summary>
+    /// This method finishes the race for the character.
+    /// </summary>
+    protected virtual void RaceFinished()
+    {
+        _isVerticalMovement = false; // Stopping vertical movement 
+    }
+
+    /// <summary>
+    /// This method checks for collisions.
+    /// </summary>
+    /// <param name="other">The collided object, of type Collider</param>
+    protected virtual void OnTriggerEnter(Collider other)
+    {
+        // Condition to check if end stage reached
+        if (other.CompareTag("EndStage"))
+        {
+            RaceFinished(); // Race completed
+        }
+    }
 
     /// <summary>
     /// This method sets the position of the character.
@@ -150,49 +184,4 @@ public class BasicCharacter : MonoBehaviour
     /// This method starts the character's vertical movement.
     /// </summary>
     public virtual void StartCharacter() { _isVerticalMovement = true; }
-
-    /// <summary>
-    /// This method checks for collisions.
-    /// </summary>
-    /// <param name="other">The collided object, of type Collider</param>
-    protected virtual void OnTriggerEnter(Collider other)
-    {
-        // Condition to check if bouncy stage collided
-        // and making character jump
-        if (other.CompareTag("BouncyStage"))
-        {
-            _targetDir = 1; // Making the player jump
-
-            // Getting the normal height
-            _heightCurrent = transform.position.y + HeightNormal;
-
-            // Hiding the booster
-            other.GetComponent<BouncyStage>().SetBooster(false);
-        }
-        // Condition to check if booster collided
-        // and making character jump
-        else if (other.CompareTag("Booster"))
-        {
-            _targetDir = 1; // Making the player jump
-
-            // Getting the normal height
-            _heightCurrent = transform.position.y + HeightPerfect;
-
-            other.gameObject.SetActive(false); // Hiding the booster
-        }
-        // Condition to check if to show booster
-        else if (other.CompareTag("PlayerDetector"))
-        {
-            // Showing the booster
-            other.transform.parent.GetComponent<BouncyStage>()
-                .SetBooster(true);
-        }
-        // Condition to check if end stage reached
-        else if (other.CompareTag("EndStage"))
-        {
-            _isVerticalMovement = false; // Stopping vertical movement
-
-            //TODO: The game has ended. Give end scene here
-        }
-    }
 }
