@@ -61,6 +61,19 @@ public class StageGenerator : MonoBehaviour
                                               // calculation. Needed
                                               // to avoid GC
 
+    [Header("World Size Properties")]
+    public float WorldSize; // The size limit of the game world
+
+    public int CorrectionCounter; // The counter to make sure
+                                  // the stage generation remains
+                                  // within the game world size
+
+    private int _correctionCounter = -1; // The current correction
+                                         // counter
+
+    private bool _isCorrectionProcess
+    { get { return _correctionCounter < CorrectionCounter && _correctionCounter > -1; } }
+
     [Header("Obstacle Properties")]
     public Transform ObstacleContainer; // Container containing obstacles
 
@@ -271,8 +284,35 @@ public class StageGenerator : MonoBehaviour
         _offsetSideCurrent += (Random.Range(0, 10) < 5) ? 
                               OffsetSide * -1 : OffsetSide;
 
-        // 50% probability to change the direction of the distance offset
-        OffsetStage = (Random.Range(0, 10) < 5) ? OffsetStage * -1 : OffsetStage;
+        /*TODO: 1. The direction of the z should become constant once the 
+         *         limit is crossed.
+                2. The direction should flip depending of which side got
+                   crossed. Example: if +ve side crossed the direction
+                   should become -ve and vice versa.
+                3. Once counter done normal generation will continue.
+        */
+
+        // Condition for starting the correction process
+        if(_offsetStageCurrent >= WorldSize 
+            || _offsetStageCurrent <= -WorldSize)
+        {
+            OffsetStage = -OffsetStage; // Correction value
+            _correctionCounter = 0; // Resetting the correction
+                                    // counter
+        }
+
+        // Condition for NOT doing the correction process and doing
+        // the normal stage generation process
+        if (!_isCorrectionProcess)
+        {
+            // 50% probability to change the direction of the distance offset
+            OffsetStage = (Random.Range(0, 10) < 5) ? OffsetStage * -1 : OffsetStage;
+        }
+        else _correctionCounter++; // Doing the correction process and incrementing
+                                   // the counter for the correction process
+
+        /*// 50% probability to change the direction of the distance offset
+        OffsetStage = (Random.Range(0, 10) < 5) ? OffsetStage * -1 : OffsetStage;*/
     }
     
     /// <summary>

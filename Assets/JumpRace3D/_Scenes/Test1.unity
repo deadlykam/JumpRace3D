@@ -8858,8 +8858,10 @@ MonoBehaviour:
   OffsetStage: -10
   OffsetHeight: 5
   OffsetSide: 7
-  Level: 10
+  Level: 14
   StageNumber: 5
+  WorldSize: 200
+  CorrectionCounter: 2
   ObstacleContainer: {fileID: 1924087912}
   OffsetObstacle: 4
   StageLinks: {fileID: 900565780}
