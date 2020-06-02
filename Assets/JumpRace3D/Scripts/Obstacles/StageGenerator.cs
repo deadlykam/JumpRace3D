@@ -283,8 +283,7 @@ public class StageGenerator : MonoBehaviour
         // Condition to add a bouncy stage and an obstacle
         if (objectType == 0) AddBouncyStage(index);
         // Condition to add a long bouncy stage
-        else if (objectType == 1)
-            AddLongBouncyStage(index);
+        else if (objectType == 1) AddLongBouncyStage(index);
     }
 
     /// <summary>
@@ -396,8 +395,8 @@ public class StageGenerator : MonoBehaviour
                               OffsetSide * -1 : OffsetSide;
         
         // Condition for starting the correction process
-        if(_offsetStageCurrent >= _gridGenerator.WorldSize
-            || _offsetStageCurrent <= -_gridGenerator.WorldSize)
+        if(_offsetStageCurrent >= _gridGenerator.ActualWorldSize
+            || _offsetStageCurrent <= -_gridGenerator.ActualWorldSize)
         {
             OffsetStage = -OffsetStage; // Correction value
             _correctionCounter = 0; // Resetting the correction
