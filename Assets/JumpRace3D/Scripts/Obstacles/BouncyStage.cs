@@ -40,6 +40,7 @@ public class BouncyStage : MonoBehaviour
     public virtual void StageAction()
     {
         //TODO: Activate the particle effect here
+        Debug.Log("Particle Effects*");
     }
 
     /// <summary>
