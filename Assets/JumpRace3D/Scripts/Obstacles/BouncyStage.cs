@@ -33,4 +33,22 @@ public class BouncyStage : MonoBehaviour
     ///                      true = show, false = hide,
     ///                      of type bool</param>
     public void SetBooster(bool active) { Booster.SetActive(active); }
+
+    /// <summary>
+    /// This method activates the stage action.
+    /// </summary>
+    public virtual void StageAction()
+    {
+        //TODO: Activate the particle effect here
+    }
+
+    /// <summary>
+    /// This method activates the stage action.
+    /// </summary>
+    /// <param name="isActivated">Flag to activate or deactivate an
+    ///                           action, of type bool</param>
+    public virtual void StageAction(bool isActivated)
+    {
+        //TODO: Activate the particle effect here
+    }
 }
