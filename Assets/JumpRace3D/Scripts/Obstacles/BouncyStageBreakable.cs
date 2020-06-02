@@ -33,6 +33,9 @@ public class BouncyStageBreakable : BouncyStage
         {
             // Enabling the individual forces
             BreakableObjects[_pointer++].ActivateForce();
+
+            // Hiding the collider and the booster
+            if (!_isActivated) gameObject.SetActive(false);
         }
         else if(_isActivated && _isReset) // Condition for resetting the stage
         {
@@ -42,21 +45,25 @@ public class BouncyStageBreakable : BouncyStage
     }
 
     /// <summary>
+    /// This method resets the breakable objects
+    /// </summary>
+    public void ResetStage()
+    {
+        _pointer = 0; // Starting the stage action process
+
+        _isReset = true; // Resetting stage
+    }
+
+    /// <summary>
     /// This method shows the particle effects and 
     /// breaks the stage.
     /// </summary>
-    /// <param name="isActivated">Flag to break or reset a stage,
-    ///                           <para>false = break</para>
-    ///                           <para>true = reset</para>
-    ///                           of type bool
-    ///                           </param>
-    public override void StageAction(bool isActivated)
+    public override void StageAction()
     {
         base.StageAction(); // Showing particle effects
 
         _pointer = 0; // Starting the stage action process
 
-        _isReset = isActivated; // Breaking or resetting
-                                // stage
+        _isReset = false; // Breaking stage
     }
 }
