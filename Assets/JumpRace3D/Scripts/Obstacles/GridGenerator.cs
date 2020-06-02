@@ -9,7 +9,19 @@ using UnityEngine;
 public class GridGenerator : MonoBehaviour
 {
     [Header("Grid Generator Properties")]
-    public float WorldSize; // The size of the game world
+    [SerializeField]
+    private float WorldSize; // The size of the game world
+
+    [Tooltip("The amount to reduce the world size for the stage " +
+             "generator. WorldSizeReduce < WorldSize")]
+    public float WorldSizeReduce; // The amount to reduce the world
+                                  // size for the StageGenerator
+
+    /// <summary>
+    /// The actual world size for generating bouncy stages.
+    /// </summary>
+    public float ActualWorldSize
+    { get { return WorldSize - WorldSizeReduce; } }
 
     public float CentrePointOffset; // Offsets of the
                                     // centre point
@@ -23,10 +35,10 @@ public class GridGenerator : MonoBehaviour
                               // point
 
     // Flag to check if done using all the grid points
-    public bool IsDone { get { return _currentZ > (WorldSize / 2); } }
+    public bool IsDone { get { return _currentZ > WorldSize; } }
     
     // Flag checking if any grid points available
-    public bool HasPoints { get { return _currentZ <= (WorldSize / 2); } }
+    public bool HasPoints { get { return _currentZ <= WorldSize; } }
 
     private float _currentX; // The current x-axis value
     private float _currentZ; // The current z-axis value
@@ -36,7 +48,7 @@ public class GridGenerator : MonoBehaviour
 
     // Getting the centre point value
     private float _centrePointValue
-    { get { return -(WorldSize / 2) + CentrePointOffset; } }
+    { get { return -WorldSize + CentrePointOffset; } }
 
     // Start is called before the first frame update
     void Start()
@@ -53,7 +65,7 @@ public class GridGenerator : MonoBehaviour
         // Getting the new x-axis point.
         // Equation:
         //  Pnx = P(n - 1)x + (4 x Offset), if Pnx > Size then reset.
-        _currentX = (_currentX + (4 * CentrePointOffset)) > (WorldSize / 2) ?
+        _currentX = (_currentX + (4 * CentrePointOffset)) > WorldSize ?
                         _centrePointValue :
                         _currentX + (4 * CentrePointOffset);
 
