@@ -118,8 +118,8 @@ public class Player : BasicAnimation
         else if (other.CompareTag("PlayerDetector"))
         {
             // Showing the booster
-            other.transform.parent.GetComponent<BouncyStage>()
-                .SetBooster(true);
+            other.transform.parent.GetChild(0)
+                .GetComponent<BouncyStage>().SetBooster(true);
         }
     }
 }

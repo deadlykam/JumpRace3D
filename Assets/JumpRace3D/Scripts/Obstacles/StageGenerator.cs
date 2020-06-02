@@ -340,16 +340,19 @@ public class StageGenerator : MonoBehaviour
 
         // Removing the stage object from the available list
         BouncyStagesAvailable.GetChild(index).SetParent(StageObjectsUsed);
-        
+
         // Linking the position of the current stage with the previous stage
         StageObjectsUsed.GetChild(StageObjectsUsed.childCount - 1)
+            .GetChild(0)
             .GetComponent<BouncyStage>().LinkedStage =
             StageObjectsUsed.GetChild(StageObjectsUsed.childCount - 2)
+            .GetChild(0)
             .GetComponent<BouncyStage>();
 
         // Setting the the stage number of the stage
         StageObjectsUsed.GetChild(StageObjectsUsed.childCount - 1)
-            .GetComponent<BouncyStage>().StageNumber = _stageNumberCounter++;
+            .GetChild(0).GetComponent<BouncyStage>().StageNumber 
+            = _stageNumberCounter++;
 
         // Calculating the new position of the current stage, needed for
         // calculating the direction
@@ -374,7 +377,7 @@ public class StageGenerator : MonoBehaviour
 
         // Adding the self and average points
         AddLinkPoint(StageObjectsUsed.GetChild(StageObjectsUsed.childCount - 1)
-            .GetComponent<BouncyStage>());
+            .GetChild(0).GetComponent<BouncyStage>());
 
         _stageGeneratedCounter++; // stage object added
     }
