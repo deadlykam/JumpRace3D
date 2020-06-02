@@ -2,6 +2,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+[RequireComponent(typeof(GridGenerator))]
+
+/// <summary>
+/// Class <c>StageGenerator</c> handles all the functionality for creating a stage, 
+/// is responsible for placing all the objects needed for a stage.
+/// </summary>
 public class StageGenerator : MonoBehaviour
 {
     [Header("Stage Properties")]
@@ -10,6 +16,9 @@ public class StageGenerator : MonoBehaviour
 
     public Transform StageObjectsUsed;      // Transform containing all
                                             // the used objects
+
+    private GridGenerator _gridGenerator;   // Containing all the grid
+                                            // points in the game world
 
     [Tooltip("The amount of distance between each stages.")]
     public float OffsetStage; // Distance between each stages
@@ -61,6 +70,17 @@ public class StageGenerator : MonoBehaviour
                                               // calculation. Needed
                                               // to avoid GC
 
+    [Header("Generation Correction Properties")]
+    public int CorrectionCounter; // The counter to make sure
+                                  // the stage generation remains
+                                  // within the game world size
+
+    private int _correctionCounter = -1; // The current correction
+                                         // counter
+
+    private bool _isCorrectionProcess
+    { get { return _correctionCounter < CorrectionCounter && _correctionCounter > -1; } }
+
     [Header("Obstacle Properties")]
     public Transform ObstacleContainer; // Container containing obstacles
 
@@ -81,6 +101,25 @@ public class StageGenerator : MonoBehaviour
                                // will be generated
 
     private int _offsetObstacle = 1; // The current offset value
+
+    [Header("Long Jump Stage Properties")]
+    public Transform LongBouncyStagesAvailable;
+
+    [Tooltip("The probability for generating a long bouncy stage. " +
+             "The higher the value the more chance to generate. " +
+             "0 = No generation, 1 = All generation")]
+    [Range(0f, 1f)]
+    public float LongBouncyStageProbability;
+
+    // Flag for checking if Long Bouncy stage
+    // generation is still processing
+    private bool _isProcessingLongBouncy
+    {
+        get {
+            return LongBouncyStagesAvailable.childCount > 0
+                   && _gridGenerator.HasPoints;
+        }
+    }
 
     [Header("Stage Link Properties")]
     [Tooltip("The LineRenderer for linking the bouncy stages")]
@@ -105,6 +144,9 @@ public class StageGenerator : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        _gridGenerator = GetComponent<GridGenerator>(); // Setting the grid
+                                                        // generator
+
         CalculateNumberOfLines(); // Calculating the number of points needed
                                   // for line renderer
     }
@@ -117,11 +159,12 @@ public class StageGenerator : MonoBehaviour
             // Checking if stage limit NOT reached
             if (_stageGeneratedCounter < StageNumber)
             {
-                if (!_isProcessing) // Checking if no stage object being processed
+                if (!_isProcessing) // Checking if no bouncy stage being processed
                 {
                     if (!_isRequest) // Checking if no requests available
                     {
-                        SetRequest();// Getting a request
+                        // Setting a request for bouncy stage objects
+                        SetRequest(BouncyStagesAvailable.childCount, 0);
                     }
                     else // Request is available
                     {
@@ -131,6 +174,23 @@ public class StageGenerator : MonoBehaviour
                 }
             }
             else GenerateNewLevel(); // Starting a new level generation
+        }
+        // Condition for processing the long bouncy stage generation
+        else if (_isProcessingLongBouncy && LongBouncyStageProbability != 0f)
+        {
+            if (!_isProcessing) // Checking if no long bouncy stage being processed
+            {
+                if (!_isRequest) // Checking if no requests available
+                {
+                    // Setting a request for long bouncy stage object
+                    SetRequest(LongBouncyStagesAvailable.childCount, 1);
+                }
+                else // Requet is available
+                {
+                    _isProcessing = true; // Processing started
+                    ProcessRequests(); // Processing the request
+                }
+            }
         }
         else // Condition for placing characters and stage generation done
         {
@@ -147,11 +207,11 @@ public class StageGenerator : MonoBehaviour
 
                 //TODO: Set the enemy characters here
 
-                // Starting the 3D text from the starting stage
+                /*// Starting the 3D text from the starting stage
                 Stage3DTextManager.Instance
                     .Generate3DTexts(StageObjectsUsed.GetChild(
                         StageObjectsUsed.childCount - 1)
-                        .GetComponent<BouncyStage>());
+                        .GetComponent<BouncyStage>());*/
 
                 _isPlaceCharacters = true; // Characters placed
             }
@@ -160,14 +220,33 @@ public class StageGenerator : MonoBehaviour
     }
 
     /// <summary>
-    /// This method adds a request for creating a stage object.
+    /// [depricated] This method adds a request for creating a stage object.
     /// </summary>
     private void SetRequest()
     {
         // Adding request
         _stageObjectRequests.Add(new StageObjectRequest(
                                      Random.Range(0,
-                                     BouncyStagesAvailable.childCount)));
+                                     BouncyStagesAvailable.childCount),
+                                     0));
+    }
+
+    /// <summary>
+    /// This method adds a request for creating a stage object.
+    /// </summary>
+    /// <param name="size">The number of stage objects available, 
+    ///                    of type int</param>
+    /// <param name="objectType">The type of object to generate,
+    ///                          of type int
+    ///                          <para>0 = Bouncy Stage</para>
+    ///                          <para>1 = Long Bouncy Stage</para>
+    ///                          </param>
+    private void SetRequest(int size, int objectType)
+    {
+        // Adding request
+        _stageObjectRequests.Add(new StageObjectRequest(
+                                     Random.Range(0, size),
+                                     objectType));
     }
 
     /// <summary>
@@ -181,17 +260,59 @@ public class StageGenerator : MonoBehaviour
                                           // object request
 
         // Adding the stage object
-        AddStageObject(_stageObjectRequestCurrent.Index);
+        AddStageObject(_stageObjectRequestCurrent.Index,
+                       _stageObjectRequestCurrent.ObjectType);
+        //AddBouncyStage(_stageObjectRequestCurrent.Index);
 
-        _stageGeneratedCounter++; // stage object added
+        //_stageGeneratedCounter++; // stage object added
         _isProcessing = false; // Processing finished
     }
 
     /// <summary>
     /// This method adds the stage object to the game world.
     /// </summary>
-    /// <param name="index">The index of the stage object, of type int</param>
-    private void AddStageObject(int index)
+    /// <param name="index">The index of the object requested,
+    ///                     of type int</param>
+    /// <param name="objectType">The type of object to generate,
+    ///                          of type int
+    ///                          <para>0 = Bouncy Stage</para>
+    ///                          <para>1 = Long Bouncy Stage</para>
+    ///                          </param>
+    private void AddStageObject(int index, int objectType)
+    {
+        // Condition to add a bouncy stage and an obstacle
+        if (objectType == 0) AddBouncyStage(index);
+        // Condition to add a long bouncy stage
+        else if (objectType == 1) AddLongBouncyStage(index);
+    }
+
+    /// <summary>
+    /// This method adds a long bouncy stage object to the game world.
+    /// </summary>
+    /// <param name="index">The index of the long bouncy stage, 
+    ///                     of type int</param>
+    private void AddLongBouncyStage(int index)
+    {
+        // Setting the position of the long bouncy stage
+        LongBouncyStagesAvailable.GetChild(index)
+            .position = _gridGenerator.GetGridPoint();
+        
+        // Probability condition for generating a long bouncy stage
+        if (Random.Range(0f, 1f) <= LongBouncyStageProbability)
+        {
+            // Showing the long bouncy stage
+            LongBouncyStagesAvailable.GetChild(index).gameObject.SetActive(true);
+
+            // Changing the parent of the long bouncy stage
+            LongBouncyStagesAvailable.GetChild(index).SetParent(StageObjectsUsed);
+        }
+    }
+
+    /// <summary>
+    /// This method adds a bouncy stage and obstacle objects to the game world.
+    /// </summary>
+    /// <param name="index">The index of the bouncy stage, of type int</param>
+    private void AddBouncyStage(int index)
     {
         _offsetStageCurrent += OffsetStage; // Getting the new stage
                                             // distance value
@@ -254,6 +375,8 @@ public class StageGenerator : MonoBehaviour
         // Adding the self and average points
         AddLinkPoint(StageObjectsUsed.GetChild(StageObjectsUsed.childCount - 1)
             .GetComponent<BouncyStage>());
+
+        _stageGeneratedCounter++; // stage object added
     }
 
     /// <summary>
@@ -270,9 +393,25 @@ public class StageGenerator : MonoBehaviour
         // 50% probability to go +ve or -ve in the x-axis
         _offsetSideCurrent += (Random.Range(0, 10) < 5) ? 
                               OffsetSide * -1 : OffsetSide;
+        
+        // Condition for starting the correction process
+        if(_offsetStageCurrent >= _gridGenerator.ActualWorldSize
+            || _offsetStageCurrent <= -_gridGenerator.ActualWorldSize)
+        {
+            OffsetStage = -OffsetStage; // Correction value
+            _correctionCounter = 0; // Resetting the correction
+                                    // counter
+        }
 
-        // 50% probability to change the direction of the distance offset
-        OffsetStage = (Random.Range(0, 10) < 5) ? OffsetStage * -1 : OffsetStage;
+        // Condition for NOT doing the correction process and doing
+        // the normal stage generation process
+        if (!_isCorrectionProcess)
+        {
+            // 50% probability to change the direction of the distance offset
+            OffsetStage = (Random.Range(0, 10) < 5) ? OffsetStage * -1 : OffsetStage;
+        }
+        else _correctionCounter++; // Doing the correction process and incrementing
+                                   // the counter for the correction process
     }
     
     /// <summary>
@@ -309,23 +448,6 @@ public class StageGenerator : MonoBehaviour
         if (StageObjectsUsed.childCount > 2)
         {
             _linePoint = Vector3.zero; // Resetting the line point
-
-            /*TODO: The average point should be absolute average
-                    for the obstacles. This is needed because
-                    the obstacle needs to pass through the line
-                    completely and also for not looking weird.
-                    Give if else conditions for the current
-                    average calculation for this. Also
-                    obstacle should be placed here and just 
-                    shown instead of moving it to the stages
-                    container. Also the _linPoint is the position
-                    to place, also use VEC3 _stagePosPrevious and
-                    VEC3 _stagePosCurrent to get the rotation
-                    of the obstacle or just take it from the
-                    currently added stage. Also use a counter
-                    to keep track on the obstacles used. Maybe
-                    for that a container is needed.
-             */
             
             // Condition for adding obstacles
             if (_offsetObstacle == OffsetObstacle 
@@ -387,16 +509,37 @@ public class StageGenerator : MonoBehaviour
     /// </summary>
     struct StageObjectRequest
     {
-        public int Index; // The index of the stage object
+        private int _index; // The index of the stage object
+
+        /// <summary>
+        /// The index of the object requested for generating, 
+        /// of type int
+        /// </summary>
+        public int Index { get { return _index; } }
+
+        private int _objectType; // The type of object to generate
+
+        /// <summary>
+        /// The type of object to generate, of type int
+        /// <para>0 = Bouncy Stage</para>
+        /// <para>1 = Long Bouncy Stage</para>
+        /// </summary>
+        public int ObjectType { get { return _objectType; } }
 
         /// <summary>
         /// Constructor for creating a stage object request.
         /// </summary>
         /// <param name="index">The index of the object requested,
         ///                     of type int</param>
-        public StageObjectRequest(int index)
+        /// <param name="objectType">The type of object to generate,
+        ///                          of type int
+        ///                          <para>0 = Bouncy Stage</para>
+        ///                          <para>1 = Long Bouncy Stage</para>
+        ///                          </param>
+        public StageObjectRequest(int index, int objectType)
         {
-            Index = index;
+            _index = index;
+            _objectType = objectType;
         }
     }
 }

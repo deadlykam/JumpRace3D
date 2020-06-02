@@ -10,6 +10,7 @@ TagManager:
   - EndStage
   - Floor
   - Obstacle
+  - LongBouncyStage
   layers:
   - Default
   - TransparentFX

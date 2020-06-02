@@ -9,6 +9,7 @@ public class Player : BasicAnimation
 {
     [Header("Player Properties")]
     public float RotationSpeed;
+    public float HeightLong;
 
     public static Player Instance;
 
@@ -107,6 +108,11 @@ public class Player : BasicAnimation
             // Generating 3D text from the currently hit stage
             Stage3DTextManager.Instance.Generate3DTexts(
                 other.transform.parent.GetComponent<BouncyStage>());
+        }
+        // Condition for long jump
+        else if (other.CompareTag("LongBouncyStage"))
+        {
+            Jump(HeightLong); // Jumping long height
         }
         // Condition to check if to show booster
         else if (other.CompareTag("PlayerDetector"))
