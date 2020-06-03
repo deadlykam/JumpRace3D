@@ -53,7 +53,7 @@ public class StageForce : MonoBehaviour
         // Condition to activate force
         if (_isActivated && !_hasReachedFallLimit)
         {
-            _fps = Time.deltaTime;
+            _fps = Time.deltaTime * GameData.Instance.SimulationSpeed;
 
             // Moving the stage
             transform.Translate(Direction.x * _fps, 
