@@ -94,11 +94,7 @@ public class Player : BasicAnimation
 
             // Hiding the booster
             other.GetComponent<BouncyStage>().SetBooster(false);
-
-            /*// Generating 3D text from the currently hit stage
-            Stage3DTextManager.Instance.Generate3DTexts(
-                other.transform.GetComponent<BouncyStage>());*/
-
+            
             // Activating the stage action
             other.GetComponent<BouncyStage>().StageAction();
         }
@@ -107,11 +103,7 @@ public class Player : BasicAnimation
             Jump(HeightPerfect); // Jumping perfect height
 
             other.gameObject.SetActive(false); // Hiding the booster
-
-            /*// Generating 3D text from the currently hit stage
-            Stage3DTextManager.Instance.Generate3DTexts(
-                other.transform.parent.GetComponent<BouncyStage>());*/
-
+            
             // Activating the stage action
             other.transform.parent
                 .GetComponent<BouncyStage>().StageAction();
@@ -135,6 +127,11 @@ public class Player : BasicAnimation
             // Showing the booster
             other.transform.parent.GetChild(0)
                 .GetComponent<BouncyStage>().SetBooster(true);
+        }
+        // Condition to check if hitting bottom of a stage
+        else if (other.CompareTag("StageBottom"))
+        {
+            InstantFall(); // Instantly falling
         }
     }
 }
