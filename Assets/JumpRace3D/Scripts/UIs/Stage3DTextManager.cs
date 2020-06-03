@@ -8,12 +8,7 @@ public class Stage3DTextManager : MonoBehaviour
     public Transform Text3DHolder; // The container that holds
                                    // all the 3D texts at the
                                    // start of the game
-
-    /*private Transform[] Text3DCointainer; // Containing all the 
-                                          // 3D Texts container
-
-    private TextMeshPro[] Text3Ds; // Containing all the 3D Texts*/
-
+        
     private Text3D[] _Text3Ds; // Containing all the 3D Texts
 
     private int _text3DPointer = 0; // Pointer to help place the
