@@ -124,6 +124,8 @@ public class Player : BasicAnimation
         {
             Jump(HeightLong); // Jumping long height
 
+            ApplyExtraJumpSpeed(); // Applying extra jump speed
+
             // Activating disappearing process
             other.GetComponent<BouncyStageLong>().StageAction();
         }
