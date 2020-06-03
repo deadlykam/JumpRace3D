@@ -164,6 +164,19 @@ public class BasicCharacter : MonoBehaviour
     }
 
     /// <summary>
+    /// This method makes the character fall instantly
+    /// </summary>
+    protected void InstantFall()
+    {
+        _targetDir = -1; // Changing to falling direction
+        _extraVerticalSpeed = 0; // Removing any extra speed
+        _acceleration = 0; // Making acceleration to 0 because
+                           // no transition to acceleration
+                           // from jumping but transition
+                           // to acceleration from 0
+    }
+
+    /// <summary>
     /// This method applies extra jump speed to the vertical speed.
     /// </summary>
     protected void ApplyExtraJumpSpeed()
