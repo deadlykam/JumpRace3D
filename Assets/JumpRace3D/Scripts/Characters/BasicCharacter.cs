@@ -12,6 +12,15 @@ public class BasicCharacter : MonoBehaviour
     [Tooltip("This value behaves for both jump and gravity")]
     public float SpeedHorizontal; // The forward speed
     public float SpeedVertical;   // Jump and gravity value
+    public float SpeedFastJump;   // Extra jump speed for long jumps
+    private float _extraVerticalSpeed; // Any extra vertical speed given
+
+    /// <summary>
+    /// The actual vertical speed with or without any extra speed, 
+    /// of type float
+    /// </summary>
+    private float _actualVerticalSpeed
+    { get { return SpeedVertical + _extraVerticalSpeed; } }
 
     [Tooltip("Starting offset of the character")]
     public Vector3 StartOffset;   // This is the starting offset
@@ -70,13 +79,19 @@ public class BasicCharacter : MonoBehaviour
         if (_isVerticalMovement) // Checking if vertical movement is allowed
         {
             // Moving the character vertically
-            transform.Translate(Vector3.up * SpeedVertical * _acceleration 
+            transform.Translate(Vector3.up 
+                                * _actualVerticalSpeed 
+                                * _acceleration 
                                 * GameData.Instance.SimulationSpeed 
                                 * Time.deltaTime);
 
             // Condition to check if the character should start
             // falling down
-            if (transform.position.y >= _heightCurrent) _targetDir = -1;
+            if (transform.position.y >= _heightCurrent)
+            {
+                _targetDir = -1; // Changing to falling direction
+                _extraVerticalSpeed = 0; // Removing any extra speed
+            }
 
             // Smoothing the acceleration of the character
             _acceleration = Mathf.SmoothDamp(_acceleration,
@@ -138,6 +153,14 @@ public class BasicCharacter : MonoBehaviour
 
         // Getting the height
         _heightCurrent = transform.position.y + height;
+    }
+
+    /// <summary>
+    /// This method applies extra jump speed to the vertical speed.
+    /// </summary>
+    protected void ApplyExtraJumpSpeed()
+    {
+        _extraVerticalSpeed = SpeedFastJump;
     }
 
     /// <summary>
