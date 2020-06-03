@@ -26,6 +26,10 @@ public class GridGenerator : MonoBehaviour
     public float CentrePointOffset; // Offsets of the
                                     // centre point
 
+    [Tooltip("The y-axis value of the grid")]
+    public float CentreHeightOffset; // The y-axis value of the
+                                     // grid
+
     [Tooltip("This is used for shifting the centre point " +
         "around randomly, 0 = no shifting, 1 = chance of " +
         "shifting 1 offset value.")]
@@ -112,7 +116,9 @@ public class GridGenerator : MonoBehaviour
                                         -CentreNoise,
                                          CentreNoise)
                                          : 0),
-                       0,
+
+                       CentreHeightOffset,
+
                        _currentZ + (CentreNoise != 0 ?
                                     CentrePointOffset * Random.Range(
                                         -CentreNoise,
