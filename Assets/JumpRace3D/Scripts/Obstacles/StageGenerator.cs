@@ -32,6 +32,11 @@ public class StageGenerator : MonoBehaviour
     public float OffsetSide; // Horizontal offset of stages
     private float _offsetSideCurrent; // Current side offset
 
+    private BouncyStage _currentBouncyStage; // For storing the current 
+                                             // or last BouncyStage,
+                                             // needed later for giving
+                                             // stage number.
+
     private Vector3 _stagePosition; // For storing the calculated stage
                                     // object position. Needed mainly to
                                     // avoid GC
@@ -196,6 +201,10 @@ public class StageGenerator : MonoBehaviour
         {
             if (!_isPlaceCharacters) // Characters not placed
             {
+                // Starting the 3D text from the last added stage
+                Stage3DTextManager.Instance
+                    .Generate3DTexts(_currentBouncyStage);
+
                 // Setting the player position
                 Player.Instance.SetStartPosition(_stagePosition);
                 Player.Instance.StartCharacter(); /* <-- This will NOT be called 
@@ -206,12 +215,6 @@ public class StageGenerator : MonoBehaviour
                                                          REMOVE LATER!*/
 
                 //TODO: Set the enemy characters here
-
-                /*// Starting the 3D text from the starting stage
-                Stage3DTextManager.Instance
-                    .Generate3DTexts(StageObjectsUsed.GetChild(
-                        StageObjectsUsed.childCount - 1)
-                        .GetComponent<BouncyStage>());*/
 
                 _isPlaceCharacters = true; // Characters placed
             }
@@ -332,35 +335,36 @@ public class StageGenerator : MonoBehaviour
                            _offsetHeightCurrent,
                            _offsetStageCurrent);
 
+        _currentBouncyStage = null; // Removing the previous stage
+
+        // Storing the newly added bouncy stage
+        _currentBouncyStage = BouncyStagesAvailable.GetChild(index)
+                              .GetChild(0).GetComponent<BouncyStage>();
+
         // Setting the stage object position
-        BouncyStagesAvailable.GetChild(index).position = _stagePosition;
+        _currentBouncyStage.transform.parent.position = _stagePosition;
 
         // Showing the stage object
-        BouncyStagesAvailable.GetChild(index).gameObject.SetActive(true);
+        _currentBouncyStage.transform.parent.gameObject.SetActive(true);
 
         // Removing the stage object from the available list
-        BouncyStagesAvailable.GetChild(index).SetParent(StageObjectsUsed);
+        _currentBouncyStage.transform.parent.SetParent(StageObjectsUsed);
 
         // Linking the position of the current stage with the previous stage
-        StageObjectsUsed.GetChild(StageObjectsUsed.childCount - 1)
-            .GetChild(0)
-            .GetComponent<BouncyStage>().LinkedStage =
+        _currentBouncyStage.GetComponent<BouncyStage>().LinkedStage =
             StageObjectsUsed.GetChild(StageObjectsUsed.childCount - 2)
             .GetChild(0)
             .GetComponent<BouncyStage>();
 
         // Setting the the stage number of the stage
-        StageObjectsUsed.GetChild(StageObjectsUsed.childCount - 1)
-            .GetChild(0).GetComponent<BouncyStage>().StageNumber 
+        _currentBouncyStage.GetComponent<BouncyStage>().StageNumber 
             = _stageNumberCounter++;
 
         // Calculating the new position of the current stage, needed for
         // calculating the direction
-        _stagePosCurrent.Set(StageObjectsUsed.GetChild(StageObjectsUsed.childCount - 1)
-                            .transform.position.x,
-                            0,
-                            StageObjectsUsed.GetChild(StageObjectsUsed.childCount - 1)
-                            .transform.position.z);
+        _stagePosCurrent.Set(_currentBouncyStage.transform.parent.position.x,
+                             0,
+                             _currentBouncyStage.transform.parent.position.z);
 
         // Calculating the new position of the previous stage, needed for
         // calculating the direction
@@ -371,13 +375,11 @@ public class StageGenerator : MonoBehaviour
                             .transform.position.z);
 
         // Rotating the current stage to face the previous stage
-        StageObjectsUsed.GetChild(StageObjectsUsed.childCount - 1)
-                            .transform.rotation = Quaternion.LookRotation(
+        _currentBouncyStage.transform.parent.rotation = Quaternion.LookRotation(
                                 _stagePosPrevious - _stagePosCurrent);
 
         // Adding the self and average points
-        AddLinkPoint(StageObjectsUsed.GetChild(StageObjectsUsed.childCount - 1)
-            .GetChild(0).GetComponent<BouncyStage>());
+        AddLinkPoint(_currentBouncyStage);
 
         _stageGeneratedCounter++; // stage object added
     }
