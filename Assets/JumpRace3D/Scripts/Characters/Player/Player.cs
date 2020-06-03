@@ -115,6 +115,9 @@ public class Player : BasicAnimation
             // Activating the stage action
             other.transform.parent
                 .GetComponent<BouncyStage>().StageAction();
+
+            // Activating the simulation speed effect
+            GameData.Instance.StartSimulationSpeedEffect();
         }
         // Condition for long jump
         else if (other.CompareTag("LongBouncyStage"))
