@@ -123,6 +123,9 @@ public class Player : BasicAnimation
         else if (other.CompareTag("LongBouncyStage"))
         {
             Jump(HeightLong); // Jumping long height
+
+            // Activating disappearing process
+            other.GetComponent<BouncyStageLong>().StageAction();
         }
         // Condition to check if to show booster
         else if (other.CompareTag("PlayerDetector"))
