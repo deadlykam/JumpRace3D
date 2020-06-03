@@ -28,6 +28,12 @@ public class StageForce : MonoBehaviour
     private bool _isActivated = false; // Flag for activating
                                        // the force
 
+    // This flag checks if the stage object has reached the
+    // fall limit
+    private bool _hasReachedFallLimit
+    { get { return transform.position.y < 
+                   GameData.Instance.FallHeightLimit; } }
+
     // Start is called before the first frame update
     void Start()
     {
@@ -45,7 +51,7 @@ public class StageForce : MonoBehaviour
     void Update()
     {
         // Condition to activate force
-        if (_isActivated)
+        if (_isActivated && !_hasReachedFallLimit)
         {
             _fps = Time.deltaTime;
 
