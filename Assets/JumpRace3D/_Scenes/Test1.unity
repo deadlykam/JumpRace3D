@@ -5685,6 +5685,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   FallHeightLimit: -10
+  SimulationSpeedMin: 0.05
+  SimulationSpeedAcceleration: 0.3
 --- !u!1001 &656248454
 PrefabInstance:
   m_ObjectHideFlags: 0

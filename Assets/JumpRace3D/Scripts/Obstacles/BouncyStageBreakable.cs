@@ -65,5 +65,8 @@ public class BouncyStageBreakable : BouncyStage
         _pointer = 0; // Starting the stage action process
 
         _isReset = false; // Breaking stage
+
+        // Activating the simulation speed effect
+        GameData.Instance.StartSimulationSpeedEffect();
     }
 }

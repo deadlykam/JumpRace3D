@@ -14,6 +14,8 @@ public class ObstacleRotation : MonoBehaviour
     void Update()
     {
         // Continuously rotating the obstacle
-        transform.Rotate(RotationDirection * Time.deltaTime);
+        transform.Rotate(RotationDirection 
+                         * GameData.Instance.SimulationSpeed 
+                         * Time.deltaTime);
     }
 }

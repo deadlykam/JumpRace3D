@@ -70,7 +70,9 @@ public class BasicCharacter : MonoBehaviour
         if (_isVerticalMovement) // Checking if vertical movement is allowed
         {
             // Moving the character vertically
-            transform.Translate(Vector3.up * SpeedVertical * _acceleration * Time.deltaTime);
+            transform.Translate(Vector3.up * SpeedVertical * _acceleration 
+                                * GameData.Instance.SimulationSpeed 
+                                * Time.deltaTime);
 
             // Condition to check if the character should start
             // falling down
@@ -120,7 +122,9 @@ public class BasicCharacter : MonoBehaviour
     /// </summary>
     protected virtual void HorizontalMovement()
     {
-        transform.Translate(Vector3.forward * SpeedHorizontal * Time.deltaTime);
+        transform.Translate(Vector3.forward * SpeedHorizontal 
+                            * GameData.Instance.SimulationSpeed 
+                            * Time.deltaTime);
     }
     
     /// <summary>
