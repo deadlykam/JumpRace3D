@@ -36,6 +36,8 @@ public class BouncyStageMove : BouncyStage
             Speed; // Speed remain same
         
         // Moving the stage
-        transform.Translate(Vector3.right * Speed * Time.deltaTime);
+        transform.Translate(Vector3.right * Speed 
+                            * GameData.Instance.SimulationSpeed 
+                            * Time.deltaTime);
     }
 }

@@ -98,6 +98,9 @@ public class Player : BasicAnimation
             // Generating 3D text from the currently hit stage
             Stage3DTextManager.Instance.Generate3DTexts(
                 other.transform.GetComponent<BouncyStage>());
+
+            // Activating the stage action
+            other.GetComponent<BouncyStage>().StageAction();
         }
         else if (other.CompareTag("Booster"))
         {
@@ -108,6 +111,13 @@ public class Player : BasicAnimation
             // Generating 3D text from the currently hit stage
             Stage3DTextManager.Instance.Generate3DTexts(
                 other.transform.parent.GetComponent<BouncyStage>());
+
+            // Activating the stage action
+            other.transform.parent
+                .GetComponent<BouncyStage>().StageAction();
+
+            // Activating the simulation speed effect
+            GameData.Instance.StartSimulationSpeedEffect();
         }
         // Condition for long jump
         else if (other.CompareTag("LongBouncyStage"))
