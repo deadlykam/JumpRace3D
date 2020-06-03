@@ -2,21 +2,32 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+[RequireComponent(typeof(BoxCollider))]
 /// <summary>
-/// [depricated] Class <c>BasicStage</c> handles all the common functinality between all
+/// Class <c>BasicStage</c> handles all the common functinality between all
 /// stages.
 /// </summary>
 public class BasicStage : MonoBehaviour
 {
-    private BasicStage _linkedStage; // The reference of the linked stage
-    public BasicStage LinkedStage
+    //TODO: Add fields for particle effects
+
+    /// <summary>
+    /// This method activates the stage action.
+    /// </summary>
+    public virtual void StageAction()
     {
-        get { return _linkedStage; }
-        set { _linkedStage = value; }
+        //TODO: Activate the particle effect here
+        Debug.Log("Particle Effects*");
     }
 
-    public Vector3 LinkedStagePosition // The position of the linked stage
+    /// <summary>
+    /// This method activates the stage action.
+    /// </summary>
+    /// <param name="isActivated">Flag to activate or deactivate an
+    ///                           action, of type bool</param>
+    public virtual void StageAction(bool isActivated)
     {
-        get { return _linkedStage.transform.position; }
+        //TODO: Activate the particle effect here
+        Debug.Log("Particle Effects*");
     }
 }
