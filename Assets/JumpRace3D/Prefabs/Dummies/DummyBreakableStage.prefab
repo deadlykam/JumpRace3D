@@ -45,7 +45,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Model: {fileID: 5257600701811754892}
-  Gravity: 0
+  Gravity: -8
   Direction: {x: 0, y: -5}
   RotationSpeed: {x: 250, y: 0, z: 0}
 --- !u!1 &4940652067828589392
@@ -483,7 +483,7 @@ MonoBehaviour:
   Model: {fileID: 5268673822542701850}
   Gravity: -10
   Direction: {x: -5, y: 5}
-  RotationSpeed: {x: 0, y: 500, z: 0}
+  RotationSpeed: {x: 0, y: 800, z: 0}
 --- !u!1 &5268673821714951997
 GameObject:
   m_ObjectHideFlags: 0
@@ -529,7 +529,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Model: {fileID: 5268673822559231205}
-  Gravity: -10
+  Gravity: -4
   Direction: {x: -5, y: -5}
   RotationSpeed: {x: 0, y: 0, z: 500}
 --- !u!1 &5268673821767049080
@@ -783,7 +783,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Model: {fileID: 5268673821967106294}
-  Gravity: -10
+  Gravity: -8
   Direction: {x: 5, y: -5}
   RotationSpeed: {x: 500, y: 500, z: 500}
 --- !u!1 &5268673822542701849
