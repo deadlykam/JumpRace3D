@@ -19913,7 +19913,7 @@ PrefabInstance:
     - target: {fileID: 8503663298184330665, guid: db403e46d00805944bd9fe75417c260f,
         type: 3}
       propertyPath: SpeedHorizontal
-      value: 3
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 8503663298184330665, guid: db403e46d00805944bd9fe75417c260f,
         type: 3}
@@ -19934,6 +19934,16 @@ PrefabInstance:
         type: 3}
       propertyPath: SpeedFastJump
       value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 8503663298184330665, guid: db403e46d00805944bd9fe75417c260f,
+        type: 3}
+      propertyPath: SpeedGravity
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 8503663298184330665, guid: db403e46d00805944bd9fe75417c260f,
+        type: 3}
+      propertyPath: SpeedJump
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 8503663298184330668, guid: db403e46d00805944bd9fe75417c260f,
         type: 3}

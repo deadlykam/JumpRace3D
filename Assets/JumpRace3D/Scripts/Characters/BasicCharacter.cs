@@ -11,7 +11,8 @@ public class BasicCharacter : MonoBehaviour
 
     [Tooltip("This value behaves for both jump and gravity")]
     public float SpeedHorizontal; // The forward speed
-    public float SpeedVertical;   // Jump and gravity value
+    public float SpeedGravity;    // The gravity speed
+    public float SpeedJump;       // Normal jump speed
     public float SpeedFastJump;   // Extra jump speed for long jumps
     private float _extraVerticalSpeed; // Any extra vertical speed given
 
@@ -20,7 +21,7 @@ public class BasicCharacter : MonoBehaviour
     /// of type float
     /// </summary>
     private float _actualVerticalSpeed
-    { get { return SpeedVertical + _extraVerticalSpeed; } }
+    { get { return SpeedJump + _extraVerticalSpeed; } }
 
     [Tooltip("Starting offset of the character")]
     public Vector3 StartOffset;   // This is the starting offset
@@ -79,10 +80,17 @@ public class BasicCharacter : MonoBehaviour
         if (_isVerticalMovement) // Checking if vertical movement is allowed
         {
             // Moving the character vertically
-            transform.Translate(Vector3.up 
-                                * _actualVerticalSpeed 
-                                * _acceleration 
-                                * GameData.Instance.SimulationSpeed 
+            transform.Translate(Vector3.up
+                                  
+                                  // Checking which speed to apply
+                                * (_targetDir == 1 ?
+                                   _actualVerticalSpeed :
+                                    _acceleration < 0 ?
+                                     SpeedGravity :
+                                     _actualVerticalSpeed)
+
+                                * _acceleration
+                                * GameData.Instance.SimulationSpeed
                                 * Time.deltaTime);
 
             // Condition to check if the character should start
