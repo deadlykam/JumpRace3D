@@ -332,10 +332,10 @@ public class StageGenerator : MonoBehaviour
         {
             _isPlaceCharacters = false; // Characters needs to be placed
                                         // again in the new stage
-
-            //TODO: Increment the _level here
-
-            ResetGenerationVariables();
+                                        
+            IncreaseLevel(); // Increasing the level
+            ResetGenerationVariables(); // Resetting all the generating
+                                        // variables
 
             Status = ProcessStatus.Generating; // Starting new stage
                                                // generation process
@@ -689,6 +689,15 @@ public class StageGenerator : MonoBehaviour
         _offsetObstacle = _offsetObstacle + 1 > OffsetObstacle ? 
                           1 : 
                           _offsetObstacle + 1;
+    }
+
+    /// <summary>
+    /// This method increases the level.
+    /// </summary>
+    private void IncreaseLevel()
+    {
+        // Calculating the next level
+        _level = (_level + 1) > LevelMax ? LevelMax : _level + 1;
     }
 
     /// <summary>
