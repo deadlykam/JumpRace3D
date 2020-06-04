@@ -698,6 +698,9 @@ public class StageGenerator : MonoBehaviour
     {
         // Calculating the next level
         _level = (_level + 1) > LevelMax ? LevelMax : _level + 1;
+
+        _levelNumberCurrent++;
+        Debug.Log("Starting Level: " + _levelNumberCurrent.ToString());
     }
 
     /// <summary>
