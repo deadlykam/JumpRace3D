@@ -258,7 +258,17 @@ public class BasicCharacter : MonoBehaviour
     /// </summary>
     protected virtual void RaceFinished()
     {
-        _isEnableMovement = false; // Stopping vertical movement 
+        _isEnableMovement = false; // Stopping movement 
+    }
+
+    /// <summary>
+    /// This method forcefully resets the character from any 
+    /// current status.
+    /// </summary>
+    protected virtual void ForceReset()
+    {
+        _isEnableMovement = false; // Stopping movement
+        _isAutoRotateCharacter = false; // Stopping rotation
     }
 
     /// <summary>
