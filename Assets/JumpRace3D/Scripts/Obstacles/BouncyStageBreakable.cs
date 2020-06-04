@@ -21,8 +21,15 @@ public class BouncyStageBreakable : BouncyStage
                                    // the breakable stage
 
     // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
+        /* IMP: Must be called in Awake() method otherwise
+         *     StageGenerator will call to change the
+         *     _pointer value first and the Start() method
+         *     will change the _pointer value after which
+         *     means no _Activation. So Awake() helps to
+         *     fix that issue.
+         */
         _pointer = BreakableObjects.Length;
     }
 
@@ -37,7 +44,7 @@ public class BouncyStageBreakable : BouncyStage
             // Hiding the collider and the booster
             if (!_isActivated) gameObject.SetActive(false);
         }
-        else if(_isActivated && _isReset) // Condition for resetting the stage
+        else if (_isActivated && _isReset) // Condition for resetting the stage
         {
             // Resetting the individual forces
             BreakableObjects[_pointer++].ResetForce();
