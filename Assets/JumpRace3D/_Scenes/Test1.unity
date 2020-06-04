@@ -18099,7 +18099,7 @@ MonoBehaviour:
   OffsetHeight: 5
   OffsetSide: 7
   LevelMax: 14
-  _level: 14
+  _level: 1
   StageNumber: 5
   CorrectionCounter: 2
   ObstacleContainer: {fileID: 1924087912}
@@ -26006,6 +26006,11 @@ PrefabInstance:
         type: 3}
       propertyPath: SpeedJump
       value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 8503663298184330665, guid: db403e46d00805944bd9fe75417c260f,
+        type: 3}
+      propertyPath: AutoRotationSpeed
+      value: 100
       objectReference: {fileID: 0}
     - target: {fileID: 8503663298184330668, guid: db403e46d00805944bd9fe75417c260f,
         type: 3}

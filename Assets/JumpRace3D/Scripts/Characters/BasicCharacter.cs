@@ -62,8 +62,24 @@ public class BasicCharacter : MonoBehaviour
     /// </summary>
     protected bool isEnableMovement { get { return _isEnableMovement; } }
 
+    /// <summary>
+    /// This flag checks if the character is moving forward or not,
+    /// <para>true = forward</para>
+    /// <para>false = NOT forward</para>
+    /// of type bool
+    /// </summary>
+    protected bool isHorizontalMovement { get; set; }
+
     private Vector3 _characterPosition = Vector3.zero; // Needed to avoid 
                                                        // unnecessary GC
+
+    public float AutoRotationSpeed; // The speed for auto rotation
+
+    private Quaternion _targetRotation; // Storing the target rotation for
+                                        // auto rotation
+
+    private bool _isAutoRotateCharacter = false; // Flag for starting auto 
+                                                 // rotate the character
 
     // Start is called before the first frame update
     void Start()
@@ -119,21 +135,65 @@ public class BasicCharacter : MonoBehaviour
     }
 
     /// <summary>
+    /// This method auto rotates character to the target
+    /// rotation.
+    /// </summary>
+    private void AutoRotateCharacter()
+    {
+        // Condition to start auto rotation of the character
+        if (_isAutoRotateCharacter &&
+            !isHorizontalMovement)
+        {
+            // Condition for rotating the character
+            if (transform.rotation != _targetRotation)
+                transform.rotation = Quaternion.RotateTowards(
+                                        transform.rotation,
+                                        _targetRotation,
+                                        AutoRotationSpeed *
+                                        Time.deltaTime);
+            // Condition for stopping auto rotation
+            else _isAutoRotateCharacter = false;
+        }
+    }
+
+    /// <summary>
     /// This method rotates the character.
     /// </summary>
     /// <param name="target">The target position needed for
     ///                      calculating character direction, 
     ///                      of type Vector3</param>
-    private void RotateCharacter(Vector3 target)
+    protected void StartAutoRotation(Vector3 target)
     {
+        // Fixing the target position for calculating
+        // accurate rotation
+        target.Set(target.x, 0, target.z);
+
         // Fixing character position for calculating
         // accurate rotation
         _characterPosition.Set(transform.position.x,
                                0,
                                transform.position.z);
 
-        // Looking at the target instantly
-        transform.rotation = Quaternion.LookRotation(target - _characterPosition);
+        // Storing the target rotation
+        _targetRotation = Quaternion.LookRotation(target - 
+                                                  _characterPosition);
+
+        // Condition to check if rotation is needed
+        if (transform.rotation != _targetRotation)
+            _isAutoRotateCharacter = true; // Start rotating the character
+    }
+
+    /// <summary>
+    /// This method stops the auto rotation effect.
+    /// </summary>
+    protected void StopAutoRotation()
+    {
+        // Condition to check if auto rotation
+        // is being in effect
+        if(_isAutoRotateCharacter)
+            _isAutoRotateCharacter = false; // Stopping
+                                            // auto
+                                            // rotation
     }
 
     /// <summary>
@@ -142,7 +202,8 @@ public class BasicCharacter : MonoBehaviour
     /// </summary>
     protected void UpdateBasicCharacter()
     {
-        VerticalMovement();
+        VerticalMovement(); // Updating jumping/gravity movement
+        AutoRotateCharacter(); // Updating auto rotation
     }
 
     /// <summary>
