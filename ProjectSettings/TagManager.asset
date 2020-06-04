@@ -12,6 +12,7 @@ TagManager:
   - Obstacle
   - LongBouncyStage
   - StageBottom
+  - Enemy
   layers:
   - Default
   - TransparentFX
@@ -26,7 +27,7 @@ TagManager:
   - NPC
   - PlayerDetector
   - FloorDetector
-  - 
+  - Enemy
   - 
   - 
   - 
