@@ -10,7 +10,7 @@ using UnityEngine;
 /// </summary>
 public class StageGenerator : MonoBehaviour
 {
-    public enum ProcessStatus { None, Generating, Reseting};
+    public enum ProcessStatus { None, Generating, Reseting, Starting};
 
     [Header("Stage Properties")]
     public Transform BouncyStagesAvailable; // Transform containing all
@@ -182,6 +182,8 @@ public class StageGenerator : MonoBehaviour
 
     public static StageGenerator Instance;
 
+    public Enemy TestEnemy; //<-- DELETE THIS! ENEMIES WILL BE GENERATED FROM
+                            //    ENEMY GENERATOR
 
     void Awake()
     {
@@ -268,22 +270,40 @@ public class StageGenerator : MonoBehaviour
                 Stage3DTextManager.Instance
                     .Generate3DTexts(_currentBouncyStage);
 
+                // Setting up the enemies
+                EnemyGenerator.Instance
+                    .SetupGeneration(_level, 
+                                     _currentBouncyStage.LinkedStage);
+
                 // Setting the player position
                 Player.Instance.SetStartPosition(_stagePosition);
-                Player.Instance.StartCharacter(); /* <-- This will NOT be called 
+
+                _isPlaceCharacters = true; // Characters placed
+            }
+            else // Condititon to start the characters
+            {
+                // Condition for starting the player and the enemies
+                if (EnemyGenerator.Instance.Status == ProcessStatus.None)
+                {
+                    Player.Instance.StartCharacter(); /* <-- This will NOT be called 
                                                          from here. This will be
                                                          called from tapping the
                                                          screen for the first
                                                          time in a gameplay.
                                                          REMOVE LATER!*/
 
-                //TODO: Set the enemy characters here
-
-                _isPlaceCharacters = true; // Characters placed
+                    EnemyGenerator.Instance.StartEnemy(); /* <-- This will NOT be called
+                                                           * from here. This will be 
+                                                           * called from tapping the 
+                                                           * screen for the first time
+                                                           * in a gameplay.
+                                                           * REMOVE LATER!
+                                                           */
+                                                           
+                    Status = ProcessStatus.None; // No further stage process needs
+                                                 // to be done
+                }
             }
-
-            Status = ProcessStatus.None; // No further stage process needs
-                                         // to be done
         }
     }
 
