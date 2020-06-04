@@ -11,7 +11,21 @@ public class BasicCharacter : MonoBehaviour
 
     [Tooltip("This value behaves for both jump and gravity")]
     public float SpeedHorizontal; // The forward speed
-    public float SpeedVertical;   // Jump and gravity value
+    public float SpeedGravity;    // The gravity speed
+    public float SpeedJump;       // Normal jump speed
+    public float SpeedFastJump;   // Extra jump speed for long jumps
+    private float _extraVerticalSpeed; // Any extra vertical speed given
+
+    /// <summary>
+    /// The actual vertical speed with or without any extra speed, 
+    /// of type float
+    /// </summary>
+    private float _actualVerticalSpeed
+    { get { return SpeedJump + _extraVerticalSpeed; } }
+
+    [Tooltip("Starting offset of the character")]
+    public Vector3 StartOffset;   // This is the starting offset
+                                  // of the character
 
     public float HeightNormal;    // Normal height of a jump
     public float HeightPerfect;   // Perfect height of a jump
@@ -37,9 +51,35 @@ public class BasicCharacter : MonoBehaviour
                                  // Values:
                                  //  1 = Jumping up
                                  // -1 = Falling down
+                                 //  0 = Stop vertival movement
+
+    private bool _isEnableMovement = false; // This flag controls the
+                                            // vertical movement of the
+                                            // character
+
+    /// <summary>
+    /// This flag checks if movement is enabled, of type bool
+    /// </summary>
+    protected bool isEnableMovement { get { return _isEnableMovement; } }
+
+    /// <summary>
+    /// This flag checks if the character is moving forward or not,
+    /// <para>true = forward</para>
+    /// <para>false = NOT forward</para>
+    /// of type bool
+    /// </summary>
+    protected bool isHorizontalMovement { get; set; }
 
     private Vector3 _characterPosition = Vector3.zero; // Needed to avoid 
                                                        // unnecessary GC
+
+    public float AutoRotationSpeed; // The speed for auto rotation
+
+    private Quaternion _targetRotation; // Storing the target rotation for
+                                        // auto rotation
+
+    private bool _isAutoRotateCharacter = false; // Flag for starting auto 
+                                                 // rotate the character
 
     // Start is called before the first frame update
     void Start()
@@ -58,22 +98,62 @@ public class BasicCharacter : MonoBehaviour
     /// </summary>
     private void VerticalMovement()
     {
-        // Moving the character vertically
-        transform.Translate(Vector3.up * SpeedVertical * _acceleration * Time.deltaTime);
+        if (_isEnableMovement) // Checking if vertical movement is allowed
+        {
+            // Moving the character vertically
+            transform.Translate(Vector3.up
+                                  
+                                  // Checking which speed to apply
+                                * (_targetDir == 1 ?
+                                   _actualVerticalSpeed :
+                                    _acceleration < 0 ?
+                                     SpeedGravity :
+                                     _actualVerticalSpeed)
 
-        // Condition to check if the character should start
-        // falling down
-        if (transform.position.y >= _heightCurrent) _targetDir = -1;
+                                * _acceleration
+                                * GameData.Instance.SimulationSpeed
+                                * Time.deltaTime);
 
-        // Smoothing the acceleration of the character
-        _acceleration = Mathf.SmoothDamp(_acceleration,
-                                         _targetDir,
-                                         ref _verticalVelocity,
-                                         // Checking which smooth
-                                         // acceleration to use
-                                         _targetDir == 1 ?
-                                         JumpSmooth :
-                                         GravitySmooth);
+            // Condition to check if the character should start
+            // falling down
+            if (transform.position.y >= _heightCurrent)
+            {
+                _targetDir = -1; // Changing to falling direction
+                _extraVerticalSpeed = 0; // Removing any extra speed
+            }
+
+            // Smoothing the acceleration of the character
+            _acceleration = Mathf.SmoothDamp(_acceleration,
+                                             _targetDir,
+                                             ref _verticalVelocity,
+                                             // Checking which smooth
+                                             // acceleration to use
+                                             _targetDir == 1 ?
+                                             JumpSmooth :
+                                             GravitySmooth);
+        }
+    }
+
+    /// <summary>
+    /// This method auto rotates character to the target
+    /// rotation.
+    /// </summary>
+    private void AutoRotateCharacter()
+    {
+        // Condition to start auto rotation of the character
+        if (_isAutoRotateCharacter &&
+            !isHorizontalMovement)
+        {
+            // Condition for rotating the character
+            if (transform.rotation != _targetRotation)
+                transform.rotation = Quaternion.RotateTowards(
+                                        transform.rotation,
+                                        _targetRotation,
+                                        AutoRotationSpeed *
+                                        Time.deltaTime);
+            // Condition for stopping auto rotation
+            else _isAutoRotateCharacter = false;
+        }
     }
 
     /// <summary>
@@ -82,16 +162,38 @@ public class BasicCharacter : MonoBehaviour
     /// <param name="target">The target position needed for
     ///                      calculating character direction, 
     ///                      of type Vector3</param>
-    private void RotateCharacter(Vector3 target)
+    protected void StartAutoRotation(Vector3 target)
     {
+        // Fixing the target position for calculating
+        // accurate rotation
+        target.Set(target.x, 0, target.z);
+
         // Fixing character position for calculating
         // accurate rotation
         _characterPosition.Set(transform.position.x,
                                0,
                                transform.position.z);
 
-        // Looking at the target instantly
-        transform.rotation = Quaternion.LookRotation(target - _characterPosition);
+        // Storing the target rotation
+        _targetRotation = Quaternion.LookRotation(target - 
+                                                  _characterPosition);
+
+        // Condition to check if rotation is needed
+        if (transform.rotation != _targetRotation)
+            _isAutoRotateCharacter = true; // Start rotating the character
+    }
+
+    /// <summary>
+    /// This method stops the auto rotation effect.
+    /// </summary>
+    protected void StopAutoRotation()
+    {
+        // Condition to check if auto rotation
+        // is being in effect
+        if(_isAutoRotateCharacter)
+            _isAutoRotateCharacter = false; // Stopping
+                                            // auto
+                                            // rotation
     }
 
     /// <summary>
@@ -100,7 +202,8 @@ public class BasicCharacter : MonoBehaviour
     /// </summary>
     protected void UpdateBasicCharacter()
     {
-        VerticalMovement();
+        VerticalMovement(); // Updating jumping/gravity movement
+        AutoRotateCharacter(); // Updating auto rotation
     }
 
     /// <summary>
@@ -108,7 +211,54 @@ public class BasicCharacter : MonoBehaviour
     /// </summary>
     protected virtual void HorizontalMovement()
     {
-        transform.Translate(Vector3.forward * SpeedHorizontal * Time.deltaTime);
+        if (_isEnableMovement) // Checking if horizontal movement allowed
+        {
+            transform.Translate(Vector3.forward * SpeedHorizontal
+                                * GameData.Instance.SimulationSpeed
+                                * Time.deltaTime);
+        }
+    }
+    
+    /// <summary>
+    /// This method makes the character jump.
+    /// </summary>
+    /// <param name="height">The maximum height of the jump,
+    ///                      of type float</param>
+    protected void Jump(float height)
+    {
+        _targetDir = 1; // Making the player jump
+
+        // Getting the height
+        _heightCurrent = transform.position.y + height;
+    }
+
+    /// <summary>
+    /// This method makes the character fall instantly
+    /// </summary>
+    protected void InstantFall()
+    {
+        _targetDir = -1; // Changing to falling direction
+        _extraVerticalSpeed = 0; // Removing any extra speed
+        _acceleration = 0; // Making acceleration to 0 because
+                           // no transition to acceleration
+                           // from jumping but transition
+                           // to acceleration from 0
+    }
+
+    /// <summary>
+    /// This method applies extra jump speed to the vertical speed.
+    /// </summary>
+    protected void ApplyExtraJumpSpeed()
+    {
+        _extraVerticalSpeed = SpeedFastJump;
+    }
+
+    /// <summary>
+    /// This method finishes the race for the character.
+    /// </summary>
+    protected virtual void RaceFinished()
+    {
+        _isEnableMovement = false; // Stopping vertical movement 
     }
 
     /// <summary>
@@ -117,35 +267,38 @@ public class BasicCharacter : MonoBehaviour
     /// <param name="other">The collided object, of type Collider</param>
     protected virtual void OnTriggerEnter(Collider other)
     {
-        // Condition to check if bouncy stage collided
-        // and making character jump
-        if (other.CompareTag("BouncyStage"))
+        // Condition to check if end stage reached
+        if (other.CompareTag("EndStage"))
         {
-            _targetDir = 1; // Making the player jump
-
-            // Getting the normal height
-            _heightCurrent = transform.position.y + HeightNormal;
-
-            // Hiding the booster
-            other.GetComponent<BouncyStage>().SetBooster(false);
-        }
-        // Condition to check if booster collided
-        // and making character jump
-        else if (other.CompareTag("Booster"))
-        {
-            _targetDir = 1; // Making the player jump
-
-            // Getting the normal height
-            _heightCurrent = transform.position.y + HeightPerfect;
-
-            other.gameObject.SetActive(false); // Hiding the booster
-        }
-        // Condition to check if to show booster
-        else if (other.CompareTag("PlayerDetector"))
-        {
-            // Showing the booster
-            other.transform.parent.GetComponent<BouncyStage>()
-                .SetBooster(true);
+            RaceFinished(); // Race completed
         }
     }
+
+    /// <summary>
+    /// This method sets the position of the character.
+    /// </summary>
+    /// <param name="x">The x-axis position, of type float</param>
+    /// <param name="y">The y-axis position, of type float</param>
+    /// <param name="z">The z-axis position, of type float</param>
+    public virtual void SetStartPosition(float x, float y, float z)
+    {
+        transform.position = Vector3.zero; // Resetting the position
+        transform.position.Set(x, y, z);   // Applying the new position
+    }
+
+    /// <summary>
+    /// This method sets the position of the character.
+    /// </summary>
+    /// <param name="x">The start position, of type Vector3</param>
+    public virtual void SetStartPosition(Vector3 position)
+    {
+        // Setting the starting position of the character
+        // with StartOffset
+        transform.position = position + StartOffset;
+    }
+
+    /// <summary>
+    /// This method starts the character's vertical movement.
+    /// </summary>
+    public virtual void StartCharacter() { _isEnableMovement = true; }
 }

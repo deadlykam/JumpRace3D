@@ -7,6 +7,11 @@ TagManager:
   - BouncyStage
   - Booster
   - PlayerDetector
+  - EndStage
+  - Floor
+  - Obstacle
+  - LongBouncyStage
+  - StageBottom
   layers:
   - Default
   - TransparentFX
@@ -19,8 +24,8 @@ TagManager:
   - Player
   - Stage
   - NPC
-  - 
-  - 
+  - PlayerDetector
+  - FloorDetector
   - 
   - 
   - 
