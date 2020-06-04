@@ -63,7 +63,22 @@ public class Player : BasicAnimation
             isEnableMovement)
         {
             base.HorizontalMovement(); // Going forward
+
+            // Condition to check if NOT going forward
+            // then changing flag to forward
+            if (!isHorizontalMovement)
+                isHorizontalMovement = true;
+
             RotatePlayer(); // Rotating the player
+            StopAutoRotation(); // Stopping auto rotation effect
+                                // if applied
+        }
+        else // Condition for NOT going forward
+        {
+            // Condition to check if going forward
+            // then changing flag to NOT forward
+            if (isHorizontalMovement)
+                isHorizontalMovement = false;
         }
     }
 
@@ -99,7 +114,11 @@ public class Player : BasicAnimation
 
             // Hiding the booster
             other.GetComponent<BouncyStage>().SetBooster(false);
-            
+
+            // Looking at the next stage
+            StartAutoRotation(other.GetComponent<BouncyStage>()
+                .LinkedStagePosition);
+
             // Activating the stage action
             other.GetComponent<BouncyStage>().StageAction();
         }
@@ -108,7 +127,11 @@ public class Player : BasicAnimation
             Jump(HeightPerfect); // Jumping perfect height
 
             other.gameObject.SetActive(false); // Hiding the booster
-            
+
+            // Looking at the next stage
+            StartAutoRotation(other.transform.parent
+                .GetComponent<BouncyStage>().LinkedStagePosition);
+
             // Activating the stage action
             other.transform.parent
                 .GetComponent<BouncyStage>().StageAction();
