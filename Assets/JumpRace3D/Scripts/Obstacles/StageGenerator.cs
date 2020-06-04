@@ -10,6 +10,8 @@ using UnityEngine;
 /// </summary>
 public class StageGenerator : MonoBehaviour
 {
+    public enum ProcessStatus { None, Generating, Reseting};
+
     [Header("Stage Properties")]
     public Transform BouncyStagesAvailable; // Transform containing all
                                             // the bouncy stages
@@ -17,8 +19,13 @@ public class StageGenerator : MonoBehaviour
     public Transform StageObjectsUsed;      // Transform containing all
                                             // the used objects
 
+    private List<Transform> _obstaclesUsed  // Storing used obstacles
+        = new List<Transform>();
+
     private GridGenerator _gridGenerator;   // Containing all the grid
                                             // points in the game world
+
+    public ProcessStatus Status; // The status of the processing
 
     [Tooltip("The amount of distance between each stages.")]
     public float OffsetStage; // Distance between each stages
@@ -41,13 +48,38 @@ public class StageGenerator : MonoBehaviour
                                     // object position. Needed mainly to
                                     // avoid GC
 
-    [Tooltip("The number of levels during a gameplay, Level != 0")]
+    [Header("Level Properties")]
+    [Tooltip("The maximum number of levels that can be reached, " +
+             "Level != 0")]
     [Min(1)]
-    public int Level; // The number of levels during a gameplay
+    public int LevelMax; // The maximum amount of level that can
+                         // be generated
+    private int _levelNumberCurrent = 1; // Current game level
+                                         // the player has
+                                         // reached
+    [Tooltip("The number of levels during a gameplay, " +
+             "Level != 0 && Level <= LevelMax")]
+    [Min(1)]
+    [SerializeField]
+    private int _level = 1; // The number of levels during a gameplay
     private int _levelCurrent = 0; // Current levels generated
     private Vector3 _linePoint; // For storing the current line point.
                                 // Needed mainly to avoid GC
     
+    /// <summary>
+    /// Flag to check if there are any used stages except the
+    /// end stage, of type bool
+    /// </summary>
+    private bool _hasUsedStages
+    { get { return StageObjectsUsed.childCount > 1; } }
+
+    /// <summary>
+    /// Flag to check if there are any used obstacles,
+    /// of type bool
+    /// </summary>
+    private bool _hasUsedObstacles
+    { get { return _obstaclesUsed.Count > 0; } }
+
     [Tooltip("The number of stages in a level")]
     [Min(1)]
     public int StageNumber; // Number of stages that will be generated
@@ -138,14 +170,32 @@ public class StageGenerator : MonoBehaviour
     private StageObjectRequest _stageObjectRequestCurrent; // Current stage
                                                            // object request
 
-    // For checking if any requests are available
+    /// <summary>
+    /// For checking if any requests are available, of type bool
+    /// </summary>
     private bool _isRequest { get { return _stageObjectRequests.Count != 0; } }
 
     private bool _isProcessing = false; // Flag to check if a stage object
                                         // generation is being processed
 
     private bool _isPlaceCharacters = false; // Flag to check 
-    
+
+    public static StageGenerator Instance;
+
+
+    void Awake()
+    {
+        if (Instance == null) // NOT initialized
+        {
+            Instance = this; // Initializing the instance
+
+            DontDestroyOnLoad(gameObject); // Making it available
+                                           // throughout the game
+        }
+        else Destroy(gameObject); // Already initialized and
+                                  // destroying duplicate
+    }
+
     // Start is called before the first frame update
     void Start()
     {
@@ -158,8 +208,21 @@ public class StageGenerator : MonoBehaviour
 
     void Update()
     {
+        // Condition for generating stages
+        if (Status == ProcessStatus.Generating)
+            GenerationProcess(); // Generating the level
+        // Condition for reseting level
+        else if (Status == ProcessStatus.Reseting)
+            ResetProcess(); // Resetting the level
+    }
+
+    /// <summary>
+    /// This method is responsible for creating the level.
+    /// </summary>
+    private void GenerationProcess()
+    {
         // Condition to check if level generation is NOT done
-        if (_levelCurrent < Level)
+        if (_levelCurrent < _level)
         {
             // Checking if stage limit NOT reached
             if (_stageGeneratedCounter < StageNumber)
@@ -218,24 +281,79 @@ public class StageGenerator : MonoBehaviour
 
                 _isPlaceCharacters = true; // Characters placed
             }
+
+            Status = ProcessStatus.None; // No further stage process needs
+                                         // to be done
         }
-
     }
 
     /// <summary>
-    /// [depricated] This method adds a request for creating a stage object.
+    /// This method resets the stage.
     /// </summary>
-    private void SetRequest()
+    private void ResetProcess()
     {
-        // Adding request
-        _stageObjectRequests.Add(new StageObjectRequest(
-                                     Random.Range(0,
-                                     BouncyStagesAvailable.childCount),
-                                     0));
+        // Condition to check if any stage objects being used
+        if (_hasUsedStages)
+        {
+            // Condition to check if no processing is happening
+            // and creating a stage object remove request
+            if (!_isProcessing)
+            {
+                // Condition to request to remove a stage object
+                // from index = 1. NOT index = 0 because index = 0
+                // is the end platform
+                if (!_isRequest) SetRequest(1);
+                else // Request is available
+                {
+                    _isProcessing = true; // Processing started
+                    ProcessRequests(); // Processing the request
+                }
+            }
+        }
+        // Condition to check if any obstacles being used
+        else if (_hasUsedObstacles)
+        {
+            // Condition to chekf if no processing is happening
+            // and creating an obstacle remove request
+            if (!_isProcessing)
+            {
+                // Condition to request to remove an obstacle
+                // from index = 0.
+                if (!_isRequest) SetRequest(0);
+                else // Request is available
+                {
+                    _isProcessing = true; // Processing started
+                    ProcessRequests(); // Processing the request
+                }
+            }
+        }
+        // Condition to start generating a new stage
+        else
+        {
+            _isPlaceCharacters = false; // Characters needs to be placed
+                                        // again in the new stage
+
+            //TODO: Increment the _level here
+
+            ResetGenerationVariables();
+
+            Status = ProcessStatus.Generating; // Starting new stage
+                                               // generation process
+        }
     }
 
     /// <summary>
-    /// This method adds a request for creating a stage object.
+    /// This method adds a request for creating/resetting a stage object.
+    /// </summary>
+    /// <param name="index">The index of the stage object to create 
+    ///                     or to remove, of type int</param>
+    private void SetRequest(int index)
+    {
+        _stageObjectRequests.Add(new StageObjectRequest(index));
+    }
+
+    /// <summary>
+    /// This method adds a request for creating/resetting a stage object.
     /// </summary>
     /// <param name="size">The number of stage objects available, 
     ///                    of type int</param>
@@ -262,13 +380,63 @@ public class StageGenerator : MonoBehaviour
         _stageObjectRequests.RemoveAt(0); // Removing the stage
                                           // object request
 
-        // Adding the stage object
-        AddStageObject(_stageObjectRequestCurrent.Index,
-                       _stageObjectRequestCurrent.ObjectType);
-        //AddBouncyStage(_stageObjectRequestCurrent.Index);
+        // Condition for processing stage generation
+        if (Status == ProcessStatus.Generating)
+        {
+            /*// Getting the current stage object request
+            _stageObjectRequestCurrent = _stageObjectRequests[0];
+            _stageObjectRequests.RemoveAt(0); // Removing the stage
+                                              // object request*/
 
-        //_stageGeneratedCounter++; // stage object added
+            // Adding the stage object
+            AddStageObject(_stageObjectRequestCurrent.Index,
+                           _stageObjectRequestCurrent.ObjectType);
+
+            //_isProcessing = false; // Processing finished
+        }
+        // Condition for processing stage reset
+        else if(Status == ProcessStatus.Reseting)
+        {
+            // Removing the stage object
+            RemoveStageObject(_stageObjectRequestCurrent.Index);
+        }
+
         _isProcessing = false; // Processing finished
+    }
+
+    /// <summary>
+    /// This method removes a stage object from the used lists.
+    /// </summary>
+    /// <param name="index">The index of the stage object to be
+    ///                     removed,
+    ///                     <para>0 = UsedObstacleObject</para>
+    ///                     <para>1 = UsedStageObject</para>
+    ///                     ,of type int
+    ///                     </param>
+    private void RemoveStageObject(int index)
+    {
+        if(index == 0) // Condition to remove obstacle
+        {
+            
+            // Hiding the used obstacle
+            _obstaclesUsed[index].gameObject.SetActive(false);
+            _obstaclesUsed.RemoveAt(index); // Removing the obstacle
+                                            // from used list
+        }
+        else if(index == 1) // Condition to remove stage object
+        {
+            // Hiding the stage first
+            StageObjectsUsed.GetChild(index).gameObject.SetActive(false);
+
+            // Condition to check if stage is long bouncy stage and
+            // setting it to the LongBouncyStagesAvailable list
+            if(StageObjectsUsed.GetChild(index).GetChild(0)
+                .GetComponent<BouncyStageLong>() != null)
+                StageObjectsUsed.GetChild(index).SetParent(LongBouncyStagesAvailable);
+            // Condition for stage not being long bouncy stage and
+            // setting it to the BouncyStagesAvailable list
+            else StageObjectsUsed.GetChild(index).SetParent(BouncyStagesAvailable);
+        }
     }
 
     /// <summary>
@@ -347,6 +515,16 @@ public class StageGenerator : MonoBehaviour
         // Showing the stage object
         _currentBouncyStage.transform.parent.gameObject.SetActive(true);
 
+        // Condition to check if the stage being added is BouncyStageBreakable
+        if (_currentBouncyStage.GetComponent<BouncyStageBreakable>() != null)
+        {
+            // Enabling the script and showing the model
+            _currentBouncyStage.gameObject.SetActive(true);
+
+            // Resetting bouncy breakable stage
+            _currentBouncyStage.GetComponent<BouncyStageBreakable>().ResetStage();
+        }
+
         // Removing the stage object from the available list
         _currentBouncyStage.transform.parent.SetParent(StageObjectsUsed);
 
@@ -424,7 +602,7 @@ public class StageGenerator : MonoBehaviour
     /// </summary>
     private void CalculateNumberOfLines()
     {
-        StageLinks.positionCount = (2 * (Level * StageNumber)) - 1;
+        StageLinks.positionCount = (2 * (_level * StageNumber)) - 1;
         _linePointerIndex = 0; // Resetting the index
     }
 
@@ -484,6 +662,10 @@ public class StageGenerator : MonoBehaviour
                 ObstacleContainer.GetChild(_pointerObstacle)
                     .gameObject.SetActive(true);
 
+                // Storing the obstacle used
+                _obstaclesUsed.Add(
+                    ObstacleContainer.GetChild(_pointerObstacle));
+
                 _pointerObstacle++; // Pointing to the next obstacle
             }
             else // NOT adding obstacles
@@ -510,6 +692,38 @@ public class StageGenerator : MonoBehaviour
     }
 
     /// <summary>
+    /// This method resets all the variables needed by stage generation
+    /// process.
+    /// </summary>
+    private void ResetGenerationVariables()
+    {
+        _offsetStageCurrent = 0; // Resetting current distance offset
+        _offsetHeightCurrent = 0; // Resetting current Height offset
+        _offsetSideCurrent = 0; // Resetting current side offset
+
+        _levelCurrent = 0; // Resetting level counter
+
+        _stageGeneratedCounter = 0; // Resetting number of stages
+                                    // Created
+        _stageNumberCounter = 1; // Resetting the stage number counter
+
+        _correctionCounter = -1; // Resetting correction counter
+
+        _pointerObstacle = 0; // Resettting the pointer for obstacle
+                              // container
+        _offsetObstacle = 1;  // Resetting obstacle generator counter
+
+        CalculateNumberOfLines(); // Resetting the LineRenderer
+
+        _gridGenerator.ResetGrid(); // Resetting the GridGenerator
+    }
+
+    /// <summary>
+    /// This method resets the stage.
+    /// </summary>
+    public void ResetStage() { Status = ProcessStatus.Reseting; }
+
+    /// <summary>
     /// This struct creates a stage object request.
     /// </summary>
     struct StageObjectRequest
@@ -530,6 +744,15 @@ public class StageGenerator : MonoBehaviour
         /// <para>1 = Long Bouncy Stage</para>
         /// </summary>
         public int ObjectType { get { return _objectType; } }
+
+        /// <summary>
+        /// Constructor for creating a stage object request.
+        /// </summary>
+        /// <param name="index">The index of the object requested,
+        ///                     of type int</param>
+        public StageObjectRequest(int index) : this(index, -1)
+        {
+        }
 
         /// <summary>
         /// Constructor for creating a stage object request.
