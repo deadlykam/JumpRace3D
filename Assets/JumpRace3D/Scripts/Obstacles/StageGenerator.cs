@@ -10,7 +10,7 @@ using UnityEngine;
 /// </summary>
 public class StageGenerator : MonoBehaviour
 {
-    public enum ProcessStatus { None, Generating, Reseting, Starting};
+    public enum ProcessStatus { None, Generating, Resetting, Starting};
 
     [Header("Stage Properties")]
     public Transform BouncyStagesAvailable; // Transform containing all
@@ -214,7 +214,7 @@ public class StageGenerator : MonoBehaviour
         if (Status == ProcessStatus.Generating)
             GenerationProcess(); // Generating the level
         // Condition for reseting level
-        else if (Status == ProcessStatus.Reseting)
+        else if (Status == ProcessStatus.Resetting)
             ResetProcess(); // Resetting the level
     }
 
@@ -415,7 +415,7 @@ public class StageGenerator : MonoBehaviour
             //_isProcessing = false; // Processing finished
         }
         // Condition for processing stage reset
-        else if(Status == ProcessStatus.Reseting)
+        else if(Status == ProcessStatus.Resetting)
         {
             // Removing the stage object
             RemoveStageObject(_stageObjectRequestCurrent.Index);
@@ -753,7 +753,7 @@ public class StageGenerator : MonoBehaviour
     /// <summary>
     /// This method resets the stage.
     /// </summary>
-    public void ResetStage() { Status = ProcessStatus.Reseting; }
+    public void ResetStage() { Status = ProcessStatus.Resetting; }
 
     /// <summary>
     /// This struct creates a stage object request.

@@ -78,7 +78,7 @@ public class EnemyGenerator : MonoBehaviour
                 _status = ProcessStatus.None; // Process Done
         }
         // Condition for resetting the enemies
-        else if(_status == ProcessStatus.Reseting)
+        else if(_status == ProcessStatus.Resetting)
         {
             // Adding the enemy back to availability
             EnemiesAvailable.Add(_enemiesUsed[0]);
@@ -168,7 +168,7 @@ public class EnemyGenerator : MonoBehaviour
     {
         _processCounter = 0; // Resetting the process counter
 
-        _status = ProcessStatus.Reseting; // Start the reset
+        _status = ProcessStatus.Resetting; // Start the reset
                                           // process
     }
 }
