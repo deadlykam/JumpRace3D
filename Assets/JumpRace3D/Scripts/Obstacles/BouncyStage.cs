@@ -21,7 +21,18 @@ public class BouncyStage : BasicStage
     // Storing the stage number of the stage
     public int StageNumber { get; set; }
 
-    public Vector3 LinkedStagePosition // The position of the linked stage
+    /// <summary>
+    /// This returns the position of the stage, of type Vector3
+    /// </summary>
+    public Vector3 StagePosition
+    {
+        get { return transform.position; }
+    }
+
+    /// <summary>
+    /// This returns the position of the linked stage, of type Vector3
+    /// </summary>
+    public Vector3 LinkedStagePosition
     {
         get { return _linkedStage.transform.position; }
     }
