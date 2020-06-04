@@ -76,6 +76,10 @@ public class Player : BasicAnimation
         Debug.Log("Raced Finished!");
 
         //TODO: The game has ended. Give end scene here
+
+        StageGenerator.Instance.ResetStage(); // Resetting the stage
+                                              // and starting a new
+                                              // stage
     }
 
     /// <summary>
