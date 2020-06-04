@@ -53,9 +53,14 @@ public class BasicCharacter : MonoBehaviour
                                  // -1 = Falling down
                                  //  0 = Stop vertival movement
 
-    private bool _isVerticalMovement = false; // This flag controls the
-                                              // vertical movement of the
-                                              // character
+    private bool _isEnableMovement = false; // This flag controls the
+                                            // vertical movement of the
+                                            // character
+
+    /// <summary>
+    /// This flag checks if movement is enabled, of type bool
+    /// </summary>
+    protected bool isEnableMovement { get { return _isEnableMovement; } }
 
     private Vector3 _characterPosition = Vector3.zero; // Needed to avoid 
                                                        // unnecessary GC
@@ -77,7 +82,7 @@ public class BasicCharacter : MonoBehaviour
     /// </summary>
     private void VerticalMovement()
     {
-        if (_isVerticalMovement) // Checking if vertical movement is allowed
+        if (_isEnableMovement) // Checking if vertical movement is allowed
         {
             // Moving the character vertically
             transform.Translate(Vector3.up
@@ -145,9 +150,12 @@ public class BasicCharacter : MonoBehaviour
     /// </summary>
     protected virtual void HorizontalMovement()
     {
-        transform.Translate(Vector3.forward * SpeedHorizontal 
-                            * GameData.Instance.SimulationSpeed 
-                            * Time.deltaTime);
+        if (_isEnableMovement) // Checking if horizontal movement allowed
+        {
+            transform.Translate(Vector3.forward * SpeedHorizontal
+                                * GameData.Instance.SimulationSpeed
+                                * Time.deltaTime);
+        }
     }
     
     /// <summary>
@@ -189,7 +197,7 @@ public class BasicCharacter : MonoBehaviour
     /// </summary>
     protected virtual void RaceFinished()
     {
-        _isVerticalMovement = false; // Stopping vertical movement 
+        _isEnableMovement = false; // Stopping vertical movement 
     }
 
     /// <summary>
@@ -231,5 +239,5 @@ public class BasicCharacter : MonoBehaviour
     /// <summary>
     /// This method starts the character's vertical movement.
     /// </summary>
-    public virtual void StartCharacter() { _isVerticalMovement = true; }
+    public virtual void StartCharacter() { _isEnableMovement = true; }
 }

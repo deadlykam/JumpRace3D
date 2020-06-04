@@ -18094,10 +18094,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   BouncyStagesAvailable: {fileID: 1785445014}
   StageObjectsUsed: {fileID: 1178383317}
+  Status: 1
   OffsetStage: -10
   OffsetHeight: 5
   OffsetSide: 7
-  Level: 14
+  LevelMax: 14
+  _level: 14
   StageNumber: 5
   CorrectionCounter: 2
   ObstacleContainer: {fileID: 1924087912}

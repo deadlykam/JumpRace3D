@@ -59,7 +59,8 @@ public class Player : BasicAnimation
     {
         // Condition for moving forward and
         // rotation when given
-        if (Input.GetMouseButton(0))
+        if (Input.GetMouseButton(0) && 
+            isEnableMovement)
         {
             base.HorizontalMovement(); // Going forward
             RotatePlayer(); // Rotating the player
@@ -76,6 +77,10 @@ public class Player : BasicAnimation
         Debug.Log("Raced Finished!");
 
         //TODO: The game has ended. Give end scene here
+
+        StageGenerator.Instance.ResetStage(); // Resetting the stage
+                                              // and starting a new
+                                              // stage
     }
 
     /// <summary>
