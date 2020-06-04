@@ -96,6 +96,9 @@ public class Player : BasicAnimation
         StageGenerator.Instance.ResetStage(); // Resetting the stage
                                               // and starting a new
                                               // stage
+
+        EnemyGenerator.Instance.ResetEnemy(); // Reset the enemies
+                                              // in the game world
     }
 
     /// <summary>
@@ -107,7 +110,6 @@ public class Player : BasicAnimation
         base.OnTriggerEnter(other);
 
         // Condition to check if bouncy stage collided
-        // and showing 3D texts
         if (other.CompareTag("BouncyStage"))
         {
             Jump(HeightNormal); // Jumping normal height
