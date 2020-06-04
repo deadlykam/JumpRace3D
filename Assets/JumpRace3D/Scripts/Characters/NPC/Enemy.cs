@@ -4,6 +4,10 @@ using UnityEngine;
 
 public class Enemy : BasicAnimation
 {
+    [Header("Enemy Properties")]
+    public float DeathHeight; // The height after which the enemy
+                              // will die
+
     private Vector3 _nextStagePosition; // Storing the next stage
                                         // position
     
@@ -18,6 +22,17 @@ public class Enemy : BasicAnimation
     {
         UpdateBasicAnimation(); // Calling the animation update
         HorizontalMovement();   // Moving the enemy
+        DieCharacter();
+    }
+
+    /// <summary>
+    /// This method kills the enemy.
+    /// </summary>
+    protected override void DieCharacter()
+    {
+        // Condition to kill the enemy
+        if(transform.position.y <= DeathHeight)
+            base.DieCharacter(); // Killing the enemy
     }
 
     /// <summary>
