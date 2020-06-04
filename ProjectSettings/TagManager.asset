@@ -11,6 +11,7 @@ TagManager:
   - Floor
   - Obstacle
   - LongBouncyStage
+  - StageBottom
   layers:
   - Default
   - TransparentFX

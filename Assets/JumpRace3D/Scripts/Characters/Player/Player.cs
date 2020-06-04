@@ -59,7 +59,8 @@ public class Player : BasicAnimation
     {
         // Condition for moving forward and
         // rotation when given
-        if (Input.GetMouseButton(0))
+        if (Input.GetMouseButton(0) && 
+            isEnableMovement)
         {
             base.HorizontalMovement(); // Going forward
             RotatePlayer(); // Rotating the player
@@ -76,6 +77,10 @@ public class Player : BasicAnimation
         Debug.Log("Raced Finished!");
 
         //TODO: The game has ended. Give end scene here
+
+        StageGenerator.Instance.ResetStage(); // Resetting the stage
+                                              // and starting a new
+                                              // stage
     }
 
     /// <summary>
@@ -94,11 +99,7 @@ public class Player : BasicAnimation
 
             // Hiding the booster
             other.GetComponent<BouncyStage>().SetBooster(false);
-
-            // Generating 3D text from the currently hit stage
-            Stage3DTextManager.Instance.Generate3DTexts(
-                other.transform.GetComponent<BouncyStage>());
-
+            
             // Activating the stage action
             other.GetComponent<BouncyStage>().StageAction();
         }
@@ -107,11 +108,7 @@ public class Player : BasicAnimation
             Jump(HeightPerfect); // Jumping perfect height
 
             other.gameObject.SetActive(false); // Hiding the booster
-
-            // Generating 3D text from the currently hit stage
-            Stage3DTextManager.Instance.Generate3DTexts(
-                other.transform.parent.GetComponent<BouncyStage>());
-
+            
             // Activating the stage action
             other.transform.parent
                 .GetComponent<BouncyStage>().StageAction();
@@ -123,6 +120,11 @@ public class Player : BasicAnimation
         else if (other.CompareTag("LongBouncyStage"))
         {
             Jump(HeightLong); // Jumping long height
+
+            ApplyExtraJumpSpeed(); // Applying extra jump speed
+
+            // Activating disappearing process
+            other.GetComponent<BouncyStageLong>().StageAction();
         }
         // Condition to check if to show booster
         else if (other.CompareTag("PlayerDetector"))
@@ -130,6 +132,11 @@ public class Player : BasicAnimation
             // Showing the booster
             other.transform.parent.GetChild(0)
                 .GetComponent<BouncyStage>().SetBooster(true);
+        }
+        // Condition to check if hitting bottom of a stage
+        else if (other.CompareTag("StageBottom"))
+        {
+            InstantFall(); // Instantly falling
         }
     }
 }

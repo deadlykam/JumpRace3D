@@ -11,7 +11,17 @@ public class BasicCharacter : MonoBehaviour
 
     [Tooltip("This value behaves for both jump and gravity")]
     public float SpeedHorizontal; // The forward speed
-    public float SpeedVertical;   // Jump and gravity value
+    public float SpeedGravity;    // The gravity speed
+    public float SpeedJump;       // Normal jump speed
+    public float SpeedFastJump;   // Extra jump speed for long jumps
+    private float _extraVerticalSpeed; // Any extra vertical speed given
+
+    /// <summary>
+    /// The actual vertical speed with or without any extra speed, 
+    /// of type float
+    /// </summary>
+    private float _actualVerticalSpeed
+    { get { return SpeedJump + _extraVerticalSpeed; } }
 
     [Tooltip("Starting offset of the character")]
     public Vector3 StartOffset;   // This is the starting offset
@@ -43,9 +53,14 @@ public class BasicCharacter : MonoBehaviour
                                  // -1 = Falling down
                                  //  0 = Stop vertival movement
 
-    private bool _isVerticalMovement = false; // This flag controls the
-                                              // vertical movement of the
-                                              // character
+    private bool _isEnableMovement = false; // This flag controls the
+                                            // vertical movement of the
+                                            // character
+
+    /// <summary>
+    /// This flag checks if movement is enabled, of type bool
+    /// </summary>
+    protected bool isEnableMovement { get { return _isEnableMovement; } }
 
     private Vector3 _characterPosition = Vector3.zero; // Needed to avoid 
                                                        // unnecessary GC
@@ -67,16 +82,29 @@ public class BasicCharacter : MonoBehaviour
     /// </summary>
     private void VerticalMovement()
     {
-        if (_isVerticalMovement) // Checking if vertical movement is allowed
+        if (_isEnableMovement) // Checking if vertical movement is allowed
         {
             // Moving the character vertically
-            transform.Translate(Vector3.up * SpeedVertical * _acceleration 
-                                * GameData.Instance.SimulationSpeed 
+            transform.Translate(Vector3.up
+                                  
+                                  // Checking which speed to apply
+                                * (_targetDir == 1 ?
+                                   _actualVerticalSpeed :
+                                    _acceleration < 0 ?
+                                     SpeedGravity :
+                                     _actualVerticalSpeed)
+
+                                * _acceleration
+                                * GameData.Instance.SimulationSpeed
                                 * Time.deltaTime);
 
             // Condition to check if the character should start
             // falling down
-            if (transform.position.y >= _heightCurrent) _targetDir = -1;
+            if (transform.position.y >= _heightCurrent)
+            {
+                _targetDir = -1; // Changing to falling direction
+                _extraVerticalSpeed = 0; // Removing any extra speed
+            }
 
             // Smoothing the acceleration of the character
             _acceleration = Mathf.SmoothDamp(_acceleration,
@@ -122,9 +150,12 @@ public class BasicCharacter : MonoBehaviour
     /// </summary>
     protected virtual void HorizontalMovement()
     {
-        transform.Translate(Vector3.forward * SpeedHorizontal 
-                            * GameData.Instance.SimulationSpeed 
-                            * Time.deltaTime);
+        if (_isEnableMovement) // Checking if horizontal movement allowed
+        {
+            transform.Translate(Vector3.forward * SpeedHorizontal
+                                * GameData.Instance.SimulationSpeed
+                                * Time.deltaTime);
+        }
     }
     
     /// <summary>
@@ -141,11 +172,32 @@ public class BasicCharacter : MonoBehaviour
     }
 
     /// <summary>
+    /// This method makes the character fall instantly
+    /// </summary>
+    protected void InstantFall()
+    {
+        _targetDir = -1; // Changing to falling direction
+        _extraVerticalSpeed = 0; // Removing any extra speed
+        _acceleration = 0; // Making acceleration to 0 because
+                           // no transition to acceleration
+                           // from jumping but transition
+                           // to acceleration from 0
+    }
+
+    /// <summary>
+    /// This method applies extra jump speed to the vertical speed.
+    /// </summary>
+    protected void ApplyExtraJumpSpeed()
+    {
+        _extraVerticalSpeed = SpeedFastJump;
+    }
+
+    /// <summary>
     /// This method finishes the race for the character.
     /// </summary>
     protected virtual void RaceFinished()
     {
-        _isVerticalMovement = false; // Stopping vertical movement 
+        _isEnableMovement = false; // Stopping vertical movement 
     }
 
     /// <summary>
@@ -187,5 +239,5 @@ public class BasicCharacter : MonoBehaviour
     /// <summary>
     /// This method starts the character's vertical movement.
     /// </summary>
-    public virtual void StartCharacter() { _isVerticalMovement = true; }
+    public virtual void StartCharacter() { _isEnableMovement = true; }
 }
