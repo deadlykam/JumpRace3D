@@ -18759,7 +18759,7 @@ MonoBehaviour:
   OffsetHeight: 5
   OffsetSide: 7
   LevelMax: 14
-  _level: 14
+  _level: 1
   StageNumber: 5
   CorrectionCounter: 2
   ObstacleContainer: {fileID: 1924087912}
