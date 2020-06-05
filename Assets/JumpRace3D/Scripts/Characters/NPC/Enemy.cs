@@ -85,6 +85,11 @@ public class Enemy : BasicAnimation
             // Looking at the next stage
             StartAutoRotation(other.GetComponent<BouncyStage>()
                 .LinkedStagePosition);
+
+            // Requesting leader position
+            RaceTracker.Instance.AddRequest(
+                other.GetComponent<BouncyStage>().StageNumber,
+                transform);
         }
     }
 
