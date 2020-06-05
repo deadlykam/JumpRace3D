@@ -123,6 +123,11 @@ public class Player : BasicAnimation
 
             // Activating the stage action
             other.GetComponent<BouncyStage>().StageAction();
+
+            // Requesting leader position
+            RaceTracker.Instance.AddRequest(
+                other.GetComponent<BouncyStage>().StageNumber,
+                transform);
         }
         else if (other.CompareTag("Booster"))
         {
@@ -137,6 +142,12 @@ public class Player : BasicAnimation
             // Activating the stage action
             other.transform.parent
                 .GetComponent<BouncyStage>().StageAction();
+
+            // Requesting leader position
+            RaceTracker.Instance.AddRequest(
+                other.transform.parent
+                .GetComponent<BouncyStage>().StageNumber,
+                transform);
 
             // Activating the simulation speed effect
             GameData.Instance.StartSimulationSpeedEffect();
