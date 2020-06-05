@@ -96,6 +96,9 @@ public class Player : BasicAnimation
         StageGenerator.Instance.ResetStage(); // Resetting the stage
                                               // and starting a new
                                               // stage
+
+        EnemyGenerator.Instance.ResetEnemy(); // Reset the enemies
+                                              // in the game world
     }
 
     /// <summary>
@@ -107,7 +110,6 @@ public class Player : BasicAnimation
         base.OnTriggerEnter(other);
 
         // Condition to check if bouncy stage collided
-        // and showing 3D texts
         if (other.CompareTag("BouncyStage"))
         {
             Jump(HeightNormal); // Jumping normal height
@@ -121,6 +123,11 @@ public class Player : BasicAnimation
 
             // Activating the stage action
             other.GetComponent<BouncyStage>().StageAction();
+
+            // Requesting leader position
+            RaceTracker.Instance.AddRequest(
+                other.GetComponent<BouncyStage>().StageNumber,
+                transform);
         }
         else if (other.CompareTag("Booster"))
         {
@@ -135,6 +142,12 @@ public class Player : BasicAnimation
             // Activating the stage action
             other.transform.parent
                 .GetComponent<BouncyStage>().StageAction();
+
+            // Requesting leader position
+            RaceTracker.Instance.AddRequest(
+                other.transform.parent
+                .GetComponent<BouncyStage>().StageNumber,
+                transform);
 
             // Activating the simulation speed effect
             GameData.Instance.StartSimulationSpeedEffect();

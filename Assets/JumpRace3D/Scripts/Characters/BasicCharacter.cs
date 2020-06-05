@@ -254,11 +254,32 @@ public class BasicCharacter : MonoBehaviour
     }
 
     /// <summary>
+    /// This method kills the character
+    /// </summary>
+    protected virtual void DieCharacter()
+    {
+        _targetDir = 0; // Stopping the vertical movement
+    }
+
+    /// <summary>
     /// This method finishes the race for the character.
     /// </summary>
     protected virtual void RaceFinished()
     {
-        _isEnableMovement = false; // Stopping vertical movement 
+        _isEnableMovement = false; // Stopping movement
+
+        // Requesting leader position from end stage
+        RaceTracker.Instance.AddRequest(0, transform);
+    }
+
+    /// <summary>
+    /// This method forcefully resets the character from any 
+    /// current status.
+    /// </summary>
+    protected virtual void ForceReset()
+    {
+        _isEnableMovement = false; // Stopping movement
+        _isAutoRotateCharacter = false; // Stopping rotation
     }
 
     /// <summary>
@@ -300,5 +321,11 @@ public class BasicCharacter : MonoBehaviour
     /// <summary>
     /// This method starts the character's vertical movement.
     /// </summary>
-    public virtual void StartCharacter() { _isEnableMovement = true; }
+    public virtual void StartCharacter()
+    {
+        _isEnableMovement = true; // Starting the character movement
+        _acceleration = 1; // Resetting the acceleration value
+        _targetDir = -1;   // Resetting the direction of vertical
+                           // movement
+    }
 }
