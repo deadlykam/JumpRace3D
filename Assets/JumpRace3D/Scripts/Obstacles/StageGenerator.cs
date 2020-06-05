@@ -357,6 +357,9 @@ public class StageGenerator : MonoBehaviour
             ResetGenerationVariables(); // Resetting all the generating
                                         // variables
 
+            RaceTracker.Instance.ResetRaceTracker(); // Resetting the
+                                                     // leader position
+
             Status = ProcessStatus.Generating; // Starting new stage
                                                // generation process
         }
