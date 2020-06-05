@@ -266,7 +266,10 @@ public class BasicCharacter : MonoBehaviour
     /// </summary>
     protected virtual void RaceFinished()
     {
-        _isEnableMovement = false; // Stopping movement 
+        _isEnableMovement = false; // Stopping movement
+
+        // Requesting leader position from end stage
+        RaceTracker.Instance.AddRequest(0, transform);
     }
 
     /// <summary>
