@@ -82,6 +82,8 @@ public class Enemy : BasicAnimation
 
             Jump(HeightNormal); // Jumping normal height
 
+            JumpAnimation(); // Playing jump animation
+
             // Looking at the next stage
             StartAutoRotation(other.GetComponent<BouncyStage>()
                 .LinkedStagePosition);
