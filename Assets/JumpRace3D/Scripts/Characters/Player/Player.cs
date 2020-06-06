@@ -114,6 +114,8 @@ public class Player : BasicAnimation
         {
             Jump(HeightNormal); // Jumping normal height
 
+            JumpAnimation(); // Playing jump animation
+
             // Hiding the booster
             other.GetComponent<BouncyStage>().SetBooster(false);
 
@@ -132,6 +134,8 @@ public class Player : BasicAnimation
         else if (other.CompareTag("Booster"))
         {
             Jump(HeightPerfect); // Jumping perfect height
+
+            JumpAnimation(); // Playing jump animation
 
             other.gameObject.SetActive(false); // Hiding the booster
 
@@ -156,6 +160,8 @@ public class Player : BasicAnimation
         else if (other.CompareTag("LongBouncyStage"))
         {
             Jump(HeightLong); // Jumping long height
+
+            JumpAnimation(); // Playing jump animation
 
             ApplyExtraJumpSpeed(); // Applying extra jump speed
 
