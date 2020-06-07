@@ -30,7 +30,7 @@ public class Player : BasicAnimation
     // Start is called before the first frame update
     void Start()
     {
-        
+        SetupRagDoll(); // Setting up the ragdoll colliders
     }
 
     // Update is called once per frame
@@ -38,6 +38,16 @@ public class Player : BasicAnimation
     {
         UpdateBasicAnimation(); // Calling the animation update
         HorizontalMovement();   // Making player go forward
+
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+            SetRagdoll(true); // Starting ragdoll
+        }
+
+        if (Input.GetKeyDown(KeyCode.T))
+        {
+            SetRagdoll(false); // Starting ragdoll
+        }
     }
 
     /// <summary>
@@ -99,6 +109,21 @@ public class Player : BasicAnimation
 
         EnemyGenerator.Instance.ResetEnemy(); // Reset the enemies
                                               // in the game world
+    }
+
+    /// <summary>
+    /// This method kills the player when the height threshold
+    /// is crossed.
+    /// </summary>
+    protected override void CheckHeight()
+    {
+        // base.CheckHeight();
+
+        if (isHeightStop) // Player crossed the threshold
+        {
+            SetRagdoll(true); // Starting ragdoll
+            ForceReset(); // Stopping Movement
+        }
     }
 
     /// <summary>
@@ -179,6 +204,12 @@ public class Player : BasicAnimation
         else if (other.CompareTag("StageBottom"))
         {
             InstantFall(); // Instantly falling
+        }
+        // Condition for dying and turning on ragdoll
+        else if (other.CompareTag("Obstacle"))
+        {
+            SetRagdoll(true); // Starting ragdoll
+            ForceReset(); // Stopping Movement
         }
     }
 }
