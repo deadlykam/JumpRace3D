@@ -8,8 +8,11 @@ using UnityEngine;
 public class Player : BasicAnimation
 {
     [Header("Player Properties")]
-    public float RotationSpeed;
-    public float HeightLong;
+
+    [SerializeField]
+    private GameObject _floorDetector; // The line generator
+    public float RotationSpeed; // Rotating camera speed
+    public float HeightLong; // Long jump height
 
     public static Player Instance;
 
@@ -109,6 +112,8 @@ public class Player : BasicAnimation
 
         EnemyGenerator.Instance.ResetEnemy(); // Reset the enemies
                                               // in the game world
+
+        _floorDetector.SetActive(false); // Hiding floor line
     }
 
     /// <summary>
@@ -121,9 +126,20 @@ public class Player : BasicAnimation
 
         if (isHeightStop) // Player crossed the threshold
         {
-            SetRagdoll(true); // Starting ragdoll
             ForceReset(); // Stopping Movement
         }
+    }
+
+    /// <summary>
+    /// Stopping the player movements, starting the ragdoll 
+    /// and hiding the floor detector
+    /// </summary>
+    protected override void ForceReset()
+    {
+        base.ForceReset();
+
+        SetRagdoll(true); // Starting ragdoll
+        _floorDetector.SetActive(false); // Hiding floor line
     }
 
     /// <summary>
@@ -208,8 +224,16 @@ public class Player : BasicAnimation
         // Condition for dying and turning on ragdoll
         else if (other.CompareTag("Obstacle"))
         {
-            SetRagdoll(true); // Starting ragdoll
             ForceReset(); // Stopping Movement
         }
+    }
+
+    /// <summary>
+    /// This method starts the player and shows the floor line.
+    /// </summary>
+    public override void StartCharacter()
+    {
+        base.StartCharacter();
+        _floorDetector.SetActive(true); // Showing floor line
     }
 }

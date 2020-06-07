@@ -15544,6 +15544,12 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 1316643723}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1318544465 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 350482304, guid: db403e46d00805944bd9fe75417c260f,
+    type: 3}
+  m_PrefabInstance: {fileID: 8503663299026778228}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &1318965647 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4800682233618105057, guid: a22d7375591d6214ea65ebb90f059209,
@@ -26558,6 +26564,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 554357599}
     m_Modifications:
+    - target: {fileID: 350482304, guid: db403e46d00805944bd9fe75417c260f, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8503663298184330659, guid: db403e46d00805944bd9fe75417c260f,
         type: 3}
       propertyPath: m_Name
@@ -26568,6 +26578,11 @@ PrefabInstance:
       propertyPath: _heightStop
       value: -7
       objectReference: {fileID: 0}
+    - target: {fileID: 8503663298184330665, guid: db403e46d00805944bd9fe75417c260f,
+        type: 3}
+      propertyPath: _floorDetector
+      value: 
+      objectReference: {fileID: 1318544465}
     - target: {fileID: 8503663298184330668, guid: db403e46d00805944bd9fe75417c260f,
         type: 3}
       propertyPath: m_LocalPosition.x
