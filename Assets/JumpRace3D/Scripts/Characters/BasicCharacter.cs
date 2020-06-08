@@ -170,6 +170,8 @@ public class BasicCharacter : MonoBehaviour
                                         transform.rotation,
                                         _targetRotation,
                                         AutoRotationSpeed *
+                                        GameData.Instance
+                                        .SimulationSpeed*
                                         Time.deltaTime);
             // Condition for stopping auto rotation
             else _isAutoRotateCharacter = false;
