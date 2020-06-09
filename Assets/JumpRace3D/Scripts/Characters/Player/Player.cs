@@ -170,7 +170,7 @@ public class Player : BasicAnimation
             // Requesting leader position
             RaceTracker.Instance.AddRequest(
                 other.GetComponent<BouncyStage>().StageNumber,
-                transform);
+                ModelInfo);
         }
         else if (other.CompareTag("Booster"))
         {
@@ -192,7 +192,7 @@ public class Player : BasicAnimation
             RaceTracker.Instance.AddRequest(
                 other.transform.parent
                 .GetComponent<BouncyStage>().StageNumber,
-                transform);
+                ModelInfo);
 
             // Activating the simulation speed effect
             GameData.Instance.StartSimulationSpeedEffect();
