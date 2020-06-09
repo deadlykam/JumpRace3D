@@ -24,6 +24,8 @@ public class BouncyStageMove : BouncyStage
     // Update is called once per frame
     void Update()
     {
+        UpdateBouncyStage(); // Calling base update
+
         Speed = 
             // Checking if +ve distance crossed and fixing speed
             transform.localPosition.x > Distance ?
