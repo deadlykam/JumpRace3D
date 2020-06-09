@@ -2,10 +2,17 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Class <c>StageForce</c> adds force to the object. The movement and rotation models
+/// are separated so that the force works properly. Movement is given to self and
+/// rotation is given to the child which is the transform "Model" field.
+/// </summary>
 public class StageForce : MonoBehaviour
 {
     [Header("Force Properties")]
+    [Tooltip("The model to rotate")]
     public Transform Model; // The model of the force object
+                            // that will be rotated
     public float Gravity; // The downward speed of the force
 
     [Tooltip("The direction of the force in x and z axis. " +
@@ -21,9 +28,11 @@ public class StageForce : MonoBehaviour
                                        // position of the
                                        // breakable stage
 
-    private float _fps; // Storing the Time.deltaTime
+    private Quaternion _originalRotation; // Storing the original
+                                          // rotation of the
+                                          // breakable stage
 
-    // TODO: Give a limit to how far it can fall
+    private float _fps; // Storing the Time.deltaTime
     
     private bool _isActivated = false; // Flag for activating
                                        // the force
@@ -45,6 +54,9 @@ public class StageForce : MonoBehaviour
 
         // Storing the original position
         _originalPosition = transform.localPosition;
+
+        // Storing the original rotation
+        _originalRotation = Model.localRotation;
     }
 
     // Update is called once per frame
@@ -81,6 +93,6 @@ public class StageForce : MonoBehaviour
         transform.localPosition = _originalPosition;
 
         // Resetting model rotation
-        Model.localRotation = Quaternion.identity;
+        Model.localRotation = _originalRotation;
     }
 }
