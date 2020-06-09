@@ -89,7 +89,11 @@ public class RaceTracker : MonoBehaviour
             // Setting the new leader position
             _leaderRacePosition = _currentRequest.RacePosition;
 
-            // Showing the crown if NOT shown
+            // Setting the crown on a new leader
+            _currentRequest.RacerModel
+                .SetCrown(_leaderCrown, _crownOffset);
+
+            /*// Showing the crown if NOT shown
             if (!_leaderCrown.gameObject.activeSelf)
                 _leaderCrown.gameObject.SetActive(true);
 
@@ -100,7 +104,7 @@ public class RaceTracker : MonoBehaviour
             _leaderCrown.localPosition = _crownOffset;
 
             // Resetting the crown rotation
-            _leaderCrown.localRotation = Quaternion.identity;
+            _leaderCrown.localRotation = Quaternion.identity;*/
         }
 
         _isProcessing = false; // Process done
@@ -112,8 +116,8 @@ public class RaceTracker : MonoBehaviour
     /// <param name="racePosition">The position of the racer, of type
     ///                            int</param>
     /// <param name="racerModel">The model of the racer, of type
-    ///                          Transform</param>
-    public void AddRequest(int racePosition, Transform racerModel)
+    ///                          CharacterInfo</param>
+    public void AddRequest(int racePosition, CharacterInfo racerModel)
     {
         // Creating a new request and adding it to the request list
         _racePositionRequests.Add(new RacePositionRequest(
@@ -150,14 +154,14 @@ public class RaceTracker : MonoBehaviour
         /// </summary>
         public int RacePosition { get { return _racePosition; } }
 
-        private Transform _racerModel; // The transform of the
-                                       // racer model if crown
-                                       // needs to be exchanged
+        private CharacterInfo _racerModel; // The transform of the
+                                           // racer model if crown
+                                           // needs to be exchanged
 
         /// <summary>
-        /// The transform of the racer model, of type Transform
+        /// The transform of the racer model, of type CharacterInfo
         /// </summary>
-        public Transform RacerModel { get { return _racerModel; } }
+        public CharacterInfo RacerModel { get { return _racerModel; } }
 
         /// <summary>
         /// Constructor for creating a race position request.
@@ -165,8 +169,8 @@ public class RaceTracker : MonoBehaviour
         /// <param name="racePosition">The position of the racer in a
         ///                            race, of type int</param>
         /// <param name="racerModel">The model of the racer, of type
-        ///                          Transform</param>
-        public RacePositionRequest(int racePosition, Transform racerModel)
+        ///                          CharacterInfo</param>
+        public RacePositionRequest(int racePosition, CharacterInfo racerModel)
         {
             _racePosition = racePosition;
             _racerModel = racerModel;
