@@ -10,16 +10,10 @@ public class WingRotation : MonoBehaviour
                                   // will rotate
     [SerializeField]
     private float _rotationSpeed; // The speed of the rotation
-
-    [SerializeField]
+    
     private Quaternion _maxLimit; // Maximum rotation limit
-
-    [SerializeField]
     private Quaternion _minLimit; // Minimum rotation limit
-
-    [SerializeField]
     private float _rotationStep = 0; // The rotation step
-
     private float _fps; // For storing the Time.deltaTime
 
     /// <summary>
@@ -45,7 +39,8 @@ public class WingRotation : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        _fps = Time.deltaTime; // Storing the fps for calculation
+        // Storing the fps for calculation
+        _fps = Time.deltaTime * GameData.Instance.SimulationSpeed;
 
         // Fixing and adding the rotation steps
         _rotationStep = _rotationStep + (_fps * _rotationSpeed) > 1 ? 1 :
