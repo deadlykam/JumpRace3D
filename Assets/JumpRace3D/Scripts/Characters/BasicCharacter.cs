@@ -17,6 +17,9 @@ public class BasicCharacter : MonoBehaviour
     protected Rigidbody mainRigidbody; // The rigidbody that will interact
                                        // with the game world
 
+    public CharacterInfo ModelInfo; // The info of the character model
+
+
     [Tooltip("This value behaves for both jump and gravity")]
     public float SpeedHorizontal; // The forward speed
     public float SpeedGravity;    // The gravity speed
@@ -303,7 +306,7 @@ public class BasicCharacter : MonoBehaviour
         _isEnableMovement = false; // Stopping movement
 
         // Requesting leader position from end stage
-        RaceTracker.Instance.AddRequest(0, transform);
+        RaceTracker.Instance.AddRequest(0, ModelInfo);
     }
 
     /// <summary>
