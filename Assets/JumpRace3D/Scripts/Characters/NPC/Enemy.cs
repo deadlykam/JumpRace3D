@@ -76,7 +76,7 @@ public class Enemy : BasicAnimation
             // Requesting leader position
             RaceTracker.Instance.AddRequest(
                 other.GetComponent<BouncyStage>().StageNumber,
-                transform);
+                ModelInfo);
         }
         // Condition for dying and turning on ragdoll
         else if (other.CompareTag("Player"))
