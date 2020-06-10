@@ -9,12 +9,6 @@ public class Enemy : BasicAnimation
     private Vector3 _nextStagePosition; // Storing the next stage
                                         // position
     
-    // Start is called before the first frame update
-    void Start()
-    {
-        // SetupRagDoll(); // Setting up the ragdoll colliders
-    }
-
     // Update is called once per frame
     void Update()
     {
@@ -96,14 +90,4 @@ public class Enemy : BasicAnimation
         base.SetStartPosition(position); // Setting start position
         _nextStagePosition = position; // Setting stage position
     }
-
-    /*/// <summary>
-    /// This method starts the enemy character.
-    /// </summary>
-    public override void StartCharacter()
-    {
-        base.StartCharacter();
-        // Requesting a character model
-        ModelSelector.Instance.AddRequest(this);
-    }*/
 }
