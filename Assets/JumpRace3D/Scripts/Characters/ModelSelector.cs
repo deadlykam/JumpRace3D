@@ -123,7 +123,6 @@ public class ModelSelector : MonoBehaviour
     ///                              of type BasicCharacter</param>
     public void AddRequest(BasicAnimation basicAnimation)
     {
-        Debug.Log("Requested model: " + basicAnimation.name);
         _requestModel.Add(new ModelRequest(basicAnimation));
     }
 
