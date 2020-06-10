@@ -9,6 +9,17 @@ public class BasicCharacter : MonoBehaviour
 {
     [Header("Basic Character Properties")]
 
+    [SerializeField]
+    protected Collider mainCollider; // The collider that will interact
+                                     // with the game world
+
+    [SerializeField]
+    protected Rigidbody mainRigidbody; // The rigidbody that will interact
+                                       // with the game world
+
+    public CharacterInfo ModelInfo; // The info of the character model
+
+
     [Tooltip("This value behaves for both jump and gravity")]
     public float SpeedHorizontal; // The forward speed
     public float SpeedGravity;    // The gravity speed
@@ -30,6 +41,16 @@ public class BasicCharacter : MonoBehaviour
     public float HeightNormal;    // Normal height of a jump
     public float HeightPerfect;   // Perfect height of a jump
     private float _heightCurrent; // The current height from the bounced stage
+    
+    [SerializeField]
+    private float _heightStop; // Height for stopping the vertical fall
+
+    /// <summary>
+    /// Checks if the character has crossed the _heightStop threshold,
+    /// of type bool
+    /// </summary>
+    protected bool isHeightStop
+    { get { return transform.position.y <= _heightStop; } }
 
     [Tooltip("The jump acceleration transition. 0 = instant transition, 1 = transition")]
     [Range(0, 1)]
@@ -131,6 +152,8 @@ public class BasicCharacter : MonoBehaviour
                                              _targetDir == 1 ?
                                              JumpSmooth :
                                              GravitySmooth);
+
+            CheckHeight(); // Checking height to stop vertical movement
         }
     }
 
@@ -150,6 +173,8 @@ public class BasicCharacter : MonoBehaviour
                                         transform.rotation,
                                         _targetRotation,
                                         AutoRotationSpeed *
+                                        GameData.Instance
+                                        .SimulationSpeed*
                                         Time.deltaTime);
             // Condition for stopping auto rotation
             else _isAutoRotateCharacter = false;
@@ -254,11 +279,23 @@ public class BasicCharacter : MonoBehaviour
     }
 
     /// <summary>
-    /// This method kills the character
+    /// This method kills the character.
     /// </summary>
     protected virtual void DieCharacter()
     {
-        _targetDir = 0; // Stopping the vertical movement
+        _isEnableMovement = false; // Stopping the 
+                                   // vertical movement
+    }
+
+    /// <summary>
+    /// This method stops the vertical movement if the character
+    /// reaches a certain threshold
+    /// </summary>
+    protected virtual void CheckHeight()
+    {
+        // Condition to gradually stop the vertical movement.
+        if (isHeightStop)
+            _targetDir = 0;
     }
 
     /// <summary>
@@ -269,7 +306,7 @@ public class BasicCharacter : MonoBehaviour
         _isEnableMovement = false; // Stopping movement
 
         // Requesting leader position from end stage
-        RaceTracker.Instance.AddRequest(0, transform);
+        RaceTracker.Instance.AddRequest(0, ModelInfo);
     }
 
     /// <summary>

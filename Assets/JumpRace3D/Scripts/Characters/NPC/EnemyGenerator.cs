@@ -106,6 +106,9 @@ public class EnemyGenerator : MonoBehaviour
         EnemiesAvailable[index]
             .transform.gameObject.SetActive(true);
 
+        // Getting enemy model
+        EnemiesAvailable[index].GetCharacterModel();
+
         // Setting the enemy's position
         EnemiesAvailable[index]
             .SetStartPosition(_currentStage.StagePosition);

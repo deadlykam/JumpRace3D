@@ -5,34 +5,15 @@ using UnityEngine;
 public class Enemy : BasicAnimation
 {
     [Header("Enemy Properties")]
-    public float DeathHeight; // The height after which the enemy
-                              // will die
 
     private Vector3 _nextStagePosition; // Storing the next stage
                                         // position
     
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
     // Update is called once per frame
     void Update()
     {
         UpdateBasicAnimation(); // Calling the animation update
         HorizontalMovement();   // Moving the enemy
-        DieCharacter();
-    }
-
-    /// <summary>
-    /// This method kills the enemy.
-    /// </summary>
-    protected override void DieCharacter()
-    {
-        // Condition to kill the enemy
-        if(transform.position.y <= DeathHeight)
-            base.DieCharacter(); // Killing the enemy
     }
 
     /// <summary>
@@ -40,8 +21,6 @@ public class Enemy : BasicAnimation
     /// </summary>
     protected override void HorizontalMovement()
     {
-        //base.HorizontalMovement();
-
         // Condition to check if enemy movement is enabled
         if (isEnableMovement)
         {
@@ -82,6 +61,8 @@ public class Enemy : BasicAnimation
 
             Jump(HeightNormal); // Jumping normal height
 
+            JumpAnimation(); // Playing jump animation
+
             // Looking at the next stage
             StartAutoRotation(other.GetComponent<BouncyStage>()
                 .LinkedStagePosition);
@@ -89,7 +70,13 @@ public class Enemy : BasicAnimation
             // Requesting leader position
             RaceTracker.Instance.AddRequest(
                 other.GetComponent<BouncyStage>().StageNumber,
-                transform);
+                ModelInfo);
+        }
+        // Condition for dying and turning on ragdoll
+        else if (other.CompareTag("Player"))
+        {
+            SetRagdoll(true); // Starting ragdoll
+            DieCharacter(); // Killing the character
         }
     }
 

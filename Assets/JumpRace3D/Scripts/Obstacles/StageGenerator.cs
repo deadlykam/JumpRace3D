@@ -275,8 +275,14 @@ public class StageGenerator : MonoBehaviour
                     .SetupGeneration(_level, 
                                      _currentBouncyStage.LinkedStage);
 
+                // Starting model selection process
+                ModelSelector.Instance.StartGenerating();
+
                 // Setting the player position
                 Player.Instance.SetStartPosition(_stagePosition);
+
+                // Requesting a character model for player
+                Player.Instance.GetCharacterModel();
 
                 _isPlaceCharacters = true; // Characters placed
             }
@@ -357,6 +363,9 @@ public class StageGenerator : MonoBehaviour
             ResetGenerationVariables(); // Resetting all the generating
                                         // variables
 
+            ModelSelector.Instance.ResetModelSelector(); // Resetting the
+                                                         // model selector
+
             RaceTracker.Instance.ResetRaceTracker(); // Resetting the
                                                      // leader position
 
@@ -406,11 +415,6 @@ public class StageGenerator : MonoBehaviour
         // Condition for processing stage generation
         if (Status == ProcessStatus.Generating)
         {
-            /*// Getting the current stage object request
-            _stageObjectRequestCurrent = _stageObjectRequests[0];
-            _stageObjectRequests.RemoveAt(0); // Removing the stage
-                                              // object request*/
-
             // Adding the stage object
             AddStageObject(_stageObjectRequestCurrent.Index,
                            _stageObjectRequestCurrent.ObjectType);

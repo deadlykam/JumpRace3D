@@ -45,8 +45,12 @@ public class GameData : MonoBehaviour
     { get { return _simulationSpeed + (SimulationSpeedAcceleration * _fps); } }
 
     private float _fps; // For storing Time.deltaTime, needed for
-                      // smooth evenly transition where ever
-                      // needed
+                        // smooth evenly transition where ever
+                        // needed
+
+
+    [Header("UI Properties")]
+    public RectTransform MainCanvas; // The main canvas for the UI
 
     public static GameData Instance; // Singleton
 
