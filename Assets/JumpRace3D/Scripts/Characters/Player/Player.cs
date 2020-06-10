@@ -33,7 +33,7 @@ public class Player : BasicAnimation
     // Start is called before the first frame update
     void Start()
     {
-        SetupRagDoll(); // Setting up the ragdoll colliders
+        // SetupRagDoll(); // Setting up the ragdoll colliders
     }
 
     // Update is called once per frame
