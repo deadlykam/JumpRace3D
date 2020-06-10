@@ -21,7 +21,7 @@ public class WingRotation : MonoBehaviour
     /// of type float
     /// </summary>
     private float _yAxis
-    { get { return transform.rotation.eulerAngles.y; } }
+    { get { return transform.localRotation.eulerAngles.y; } }
 
     // Start is called before the first frame update
     void Start()
@@ -53,6 +53,6 @@ public class WingRotation : MonoBehaviour
                          _rotationSpeed;
 
         // Rotating the wing
-        transform.rotation = Quaternion.Lerp(_maxLimit, _minLimit, _rotationStep);
+        transform.localRotation = Quaternion.Lerp(_maxLimit, _minLimit, _rotationStep);
     }
 }
