@@ -92,19 +92,6 @@ public class RaceTracker : MonoBehaviour
             // Setting the crown on a new leader
             _currentRequest.RacerModel
                 .SetCrown(_leaderCrown, _crownOffset);
-
-            /*// Showing the crown if NOT shown
-            if (!_leaderCrown.gameObject.activeSelf)
-                _leaderCrown.gameObject.SetActive(true);
-
-            // Putting the crown on the leader
-            _leaderCrown.SetParent(_currentRequest.RacerModel);
-
-            // Setting the crown position
-            _leaderCrown.localPosition = _crownOffset;
-
-            // Resetting the crown rotation
-            _leaderCrown.localRotation = Quaternion.identity;*/
         }
 
         _isProcessing = false; // Process done
