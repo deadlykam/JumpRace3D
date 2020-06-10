@@ -10,13 +10,10 @@ public class BasicAnimation : BasicCharacter
 {
     [Header("Basic Animation Properties")]
     [SerializeField]
-    private Animator _characterAnimator; // The character animations
+    private int _fallAnimations; // Number of fall animations
 
     [SerializeField]
-    private Transform _model; // The animation model
-
-    [SerializeField]
-    private Transform _ragdollModel; // The ragdoll model
+    private int _jumpAnimations; // Number of jump animations
 
     // All children transform in the model
     private List<Transform> _modelChildren = new List<Transform>();
@@ -24,12 +21,6 @@ public class BasicAnimation : BasicCharacter
     // All children transform in the ragdoll model
     private List<Transform> _ragdollModelChildren = new List<Transform>();
 
-    [SerializeField]
-    private int _fallAnimations; // Number of fall animations
-
-    [SerializeField]
-    private int _jumpAnimations; // Number of jump animations
-    
     private string _fallSelectParameter = "FallSelect";
     private string _jumpSelectParameter = "JumpSelect";
     private string _triggerJumpParameter = "TriggerJump";
@@ -38,7 +29,7 @@ public class BasicAnimation : BasicCharacter
     // Start is called before the first frame update
     void Start()
     {
-        SetupRagDoll();
+        //SetupRagDoll();
     }
     
     /// <summary>
@@ -48,8 +39,32 @@ public class BasicAnimation : BasicCharacter
     private void UpdateAnimationSpeed()
     {
         // Condition to check if animation speed needs to be updated
-        if (_characterAnimator.speed != GameData.Instance.SimulationSpeed)
-            _characterAnimator.speed = GameData.Instance.SimulationSpeed;
+        if (ModelInfo != null &&
+            ModelInfo.CharacterAnimator.speed != GameData.Instance.SimulationSpeed)
+            ModelInfo.CharacterAnimator.speed = GameData.Instance.SimulationSpeed;
+    }
+
+    /// <summary>
+    /// This method sets up the ragdoll children.
+    /// </summary>
+    private void SetupRagDoll()
+    {
+        _modelChildren.Clear(); // Removing all previous children
+        _ragdollModelChildren.Clear(); // Removing all previous children
+
+        // Loop for adding all model children
+        foreach (Transform child in ModelInfo.Model
+            .GetComponentsInChildren<Transform>())
+        {
+            _modelChildren.Add(child);
+        }
+
+        // Loop for adding all ragdoll children
+        foreach (Transform child in ModelInfo.RagdollModel
+            .GetComponentsInChildren<Transform>())
+        {
+            _ragdollModelChildren.Add(child);
+        }
     }
 
     /// <summary>
@@ -60,24 +75,6 @@ public class BasicAnimation : BasicCharacter
     {
         UpdateBasicCharacter(); // Calling Basic Character update
         UpdateAnimationSpeed(); // Updating the animation speed
-    }
-
-    /// <summary>
-    /// This method sets up the ragdoll children.
-    /// </summary>
-    protected void SetupRagDoll()
-    {
-        // Loop for adding all model children
-        foreach(Transform child in _model.GetComponentsInChildren<Transform>())
-        {
-            _modelChildren.Add(child);
-        }
-
-        // Loop for adding all ragdoll children
-        foreach (Transform child in _ragdollModel.GetComponentsInChildren<Transform>())
-        {
-            _ragdollModelChildren.Add(child);
-        }
     }
     
     /// <summary>
@@ -113,10 +110,11 @@ public class BasicAnimation : BasicCharacter
             }
         }
 
-        _ragdollModel.gameObject.SetActive(active); // Activate/deactivate
-                                                    // ragdoll
+        ModelInfo.RagdollModel.gameObject.SetActive(active); // Activate/deactivate
+                                                             // ragdoll
 
-        _model.gameObject.SetActive(!active); // Activate/deactivate model
+        ModelInfo.Model.gameObject.SetActive(!active); // Activate/deactivate 
+                                                       // animator
 
         mainCollider.enabled = !active; // Activate/deactivate
                                         // main collider
@@ -129,12 +127,12 @@ public class BasicAnimation : BasicCharacter
     protected void JumpAnimation()
     {
         // Selecting a random jump animation
-        _characterAnimator.SetInteger(_jumpSelectParameter, 
+        ModelInfo.CharacterAnimator.SetInteger(_jumpSelectParameter,
                                       Random.Range(
                                           1, _jumpAnimations + 1));
 
         // Triggering the jump animation
-        _characterAnimator.SetTrigger(_triggerJumpParameter);
+        ModelInfo.CharacterAnimator.SetTrigger(_triggerJumpParameter);
 
         FallAnimation(); // Setting a random fall animation to be
                          // played after the jump animation
@@ -149,10 +147,11 @@ public class BasicAnimation : BasicCharacter
     protected void JumpAnimation(int animation)
     {
         // Selecting a random jump animation
-        _characterAnimator.SetInteger(_jumpSelectParameter, animation);
+        ModelInfo.CharacterAnimator.SetInteger(_jumpSelectParameter,
+                                               animation);
 
         // Triggering the jump animation
-        _characterAnimator.SetTrigger(_triggerJumpParameter);
+        ModelInfo.CharacterAnimator.SetTrigger(_triggerJumpParameter);
 
         FallAnimation(); // Setting a random fall animation to be
                          // played after the jump animation
@@ -164,9 +163,9 @@ public class BasicAnimation : BasicCharacter
     protected void FallAnimation()
     {
         // Selecting a random fall animation
-        _characterAnimator.SetInteger(_fallSelectParameter, 
-                                      Random.Range(
-                                          1, _fallAnimations + 1));
+        ModelInfo.CharacterAnimator.SetInteger(_fallSelectParameter,
+                                               Random.Range(
+                                               1, _fallAnimations + 1));
     }
 
     /// <summary>
@@ -178,7 +177,7 @@ public class BasicAnimation : BasicCharacter
         base.RaceFinished();
 
         // Triggering landing animation
-        _characterAnimator.SetTrigger(_triggerLandParameter);
+        ModelInfo.CharacterAnimator.SetTrigger(_triggerLandParameter);
     }
 
     /// <summary>
@@ -187,8 +186,6 @@ public class BasicAnimation : BasicCharacter
     public override void StartCharacter()
     {
         base.StartCharacter();
-
-        SetRagdoll(false); // Resetting the ragdoll <-- Should not be here
 
         FallAnimation(); // Playing a fall animation
     }
@@ -199,6 +196,53 @@ public class BasicAnimation : BasicCharacter
     public virtual void ResetAnimaion()
     {
         // Resetting animation back to hover animation
-        _characterAnimator.SetInteger(_fallAnimations, 0);
+        ModelInfo.CharacterAnimator.SetInteger(_fallAnimations, 0);
+    }
+
+    /// <summary>
+    /// This method requests a model for the character
+    /// </summary>
+    public void GetCharacterModel()
+    {
+        // Requesting a character model
+        ModelSelector.Instance.AddRequest(this);
+    }
+
+    /// <summary>
+    /// This method sets up the character model and animation.
+    /// </summary>
+    /// <param name="modelInfo">The model to be set up, of type 
+    ///                         CharacterInfo</param>
+    public void SetupCharacterModel(CharacterInfo modelInfo)
+    {
+        ModelInfo = modelInfo; // Setting the model info
+        SetupRagDoll(); // Setting up the model and ragdoll children
+
+        // Condition to enable the main collider if inactive
+        if (!mainCollider.enabled) mainCollider.enabled = true;
+
+        // Setting the parent of the model info
+        ModelInfo.transform.SetParent(transform);
+
+        // Resetting the position of the model
+        ModelInfo.transform
+            .localPosition = Vector3.zero;
+
+        // Resetting the rotation of the model
+        ModelInfo.transform
+            .localRotation = Quaternion.identity;
+
+        // Showing the model info
+        ModelInfo.gameObject.SetActive(true);
+
+        // Showing the model
+        ModelInfo.Model
+            .gameObject.SetActive(true);
+
+        // Hiding the ragdoll
+        ModelInfo.RagdollModel
+            .gameObject.SetActive(false);
+
+        ResetAnimaion(); // Resetting the animation
     }
 }
