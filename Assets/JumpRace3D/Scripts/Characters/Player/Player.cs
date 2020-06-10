@@ -30,12 +30,6 @@ public class Player : BasicAnimation
                                   // destroying duplicate
     }
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        // SetupRagDoll(); // Setting up the ragdoll colliders
-    }
-
     // Update is called once per frame
     void Update()
     {
