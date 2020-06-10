@@ -8,8 +8,11 @@ using UnityEngine;
 public class Player : BasicAnimation
 {
     [Header("Player Properties")]
-    public float RotationSpeed;
-    public float HeightLong;
+
+    [SerializeField]
+    private GameObject _floorDetector; // The line generator
+    public float RotationSpeed; // Rotating camera speed
+    public float HeightLong; // Long jump height
 
     public static Player Instance;
 
@@ -27,17 +30,21 @@ public class Player : BasicAnimation
                                   // destroying duplicate
     }
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
     // Update is called once per frame
     void Update()
     {
         UpdateBasicAnimation(); // Calling the animation update
         HorizontalMovement();   // Making player go forward
+
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+            SetRagdoll(true); // Starting ragdoll
+        }
+
+        if (Input.GetKeyDown(KeyCode.T))
+        {
+            SetRagdoll(false); // Starting ragdoll
+        }
     }
 
     /// <summary>
@@ -96,6 +103,37 @@ public class Player : BasicAnimation
         StageGenerator.Instance.ResetStage(); // Resetting the stage
                                               // and starting a new
                                               // stage
+
+        EnemyGenerator.Instance.ResetEnemy(); // Reset the enemies
+                                              // in the game world
+
+        _floorDetector.SetActive(false); // Hiding floor line
+    }
+
+    /// <summary>
+    /// This method kills the player when the height threshold
+    /// is crossed.
+    /// </summary>
+    protected override void CheckHeight()
+    {
+        // base.CheckHeight();
+
+        if (isHeightStop) // Player crossed the threshold
+        {
+            ForceReset(); // Stopping Movement
+        }
+    }
+
+    /// <summary>
+    /// Stopping the player movements, starting the ragdoll 
+    /// and hiding the floor detector
+    /// </summary>
+    protected override void ForceReset()
+    {
+        base.ForceReset();
+
+        SetRagdoll(true); // Starting ragdoll
+        _floorDetector.SetActive(false); // Hiding floor line
     }
 
     /// <summary>
@@ -107,10 +145,11 @@ public class Player : BasicAnimation
         base.OnTriggerEnter(other);
 
         // Condition to check if bouncy stage collided
-        // and showing 3D texts
         if (other.CompareTag("BouncyStage"))
         {
             Jump(HeightNormal); // Jumping normal height
+
+            JumpAnimation(); // Playing jump animation
 
             // Hiding the booster
             other.GetComponent<BouncyStage>().SetBooster(false);
@@ -121,10 +160,17 @@ public class Player : BasicAnimation
 
             // Activating the stage action
             other.GetComponent<BouncyStage>().StageAction();
+
+            // Requesting leader position
+            RaceTracker.Instance.AddRequest(
+                other.GetComponent<BouncyStage>().StageNumber,
+                ModelInfo);
         }
         else if (other.CompareTag("Booster"))
         {
             Jump(HeightPerfect); // Jumping perfect height
+
+            JumpAnimation(); // Playing jump animation
 
             other.gameObject.SetActive(false); // Hiding the booster
 
@@ -136,6 +182,12 @@ public class Player : BasicAnimation
             other.transform.parent
                 .GetComponent<BouncyStage>().StageAction();
 
+            // Requesting leader position
+            RaceTracker.Instance.AddRequest(
+                other.transform.parent
+                .GetComponent<BouncyStage>().StageNumber,
+                ModelInfo);
+
             // Activating the simulation speed effect
             GameData.Instance.StartSimulationSpeedEffect();
         }
@@ -143,6 +195,8 @@ public class Player : BasicAnimation
         else if (other.CompareTag("LongBouncyStage"))
         {
             Jump(HeightLong); // Jumping long height
+
+            JumpAnimation(); // Playing jump animation
 
             ApplyExtraJumpSpeed(); // Applying extra jump speed
 
@@ -161,5 +215,19 @@ public class Player : BasicAnimation
         {
             InstantFall(); // Instantly falling
         }
+        // Condition for dying and turning on ragdoll
+        else if (other.CompareTag("Obstacle"))
+        {
+            ForceReset(); // Stopping Movement
+        }
+    }
+
+    /// <summary>
+    /// This method starts the player and shows the floor line.
+    /// </summary>
+    public override void StartCharacter()
+    {
+        base.StartCharacter();
+        _floorDetector.SetActive(true); // Showing floor line
     }
 }

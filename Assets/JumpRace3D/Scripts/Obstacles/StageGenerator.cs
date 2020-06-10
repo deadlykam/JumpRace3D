@@ -10,7 +10,7 @@ using UnityEngine;
 /// </summary>
 public class StageGenerator : MonoBehaviour
 {
-    public enum ProcessStatus { None, Generating, Reseting};
+    public enum ProcessStatus { None, Generating, Resetting, Starting};
 
     [Header("Stage Properties")]
     public Transform BouncyStagesAvailable; // Transform containing all
@@ -182,6 +182,8 @@ public class StageGenerator : MonoBehaviour
 
     public static StageGenerator Instance;
 
+    public Enemy TestEnemy; //<-- DELETE THIS! ENEMIES WILL BE GENERATED FROM
+                            //    ENEMY GENERATOR
 
     void Awake()
     {
@@ -212,7 +214,7 @@ public class StageGenerator : MonoBehaviour
         if (Status == ProcessStatus.Generating)
             GenerationProcess(); // Generating the level
         // Condition for reseting level
-        else if (Status == ProcessStatus.Reseting)
+        else if (Status == ProcessStatus.Resetting)
             ResetProcess(); // Resetting the level
     }
 
@@ -268,22 +270,46 @@ public class StageGenerator : MonoBehaviour
                 Stage3DTextManager.Instance
                     .Generate3DTexts(_currentBouncyStage);
 
+                // Setting up the enemies
+                EnemyGenerator.Instance
+                    .SetupGeneration(_level, 
+                                     _currentBouncyStage.LinkedStage);
+
+                // Starting model selection process
+                ModelSelector.Instance.StartGenerating();
+
                 // Setting the player position
                 Player.Instance.SetStartPosition(_stagePosition);
-                Player.Instance.StartCharacter(); /* <-- This will NOT be called 
+
+                // Requesting a character model for player
+                Player.Instance.GetCharacterModel();
+
+                _isPlaceCharacters = true; // Characters placed
+            }
+            else // Condititon to start the characters
+            {
+                // Condition for starting the player and the enemies
+                if (EnemyGenerator.Instance.Status == ProcessStatus.None)
+                {
+                    Player.Instance.StartCharacter(); /* <-- This will NOT be called 
                                                          from here. This will be
                                                          called from tapping the
                                                          screen for the first
                                                          time in a gameplay.
                                                          REMOVE LATER!*/
 
-                //TODO: Set the enemy characters here
-
-                _isPlaceCharacters = true; // Characters placed
+                    EnemyGenerator.Instance.StartEnemy(); /* <-- This will NOT be called
+                                                           * from here. This will be 
+                                                           * called from tapping the 
+                                                           * screen for the first time
+                                                           * in a gameplay.
+                                                           * REMOVE LATER!
+                                                           */
+                                                           
+                    Status = ProcessStatus.None; // No further stage process needs
+                                                 // to be done
+                }
             }
-
-            Status = ProcessStatus.None; // No further stage process needs
-                                         // to be done
         }
     }
 
@@ -337,6 +363,12 @@ public class StageGenerator : MonoBehaviour
             ResetGenerationVariables(); // Resetting all the generating
                                         // variables
 
+            ModelSelector.Instance.ResetModelSelector(); // Resetting the
+                                                         // model selector
+
+            RaceTracker.Instance.ResetRaceTracker(); // Resetting the
+                                                     // leader position
+
             Status = ProcessStatus.Generating; // Starting new stage
                                                // generation process
         }
@@ -383,11 +415,6 @@ public class StageGenerator : MonoBehaviour
         // Condition for processing stage generation
         if (Status == ProcessStatus.Generating)
         {
-            /*// Getting the current stage object request
-            _stageObjectRequestCurrent = _stageObjectRequests[0];
-            _stageObjectRequests.RemoveAt(0); // Removing the stage
-                                              // object request*/
-
             // Adding the stage object
             AddStageObject(_stageObjectRequestCurrent.Index,
                            _stageObjectRequestCurrent.ObjectType);
@@ -395,7 +422,7 @@ public class StageGenerator : MonoBehaviour
             //_isProcessing = false; // Processing finished
         }
         // Condition for processing stage reset
-        else if(Status == ProcessStatus.Reseting)
+        else if(Status == ProcessStatus.Resetting)
         {
             // Removing the stage object
             RemoveStageObject(_stageObjectRequestCurrent.Index);
@@ -733,7 +760,7 @@ public class StageGenerator : MonoBehaviour
     /// <summary>
     /// This method resets the stage.
     /// </summary>
-    public void ResetStage() { Status = ProcessStatus.Reseting; }
+    public void ResetStage() { Status = ProcessStatus.Resetting; }
 
     /// <summary>
     /// This struct creates a stage object request.
