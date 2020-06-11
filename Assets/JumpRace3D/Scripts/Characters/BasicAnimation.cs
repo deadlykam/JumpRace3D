@@ -196,7 +196,7 @@ public class BasicAnimation : BasicCharacter
     public virtual void ResetAnimaion()
     {
         // Resetting animation back to hover animation
-        ModelInfo.CharacterAnimator.SetInteger(_fallAnimations, 0);
+        ModelInfo.CharacterAnimator.SetInteger(_fallSelectParameter, 0);
     }
 
     /// <summary>
