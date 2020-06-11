@@ -10,16 +10,23 @@ public class BasicUISpeedEffect : BasicUIEffect
     private float _speed; // The speed of the effect
 
     /// <summary>
-    /// Returns the speed value, of type float
+    /// Get/sets the speed value, of type float
     /// </summary>
-    protected float speed { get { return _speed; } }
+    protected float speed {
+        get { return _speed; }
+        set { _speed = value; }
+    }
 
     private float _step; // Storing transition value
 
     /// <summary>
-    /// Returns the step value, of type float
+    /// Get/set the step value, of type float
     /// </summary>
-    protected float step { get { return _step; } }
+    protected float step
+    {
+        get { return _step; }
+        set { _step = value; }
+    }
 
     /// <summary>
     /// This method updates the BasicUISpeedEffect
