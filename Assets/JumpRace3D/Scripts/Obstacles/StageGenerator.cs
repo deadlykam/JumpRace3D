@@ -293,18 +293,21 @@ public class StageGenerator : MonoBehaviour
                 if (EnemyGenerator.Instance.Status == ProcessStatus.None)
                 {
                     //Player.Instance.StartCharacter(); // <-- This will NOT be called 
-                                                      // from here. This will be
-                                                      // called from tapping the
-                                                      // screen for the first
-                                                      // time in a gameplay.
-                                                      // REMOVE LATER!
+                    // from here. This will be
+                    // called from tapping the
+                    // screen for the first
+                    // time in a gameplay.
+                    // REMOVE LATER!
 
                     //EnemyGenerator.Instance.StartEnemy(); // <-- This will NOT be called
-                                                          // from here. This will be 
-                                                          // called from tapping the 
-                                                          // screen for the first time
-                                                          // in a gameplay.
-                                                          // REMOVE LATER!
+                    // from here. This will be 
+                    // called from tapping the 
+                    // screen for the first time
+                    // in a gameplay.
+                    // REMOVE LATER!
+
+                    // Setting the Player UI stage numbers
+                    MainCanvasUI.Instance.SetStageNumber(_levelNumberCurrent);
 
                     // Showing the start UI
                     MainCanvasUI.Instance.SetStartUI(true);
@@ -374,6 +377,8 @@ public class StageGenerator : MonoBehaviour
 
             RaceTracker.Instance.ResetRaceTracker(); // Resetting the
                                                      // leader position
+
+            MainCanvasUI.Instance.SetBar(0); // Resetting the bar
 
             Status = ProcessStatus.Generating; // Starting new stage
                                                // generation process
@@ -733,7 +738,7 @@ public class StageGenerator : MonoBehaviour
         _level = (_level + 1) > LevelMax ? LevelMax : _level + 1;
 
         _levelNumberCurrent++;
-        Debug.Log("Starting Level: " + _levelNumberCurrent.ToString());
+        //Debug.Log("Starting Level: " + _levelNumberCurrent.ToString());
     }
 
     /// <summary>
@@ -767,6 +772,19 @@ public class StageGenerator : MonoBehaviour
     /// This method resets the stage.
     /// </summary>
     public void ResetStage() { Status = ProcessStatus.Resetting; }
+
+    /// <summary>
+    /// This method sets Player UI bar fill amount.
+    /// </summary>
+    /// <param name="currentStage">The current stage of a player,
+    ///                            of type int</param>
+    public void SetPlayerUIBar(int currentStage)
+    {
+        // The calculation is 1 - percentage value because the
+        // stage number starts from the end
+        MainCanvasUI.Instance.SetBar
+            (1f - ((float)currentStage) / ((float)_level * StageNumber));
+    }
 
     /// <summary>
     /// This struct creates a stage object request.
