@@ -16,7 +16,13 @@ public class MainCanvasUI : MonoBehaviour
     { get { return _mainCanvasRect; } }
 
     [SerializeField]
-    private MoveUI _loadingUI;
+    private PlayerUI _playerUI; // The player UI screen
+
+    [SerializeField]
+    private PopupUI _popupUI; // The popup message
+
+    [SerializeField]
+    private MoveUI _loadingUI; // The loading screen
 
     /// <summary>
     /// Flag checking if loading screen being shown,
@@ -26,7 +32,7 @@ public class MainCanvasUI : MonoBehaviour
     { get { return _loadingUI.IsUIShown; } }
 
     [SerializeField]
-    private BasicUI _startUI;
+    private BasicUI _startUI; // The start screen
 
     public static MainCanvasUI Instance;
 
@@ -81,5 +87,40 @@ public class MainCanvasUI : MonoBehaviour
 
         EnemyGenerator.Instance.StartEnemy(); // Starting the enemies
         Player.Instance.StartCharacter(); // Starting the player
+    }
+
+    /// <summary>
+    /// This method sets the stage numbers of the Player UI.
+    /// </summary>
+    /// <param name="stageNumber">The current stage number,
+    ///                           of type int</param>
+    public void SetStageNumber(int stageNumber)
+    {
+        _playerUI.SetStageNumbers(stageNumber);
+    }
+
+    /// <summary>
+    /// This method sets the bar fill amount.
+    /// </summary>
+    /// <param name="percentage">The bar fill amount in percentage,
+    ///                          of type float</param>
+    public void SetBar(float percentage)
+    {
+        _playerUI.SetBar(percentage);
+    }
+
+    /// <summary>
+    /// This method shows the popup
+    /// </summary>
+    /// <param name="text">The text of the popup, of type string</param>
+    /// <param name="colour1">The colour of the first text,
+    ///                       of type Color</param>
+    /// <param name="colour2">The colour of the second text,
+    ///                       of type Colour</param>                      
+    public void StartPopup(string text, Color colour1, Color colour2)
+    {
+        // Setting popup text and colours
+        _popupUI.SetText(text, colour1, colour2);
+        _popupUI.ShowPopup(); // Showing the popup
     }
 }
