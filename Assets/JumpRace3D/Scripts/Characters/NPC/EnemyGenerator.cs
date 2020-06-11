@@ -83,6 +83,9 @@ public class EnemyGenerator : MonoBehaviour
             // Adding the enemy back to availability
             EnemiesAvailable.Add(_enemiesUsed[0]);
 
+            // Stopping the enemy movement and rotation
+            _enemiesUsed[0].ForceReset();
+
             // Hiding the enemy
             _enemiesUsed[0].gameObject.SetActive(false);
 
