@@ -14,5 +14,6 @@ public class BasicUIEffect : MonoBehaviour
     /// <summary>
     /// The update method for BasicUIEffect.
     /// </summary>
-    protected void UpdateBasicUIEffect() { _fps = Time.deltaTime; }
+    protected void UpdateBasicUIEffect()
+    { _fps = Time.deltaTime * GameData.Instance.SimulationSpeed; }
 }
