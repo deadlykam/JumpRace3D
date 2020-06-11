@@ -286,26 +286,32 @@ public class StageGenerator : MonoBehaviour
 
                 _isPlaceCharacters = true; // Characters placed
             }
-            else // Condititon to start the characters
+            else // Condititon to show the Start UI
             {
-                // Condition for starting the player and the enemies
+                // Condition to make sure all enemies has been loaded
+                // and then showing the start UI
                 if (EnemyGenerator.Instance.Status == ProcessStatus.None)
                 {
-                    Player.Instance.StartCharacter(); /* <-- This will NOT be called 
-                                                         from here. This will be
-                                                         called from tapping the
-                                                         screen for the first
-                                                         time in a gameplay.
-                                                         REMOVE LATER!*/
+                    //Player.Instance.StartCharacter(); // <-- This will NOT be called 
+                                                      // from here. This will be
+                                                      // called from tapping the
+                                                      // screen for the first
+                                                      // time in a gameplay.
+                                                      // REMOVE LATER!
 
-                    EnemyGenerator.Instance.StartEnemy(); /* <-- This will NOT be called
-                                                           * from here. This will be 
-                                                           * called from tapping the 
-                                                           * screen for the first time
-                                                           * in a gameplay.
-                                                           * REMOVE LATER!
-                                                           */
-                                                           
+                    //EnemyGenerator.Instance.StartEnemy(); // <-- This will NOT be called
+                                                          // from here. This will be 
+                                                          // called from tapping the 
+                                                          // screen for the first time
+                                                          // in a gameplay.
+                                                          // REMOVE LATER!
+
+                    // Showing the start UI
+                    MainCanvasUI.Instance.SetStartUI(true);
+
+                    // Hiding the loading UI
+                    MainCanvasUI.Instance.SetLoadingUI(false);
+                    
                     Status = ProcessStatus.None; // No further stage process needs
                                                  // to be done
                 }
