@@ -14,6 +14,28 @@ public class Player : BasicAnimation
     public float RotationSpeed; // Rotating camera speed
     public float HeightLong; // Long jump height
 
+    [Header("Popup Text Colour Properties")]
+    [SerializeField]
+    private Color _colourPerfect1; // Perfect colour front
+
+    [SerializeField]
+    private Color _colourPerfect2; // Perfect colour back
+
+    [SerializeField]
+    private Color _colourLongJump1; // Long jump colour front
+
+    [SerializeField]
+    private Color _colourLongJump2; // Long jump colour back
+
+    [SerializeField]
+    private Color _colourGood1; // Good colour front
+
+    [SerializeField]
+    private Color _colourGood2; // Long jump colour back
+
+    private int _previousStage = -1; // Keep track of the stage number,
+                                    // needed for finding Long Jumps
+
     public static Player Instance;
 
     
@@ -59,6 +81,59 @@ public class Player : BasicAnimation
     }
 
     /// <summary>
+    /// This method checks if the Long Jump popup conditions
+    /// have been fulfilled.
+    /// </summary>
+    /// <param name="currentStage">The current stage number the player,
+    ///                            has landed on, of type int</param>
+    private void CheckLongJump(int currentStage)
+    {
+        // Condition for showing Long Jump popup
+        if(_previousStage != -1 &&
+           (currentStage != _previousStage) &&
+           (currentStage != (_previousStage + 1)) &&
+           (currentStage != (_previousStage - 1)))
+        {
+            // Starting long jump popup effect
+            MainCanvasUI.Instance.StartPopup("Long Jump!", 
+                _colourLongJump1, _colourLongJump2);
+        }
+
+        _previousStage = currentStage; // Updating the previous stage
+    }
+
+    /// <summary>
+    /// This method checks if the Long Jump popup conditions
+    /// have been fulfilled.
+    /// </summary>
+    /// <param name="currentStage">The current stage number the player,
+    ///                            has landed on, of type int</param>
+    /// <param name="isGood">Flag to check if to show 'Good' popup,
+    ///                      of type bool</param>                           
+    private void CheckLongJump(int currentStage, bool isGood)
+    {
+        // Condition for showing Long Jump popup
+        if (_previousStage != -1 &&
+           (currentStage != _previousStage) &&
+           (currentStage != (_previousStage + 1)) &&
+           (currentStage != (_previousStage - 1)))
+        {
+            // Starting long jump popup effect
+            MainCanvasUI.Instance.StartPopup("Long Jump!",
+                _colourLongJump1, _colourLongJump2);
+        }
+        // Condition to show 'Good' popup
+        else if (isGood) {
+            // Starting 'good' popup effect
+            MainCanvasUI.Instance.StartPopup("Good",
+                _colourGood1, _colourGood2);
+            Debug.Log("Good");
+        }
+
+        _previousStage = currentStage; // Updating the previous stage
+    }
+
+    /// <summary>
     /// This method makes the player go forward when triggered by
     /// the user.
     /// </summary>
@@ -100,6 +175,9 @@ public class Player : BasicAnimation
 
         //TODO: The game has ended. Give end scene here
 
+        MainCanvasUI.Instance.SetBar(1); // Level finished updating
+                                         // bar to full
+
         // Showing the loading screen
         MainCanvasUI.Instance.SetLoadingUI(true); // <-- Remove from
                                                   //     here please
@@ -112,6 +190,8 @@ public class Player : BasicAnimation
                                               // in the game world
 
         _floorDetector.SetActive(false); // Hiding floor line
+
+        _previousStage = -1; // Resetting for next stage
     }
 
     /// <summary>
@@ -137,7 +217,8 @@ public class Player : BasicAnimation
         base.OnTriggerEnter(other);
 
         // Condition to check if bouncy stage collided
-        if (other.CompareTag("BouncyStage"))
+        if (other.CompareTag("BouncyStage") ||
+            other.CompareTag("Good"))
         {
             Jump(HeightNormal); // Jumping normal height
 
@@ -157,6 +238,16 @@ public class Player : BasicAnimation
             RaceTracker.Instance.AddRequest(
                 other.GetComponent<BouncyStage>().StageNumber,
                 ModelInfo);
+
+            // Updating the Player bar UI
+            StageGenerator.Instance
+                .SetPlayerUIBar(other.GetComponent<BouncyStage>()
+                                .StageNumber);
+
+            // Checking to see if to show Long Jump
+            CheckLongJump(other.GetComponent<BouncyStage>()
+                                .StageNumber,
+                                other.CompareTag("Good"));
         }
         else if (other.CompareTag("Booster"))
         {
@@ -180,8 +271,23 @@ public class Player : BasicAnimation
                 .GetComponent<BouncyStage>().StageNumber,
                 ModelInfo);
 
+            // Updating the Player bar UI
+            StageGenerator.Instance
+                .SetPlayerUIBar(other.transform.parent
+                    .GetComponent<BouncyStage>()
+                    .StageNumber);
+
             // Activating the simulation speed effect
             GameData.Instance.StartSimulationSpeedEffect();
+
+            // Showing the popup
+            MainCanvasUI.Instance.StartPopup("Perfect", _colourPerfect1, 
+                                             _colourPerfect2);
+
+            // Updating the previous stage number
+            _previousStage = other.transform.parent
+                    .GetComponent<BouncyStage>()
+                    .StageNumber;
         }
         // Condition for long jump
         else if (other.CompareTag("LongBouncyStage"))
@@ -194,6 +300,11 @@ public class Player : BasicAnimation
 
             // Activating disappearing process
             other.GetComponent<BouncyStageLong>().StageAction();
+
+            _previousStage = 0; // Making previous stage to 0 so that
+                                // landing on any stages will show
+                                // long jump message except for
+                                // landing on booster
         }
         // Condition to check if to show booster
         else if (other.CompareTag("PlayerDetector"))
