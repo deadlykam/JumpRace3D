@@ -49,8 +49,8 @@ public class GameData : MonoBehaviour
                         // needed
 
 
-    [Header("UI Properties")]
-    public RectTransform MainCanvas; // The main canvas for the UI
+    /*[Header("UI Properties")]
+    public RectTransform MainCanvas; // The main canvas for the UI*/
 
     public static GameData Instance; // Singleton
 
