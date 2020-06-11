@@ -100,6 +100,10 @@ public class Player : BasicAnimation
 
         //TODO: The game has ended. Give end scene here
 
+        // Showing the loading screen
+        MainCanvasUI.Instance.SetLoadingUI(true); // <-- Remove from
+                                                  //     here please
+
         StageGenerator.Instance.ResetStage(); // Resetting the stage
                                               // and starting a new
                                               // stage
@@ -123,19 +127,7 @@ public class Player : BasicAnimation
             ForceReset(); // Stopping Movement
         }
     }
-
-    /// <summary>
-    /// Stopping the player movements, starting the ragdoll 
-    /// and hiding the floor detector
-    /// </summary>
-    protected override void ForceReset()
-    {
-        base.ForceReset();
-
-        SetRagdoll(true); // Starting ragdoll
-        _floorDetector.SetActive(false); // Hiding floor line
-    }
-
+    
     /// <summary>
     /// This method checks for collisions.
     /// </summary>
@@ -229,5 +221,17 @@ public class Player : BasicAnimation
     {
         base.StartCharacter();
         _floorDetector.SetActive(true); // Showing floor line
+    }
+
+    /// <summary>
+    /// Stopping the player movements, starting the ragdoll 
+    /// and hiding the floor detector
+    /// </summary>
+    public override void ForceReset()
+    {
+        base.ForceReset();
+
+        SetRagdoll(true); // Starting ragdoll
+        _floorDetector.SetActive(false); // Hiding floor line
     }
 }
