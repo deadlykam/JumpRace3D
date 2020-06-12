@@ -180,10 +180,12 @@ public class StageGenerator : MonoBehaviour
 
     private bool _isPlaceCharacters = false; // Flag to check 
 
-    public static StageGenerator Instance;
+    /// <summary>
+    /// The total number of stages in a level, of type int
+    /// </summary>
+    public int TotalStages { get { return _level * StageNumber; } }
 
-    public Enemy TestEnemy; //<-- DELETE THIS! ENEMIES WILL BE GENERATED FROM
-                            //    ENEMY GENERATOR
+    public static StageGenerator Instance;
 
     void Awake()
     {
@@ -284,6 +286,12 @@ public class StageGenerator : MonoBehaviour
                 // Requesting a character model for player
                 Player.Instance.GetCharacterModel();
 
+                // Making the player a racer
+                Player.Instance.MakeRacer();
+
+                // Resetting player stage number
+                Player.Instance.SetStageNumber(-1);
+
                 _isPlaceCharacters = true; // Characters placed
             }
             else // Condititon to show the Start UI
@@ -305,6 +313,9 @@ public class StageGenerator : MonoBehaviour
                     // screen for the first time
                     // in a gameplay.
                     // REMOVE LATER!
+
+                    // Starting the RaceTracker
+                    RaceTracker.Instance.StartRaceTracker();
 
                     // Setting the Player UI stage numbers
                     MainCanvasUI.Instance.SetStageNumber(_levelNumberCurrent);
@@ -566,7 +577,7 @@ public class StageGenerator : MonoBehaviour
         // Removing the stage object from the available list
         _currentBouncyStage.transform.parent.SetParent(StageObjectsUsed);
 
-        // Linking the position of the current stage with the previous stage
+        // Linking the current stage with the previous stage
         _currentBouncyStage.GetComponent<BouncyStage>().LinkedStage =
             StageObjectsUsed.GetChild(StageObjectsUsed.childCount - 2)
             .GetChild(0)
@@ -783,7 +794,7 @@ public class StageGenerator : MonoBehaviour
         // The calculation is 1 - percentage value because the
         // stage number starts from the end
         MainCanvasUI.Instance.SetBar
-            (1f - ((float)currentStage) / ((float)_level * StageNumber));
+            (1f - ((float)currentStage) / ((float)TotalStages));
     }
 
     /// <summary>
