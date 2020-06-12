@@ -1,11 +1,12 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
 /// Class <c>BasicCharacter</c> handles all the functionality common between all characters.
 /// </summary>
-public class BasicCharacter : MonoBehaviour
+public class BasicCharacter : MonoBehaviour, IComparable<BasicCharacter>
 {
     [Header("Basic Character Properties")]
 
@@ -19,6 +20,7 @@ public class BasicCharacter : MonoBehaviour
 
     public CharacterInfo ModelInfo; // The info of the character model
 
+    public string CharacterName; // The name of the character
 
     [Tooltip("This value behaves for both jump and gravity")]
     public float SpeedHorizontal; // The forward speed
@@ -101,6 +103,16 @@ public class BasicCharacter : MonoBehaviour
 
     private bool _isAutoRotateCharacter = false; // Flag for starting auto 
                                                  // rotate the character
+
+    private int _stageNumber = -1; // The stage number the 
+                                   // character is currently in
+
+    /// <summary>
+    /// Returns the current stage number of the character,
+    /// of type int
+    /// </summary>
+    public int StageNumber { get { return _stageNumber; } }
+
 
     // Start is called before the first frame update
     void Start()
@@ -277,7 +289,7 @@ public class BasicCharacter : MonoBehaviour
     {
         _extraVerticalSpeed = SpeedFastJump;
     }
-
+    
     /// <summary>
     /// This method kills the character.
     /// </summary>
@@ -305,18 +317,10 @@ public class BasicCharacter : MonoBehaviour
     {
         _isEnableMovement = false; // Stopping movement
 
-        // Requesting leader position from end stage
-        RaceTracker.Instance.AddRequest(0, ModelInfo);
-    }
+        _stageNumber = 0; // Setting the stage number at the end
 
-    /// <summary>
-    /// This method forcefully resets the character from any 
-    /// current status.
-    /// </summary>
-    public virtual void ForceReset()
-    {
-        _isEnableMovement = false; // Stopping movement
-        _isAutoRotateCharacter = false; // Stopping rotation
+        // Requesting leader position from end stage
+        // RaceTracker.Instance.AddRequest(0, ModelInfo);
     }
 
     /// <summary>
@@ -330,6 +334,16 @@ public class BasicCharacter : MonoBehaviour
         {
             RaceFinished(); // Race completed
         }
+    }
+
+    /// <summary>
+    /// This method forcefully resets the character from any 
+    /// current status.
+    /// </summary>
+    public virtual void ForceReset()
+    {
+        _isEnableMovement = false; // Stopping movement
+        _isAutoRotateCharacter = false; // Stopping rotation
     }
 
     /// <summary>
@@ -365,4 +379,50 @@ public class BasicCharacter : MonoBehaviour
         _targetDir = -1;   // Resetting the direction of vertical
                            // movement
     }
+
+    /// <summary>
+    /// This method sets the current stage number of the
+    /// character.
+    /// </summary>
+    /// <param name="stageNumber">The current stage number the
+    ///                           character is in, of type int
+    ///                           </param>
+    public void SetStageNumber(int stageNumber)
+    {
+        _stageNumber = stageNumber; // Updating stage number
+    }
+
+    /// <summary>
+    /// This method makes the character a racer.
+    /// </summary>
+    public void MakeRacer()
+    {
+        // Adding self to become a racer
+        RaceTracker.Instance.AddRacer(this);
+    }
+
+    /// <summary>
+    /// This method compares this BasicCharacter with the given
+    /// BasicCharacter
+    /// </summary>
+    /// <param name="other">The character to compare to, of type
+    ///                     BasicCharacter</param>
+    /// <returns>The compared value between the characters,
+    ///          <para> 1 = Greater than</para>
+    ///          <para> 0 = Equal to</para>
+    ///          <para>-1 = Less than</para>
+    ///          of type int</returns>
+    public int CompareTo(BasicCharacter other)
+    {
+        /* return StageNumber == -1 ? -1 : // Self is small because stage = -1
+                other.StageNumber == -1 ? 1 : // Other is small because stage = -1
+                StageNumber < other.StageNumber ? 1 : // Self is larger
+                                                 -1;  // Other is larger*/
+
+        return StageNumber == -1 ? -1 : // Self is small because stage = -1
+               other.StageNumber == -1 ? 1 : // Other is small because stage = -1
+               StageNumber < other.StageNumber ? 1 : // Self is larger
+               StageNumber > other.StageNumber ?-1 : // Other is larger
+                                                 0;  // Both Equal
+    }                                            
 }
