@@ -123,4 +123,17 @@ public class MainCanvasUI : MonoBehaviour
         _popupUI.SetText(text, colour1, colour2);
         _popupUI.ShowPopup(); // Showing the popup
     }
+
+    /// <summary>
+    /// This method sets the race position text.
+    /// </summary>
+    /// <param name="racePosition">The race position of the character,
+    ///                            of type int</param>
+    /// <param name="isPlayer">Flag to check if the character is the 
+    ///                        player, of type bool</param>
+    /// <param name="name">The name of the character, of type string</param>
+    public void SetInGameRacePosition(int racePosition, bool isPlayer, string name)
+    {
+        _playerUI.SetInGameRacePosition(racePosition, isPlayer, name);
+    }
 }
