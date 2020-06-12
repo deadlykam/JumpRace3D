@@ -66,17 +66,19 @@ public class Enemy : BasicAnimation
             // Looking at the next stage
             StartAutoRotation(other.GetComponent<BouncyStage>()
                 .LinkedStagePosition);
-
-            // Requesting leader position
-            RaceTracker.Instance.AddRequest(
-                other.GetComponent<BouncyStage>().StageNumber,
-                ModelInfo);
+            
+            // Updating stage number
+            SetStageNumber(other
+                .GetComponent<BouncyStage>().StageNumber);
         }
         // Condition for dying and turning on ragdoll
         else if (other.CompareTag("Player"))
         {
             SetRagdoll(true); // Starting ragdoll
             DieCharacter(); // Killing the character
+
+            // Setting the stage number to max stage number
+            SetStageNumber(-1);
         }
     }
 
