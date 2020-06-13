@@ -40,6 +40,15 @@ public class CharacterInfo : MonoBehaviour
     /// This method sets the crown on the character model.
     /// </summary>
     /// <param name="crown">The crown to be set, of type Transform</param>
+    public void SetCrown(Transform crown)
+    {
+        SetCrown(crown, Vector3.zero); // Setting the crown
+    }
+
+    /// <summary>
+    /// This method sets the crown on the character model.
+    /// </summary>
+    /// <param name="crown">The crown to be set, of type Transform</param>
     /// <param name="offset">The offset of the crown from the head,
     ///                      of type Vector3</param>
     public void SetCrown(Transform crown, Vector3 offset)

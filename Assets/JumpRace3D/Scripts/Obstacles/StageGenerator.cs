@@ -178,12 +178,22 @@ public class StageGenerator : MonoBehaviour
     private bool _isProcessing = false; // Flag to check if a stage object
                                         // generation is being processed
 
-    private bool _isPlaceCharacters = false; // Flag to check 
+    private bool _isPlaceCharacters = false; // Flag to check if the player has
+                                             // has been placed
+
+    private bool _isEnemiesReset = false; // Flag to check if the enemies
+                                          // reset process has started
+
+    private bool _isIncreaseLevel = true; // Flag to check if to increase
+                                          // the level counter
+                                          
+
+    /// <summary>
+    /// The total number of stages in a level, of type int
+    /// </summary>
+    public int TotalStages { get { return _level * StageNumber; } }
 
     public static StageGenerator Instance;
-
-    public Enemy TestEnemy; //<-- DELETE THIS! ENEMIES WILL BE GENERATED FROM
-                            //    ENEMY GENERATOR
 
     void Awake()
     {
@@ -214,7 +224,8 @@ public class StageGenerator : MonoBehaviour
         if (Status == ProcessStatus.Generating)
             GenerationProcess(); // Generating the level
         // Condition for reseting level
-        else if (Status == ProcessStatus.Resetting)
+        else if (Status == ProcessStatus.Resetting &&
+                 MainCanvasUI.Instance.IsLoadingScreenSlidIn())
             ResetProcess(); // Resetting the level
     }
 
@@ -284,28 +295,46 @@ public class StageGenerator : MonoBehaviour
                 // Requesting a character model for player
                 Player.Instance.GetCharacterModel();
 
+                // Making the player a racer
+                Player.Instance.MakeRacer();
+
+                // Resetting player stage number
+                Player.Instance.SetStageNumber(-1);
+
                 _isPlaceCharacters = true; // Characters placed
             }
-            else // Condititon to start the characters
+            else // Condititon to show the Start UI
             {
-                // Condition for starting the player and the enemies
+                // Condition to make sure all enemies has been loaded
+                // and then showing the start UI
                 if (EnemyGenerator.Instance.Status == ProcessStatus.None)
                 {
-                    Player.Instance.StartCharacter(); /* <-- This will NOT be called 
-                                                         from here. This will be
-                                                         called from tapping the
-                                                         screen for the first
-                                                         time in a gameplay.
-                                                         REMOVE LATER!*/
+                    //Player.Instance.StartCharacter(); // <-- This will NOT be called 
+                    // from here. This will be
+                    // called from tapping the
+                    // screen for the first
+                    // time in a gameplay.
+                    // REMOVE LATER!
 
-                    EnemyGenerator.Instance.StartEnemy(); /* <-- This will NOT be called
-                                                           * from here. This will be 
-                                                           * called from tapping the 
-                                                           * screen for the first time
-                                                           * in a gameplay.
-                                                           * REMOVE LATER!
-                                                           */
-                                                           
+                    //EnemyGenerator.Instance.StartEnemy(); // <-- This will NOT be called
+                    // from here. This will be 
+                    // called from tapping the 
+                    // screen for the first time
+                    // in a gameplay.
+                    // REMOVE LATER!
+
+                    // Starting the RaceTracker
+                    RaceTracker.Instance.StartRaceTracker();
+
+                    // Setting the Player UI stage numbers
+                    MainCanvasUI.Instance.SetStageNumber(_levelNumberCurrent);
+
+                    // Showing the start UI
+                    MainCanvasUI.Instance.SetStartUI(true);
+
+                    // Hiding the loading UI
+                    MainCanvasUI.Instance.SetLoadingUI(false);
+                    
                     Status = ProcessStatus.None; // No further stage process needs
                                                  // to be done
                 }
@@ -353,24 +382,46 @@ public class StageGenerator : MonoBehaviour
                 }
             }
         }
+        // Condition to check if enemy reset has NOT been called
+        else if(!_isEnemiesReset)
+        {
+            EnemyGenerator.Instance.ResetEnemy(); // Reset the enemies
+                                                  // in the game world
+
+            _isEnemiesReset = true; // Enemy reset process started
+        }
         // Condition to start generating a new stage
         else
         {
-            _isPlaceCharacters = false; // Characters needs to be placed
-                                        // again in the new stage
-                                        
-            IncreaseLevel(); // Increasing the level
-            ResetGenerationVariables(); // Resetting all the generating
-                                        // variables
+            // Condition to check if enemies has been resetted
+            if (EnemyGenerator.Instance.Status == ProcessStatus.None)
+            {
+                _isPlaceCharacters = false; // Characters needs to be placed
+                                            // again in the new stage
 
-            ModelSelector.Instance.ResetModelSelector(); // Resetting the
-                                                         // model selector
+                // Condition to increase level
+                if (_isIncreaseLevel) IncreaseLevel(); // Increasing the level
+                else _isIncreaseLevel = true; // Condition to NOT increase level
+                                              // but allowing to increase level
+                                              // at the next turn
 
-            RaceTracker.Instance.ResetRaceTracker(); // Resetting the
-                                                     // leader position
+                ResetGenerationVariables(); // Resetting all the generating
+                                            // variables
 
-            Status = ProcessStatus.Generating; // Starting new stage
-                                               // generation process
+                ModelSelector.Instance.ResetModelSelector(); // Resetting the
+                                                             // model selector
+
+                RaceTracker.Instance.ResetRaceTracker(); // Resetting the
+                                                         // leader position
+
+                MainCanvasUI.Instance.SetBar(0); // Resetting the bar
+
+                // Hiding the end screen
+                MainCanvasUI.Instance.SetEndScreenUI(false);
+
+                Status = ProcessStatus.Generating; // Starting new stage
+                                                   // generation process
+            }
         }
     }
 
@@ -555,7 +606,7 @@ public class StageGenerator : MonoBehaviour
         // Removing the stage object from the available list
         _currentBouncyStage.transform.parent.SetParent(StageObjectsUsed);
 
-        // Linking the position of the current stage with the previous stage
+        // Linking the current stage with the previous stage
         _currentBouncyStage.GetComponent<BouncyStage>().LinkedStage =
             StageObjectsUsed.GetChild(StageObjectsUsed.childCount - 2)
             .GetChild(0)
@@ -726,8 +777,7 @@ public class StageGenerator : MonoBehaviour
         // Calculating the next level
         _level = (_level + 1) > LevelMax ? LevelMax : _level + 1;
 
-        _levelNumberCurrent++;
-        Debug.Log("Starting Level: " + _levelNumberCurrent.ToString());
+        _levelNumberCurrent++; // Increase level
     }
 
     /// <summary>
@@ -760,7 +810,31 @@ public class StageGenerator : MonoBehaviour
     /// <summary>
     /// This method resets the stage.
     /// </summary>
-    public void ResetStage() { Status = ProcessStatus.Resetting; }
+    public void ResetStage()
+    {
+        Status = ProcessStatus.Resetting; // Starting reset process
+
+        _isEnemiesReset = false; // Resetting the enemy reset flag
+    }
+
+    /// <summary>
+    /// Method to stop increasing the level and will allow to 
+    /// re-generate the current level.
+    /// </summary>
+    public void NotIncreaseLevel() { _isIncreaseLevel = false; }
+
+    /// <summary>
+    /// This method sets Player UI bar fill amount.
+    /// </summary>
+    /// <param name="currentStage">The current stage of a player,
+    ///                            of type int</param>
+    public void SetPlayerUIBar(int currentStage)
+    {
+        // The calculation is 1 - percentage value because the
+        // stage number starts from the end
+        MainCanvasUI.Instance.SetBar
+            (1f - ((float)currentStage) / ((float)TotalStages));
+    }
 
     /// <summary>
     /// This struct creates a stage object request.

@@ -48,9 +48,15 @@ public class GameData : MonoBehaviour
                         // smooth evenly transition where ever
                         // needed
 
+    private string _playerName = "You"; // Name of the player
 
-    [Header("UI Properties")]
-    public RectTransform MainCanvas; // The main canvas for the UI
+    /// <summary>
+    /// Returns the name of the player, of type string
+    /// </summary>
+    public string PlayerName { get { return _playerName; } }
+
+    /*[Header("UI Properties")]
+    public RectTransform MainCanvas; // The main canvas for the UI*/
 
     public static GameData Instance; // Singleton
 

@@ -26,7 +26,8 @@ public class FloorDetector : MonoBehaviour
                 if (hit.collider.CompareTag("BouncyStage")
                     || hit.collider.CompareTag("Booster")
                     || hit.collider.CompareTag("EndStage")
-                    || hit.collider.CompareTag("LongBouncyStage"))
+                    || hit.collider.CompareTag("LongBouncyStage")
+                    || hit.collider.CompareTag("Good"))
                 {
                     // Setting the FloorLine
                     SetFloorLine(hit.point, Color.green);

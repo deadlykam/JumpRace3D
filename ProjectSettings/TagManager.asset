@@ -13,6 +13,7 @@ TagManager:
   - LongBouncyStage
   - StageBottom
   - Enemy
+  - Good
   layers:
   - Default
   - TransparentFX
