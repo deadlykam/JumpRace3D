@@ -18,6 +18,12 @@ public class RaceTracker : MonoBehaviour
     // Converting the racers list to array
     private BasicCharacter[] _racersToArray;
 
+    /// <summary>
+    /// Returns the array containing all the racers in the race,
+    /// of type BasicCharacter[]
+    /// </summary>
+    public BasicCharacter[] Racers { get { return _racersToArray; } }
+
     private int _indexCompare; // Index for comparing a character
 
     private int _indexSearch; // Index for searching a character
@@ -25,6 +31,13 @@ public class RaceTracker : MonoBehaviour
 
     private bool _isPlayerShown; // Bool to check if player position
                                  // has been shown or not
+
+    private bool _isShowEndScreen; // Bool to check if to show the
+                                   // end screen
+
+    private bool _isShowCrown = false; // Flag to show the crown or NOT
+                                       // needed mainly to NOT show at
+                                       // the beginning of the race
 
     // Storing the character being compared which will be
     // needed for swapping
@@ -100,11 +113,15 @@ public class RaceTracker : MonoBehaviour
         }
 
         // Checking if models has been assigned to the character
-        if (_racersToArray[0].ModelInfo != null)
+        if (_racersToArray[0].ModelInfo != null &&
+            _isShowCrown)
         {
+
             // Setting the crown on a new leader
             _racersToArray[0].ModelInfo.SetCrown(_leaderCrown);
         }
+        // Condition for starting to show the crown
+        else _isShowCrown = true;
 
         // Loop to show the first 3 character positions including the player
         for(int i = 0; i < _racersToArray.Length; i++)
@@ -160,13 +177,40 @@ public class RaceTracker : MonoBehaviour
             
         }
 
+        // Condition to check if to show the end screen
+        if (_isShowEndScreen)
+        {
+            // Setting the end screen race position
+            MainCanvasUI.Instance.SetEndScreenPosition();
+
+            // Showing the end screen
+            MainCanvasUI.Instance.SetEndScreenUI(true);
+
+            _isShowEndScreen = false; // End screen shown
+        }
+
         _isProcessing = false; // Processing done
     }
 
     /// <summary>
-    /// This method starts the race position process
+    /// This method starts the race position process.
     /// </summary>
     public void UpdateRacePosition() { _isProcessing = true; }
+
+    /// <summary>
+    /// This method starts the race position process and shows the
+    /// end screen at the end of a race.
+    /// </summary>
+    /// <param name="isShowEndScreen">Flag to show end screen,
+    ///                               <para>true = show end screen</para>
+    ///                               of type bool</param>
+    public void UpdateRacePosition(bool isShowEndScreen)
+    {
+        _isProcessing = true; // Starting the process
+
+        // Showing end screen
+        _isShowEndScreen = isShowEndScreen;
+    }
 
     /// <summary>
     /// This method adds a racer to the racer list.
@@ -182,6 +226,8 @@ public class RaceTracker : MonoBehaviour
     {
         // Converting all the racers list to array
         _racersToArray = _racers.ToArray();
+
+        _isShowCrown = false; // Stopping to show the crown at the start
 
         UpdateRacePosition(); // Showing the correct position at start
     }
