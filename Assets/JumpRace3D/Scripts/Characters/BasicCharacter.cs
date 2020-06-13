@@ -414,11 +414,6 @@ public class BasicCharacter : MonoBehaviour, IComparable<BasicCharacter>
     ///          of type int</returns>
     public int CompareTo(BasicCharacter other)
     {
-        /* return StageNumber == -1 ? -1 : // Self is small because stage = -1
-                other.StageNumber == -1 ? 1 : // Other is small because stage = -1
-                StageNumber < other.StageNumber ? 1 : // Self is larger
-                                                 -1;  // Other is larger*/
-
         return StageNumber == -1 ? -1 : // Self is small because stage = -1
                other.StageNumber == -1 ? 1 : // Other is small because stage = -1
                StageNumber < other.StageNumber ? 1 : // Self is larger
