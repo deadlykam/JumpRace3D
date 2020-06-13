@@ -8,18 +8,36 @@ public class MoveUI : BasicUI
     [SerializeField]
     private bool _isShow = false; // Flag for showing or hiding the UI
 
-    private RectTransform _rectTransform; // Needed to move around the UI
-    
     /// <summary>
     /// Flag to check if the UI is showing or not, of type bool
     /// </summary>
     public bool IsShow { get { return _isShow; } }
+    
+    private RectTransform _rectTransform; // Needed to move around the UI
 
     [SerializeField]
     private float _speed; // The speed of the UI movement
 
     private Vector2 _currentPosition; // Storing the current position
                                       // of the UI at the start
+
+    /// <summary>
+    /// Flag that checks if the UI element has slid in or NOT,
+    /// <para>true = slid in</para>
+    /// <para>false = has NOT slid in</para>
+    /// of type bool
+    /// </summary>
+    public bool IsSlideIn
+    { get { return _rectTransform.anchoredPosition == Vector2.zero; } }
+
+    /// <summary>
+    /// Flag that checks if the UI element has slid out or NOT,
+    /// <para>true = slid out</para>
+    /// <para>false = has NOT slid out</para>
+    /// of type bool
+    /// </summary>
+    public bool IsSlideOut
+    { get { return _rectTransform.anchoredPosition == _currentPosition; } }
 
     // Start is called before the first frame update
     void Start()
@@ -55,8 +73,7 @@ public class MoveUI : BasicUI
     void Update()
     {
         // Condition to move in to show the UI
-        if(IsShow 
-            && _rectTransform.anchoredPosition != Vector2.zero)
+        if(IsShow && !IsSlideIn)
         {
             _rectTransform.anchoredPosition = Vector2.MoveTowards(
                     _rectTransform.anchoredPosition,
@@ -65,8 +82,7 @@ public class MoveUI : BasicUI
                 );
         }
         // Condition to move out to hide the UI
-        else if(!IsShow 
-            && _rectTransform.anchoredPosition != _currentPosition)
+        else if(!IsShow && !IsSlideOut)
         {
             _rectTransform.anchoredPosition = Vector2.MoveTowards(
                     _rectTransform.anchoredPosition,
@@ -75,8 +91,7 @@ public class MoveUI : BasicUI
                 );
 
             // Condition for hiding all the canvases
-            if (_rectTransform.anchoredPosition == _currentPosition)
-                SetCanvases(false);
+            if (IsSlideOut) SetCanvases(false);
         }
     }
 

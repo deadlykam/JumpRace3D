@@ -14,6 +14,22 @@ public class Player : BasicAnimation
     public float RotationSpeed; // Rotating camera speed
     public float HeightLong; // Long jump height
 
+    [SerializeField]
+    private float _timerEndScreen; // The time needed to show the
+                                   // end screen
+
+    private float _timerEndScreenCurrent; // The current time for
+                                          // showing the end screen
+
+    private bool _isEndScreenProcess = false; // Flag to start the
+                                              // end screen process
+
+    /// <summary>
+    /// Flag to check if to show the end screen, of type bool
+    /// </summary>
+    private bool _isShowEndScreen
+    { get { return _timerEndScreenCurrent >= _timerEndScreen; } }
+
     [Header("Popup Text Colour Properties")]
     [SerializeField]
     private Color _colourPerfect1; // Perfect colour front
@@ -32,9 +48,6 @@ public class Player : BasicAnimation
 
     [SerializeField]
     private Color _colourGood2; // Long jump colour back
-
-    private int _previousStage = -1; // Keep track of the stage number,
-                                    // needed for finding Long Jumps
 
     public static Player Instance;
 
@@ -58,6 +71,9 @@ public class Player : BasicAnimation
         UpdateBasicAnimation(); // Calling the animation update
         HorizontalMovement();   // Making player go forward
 
+        // Condition to show the end screen
+        if (_isEndScreenProcess) ShowEndScreen();
+
         if (Input.GetKeyDown(KeyCode.R))
         {
             SetRagdoll(true); // Starting ragdoll
@@ -67,6 +83,19 @@ public class Player : BasicAnimation
         {
             SetRagdoll(false); // Starting ragdoll
         }
+    }
+
+    private void ShowEndScreen()
+    {
+        if (_isShowEndScreen)
+        {
+            // Calling to update the race position
+            RaceTracker.Instance.UpdateRacePosition(true);
+            _isEndScreenProcess = false; // Stopping the end screen process
+            _timerEndScreenCurrent = 0;  // Resetting the timer
+        }
+        // Increasing the timer
+        else _timerEndScreenCurrent += Time.deltaTime;
     }
 
     /// <summary>
@@ -89,17 +118,15 @@ public class Player : BasicAnimation
     private void CheckLongJump(int currentStage)
     {
         // Condition for showing Long Jump popup
-        if(_previousStage != -1 &&
-           (currentStage != _previousStage) &&
-           (currentStage != (_previousStage + 1)) &&
-           (currentStage != (_previousStage - 1)))
+        if(StageNumber != -1 &&
+           (currentStage != StageNumber) &&
+           (currentStage != (StageNumber + 1)) &&
+           (currentStage != (StageNumber - 1)))
         {
             // Starting long jump popup effect
             MainCanvasUI.Instance.StartPopup("Long Jump!", 
                 _colourLongJump1, _colourLongJump2);
         }
-
-        _previousStage = currentStage; // Updating the previous stage
     }
 
     /// <summary>
@@ -113,10 +140,10 @@ public class Player : BasicAnimation
     private void CheckLongJump(int currentStage, bool isGood)
     {
         // Condition for showing Long Jump popup
-        if (_previousStage != -1 &&
-           (currentStage != _previousStage) &&
-           (currentStage != (_previousStage + 1)) &&
-           (currentStage != (_previousStage - 1)))
+        if (StageNumber != -1 &&
+           (currentStage != StageNumber) &&
+           (currentStage != (StageNumber + 1)) &&
+           (currentStage != (StageNumber - 1)))
         {
             // Starting long jump popup effect
             MainCanvasUI.Instance.StartPopup("Long Jump!",
@@ -127,10 +154,7 @@ public class Player : BasicAnimation
             // Starting 'good' popup effect
             MainCanvasUI.Instance.StartPopup("Good",
                 _colourGood1, _colourGood2);
-            Debug.Log("Good");
         }
-
-        _previousStage = currentStage; // Updating the previous stage
     }
 
     /// <summary>
@@ -171,27 +195,16 @@ public class Player : BasicAnimation
     {
         base.RaceFinished();
 
-        Debug.Log("Raced Finished!");
+        // Calling to update the race position
+        //RaceTracker.Instance.UpdateRacePosition(true);
 
-        //TODO: The game has ended. Give end scene here
+        _timerEndScreenCurrent = 0;  // Resetting the timer
+        _isEndScreenProcess = true;  // Starting the end screen process
 
         MainCanvasUI.Instance.SetBar(1); // Level finished updating
                                          // bar to full
-
-        // Showing the loading screen
-        MainCanvasUI.Instance.SetLoadingUI(true); // <-- Remove from
-                                                  //     here please
-
-        StageGenerator.Instance.ResetStage(); // Resetting the stage
-                                              // and starting a new
-                                              // stage
-
-        EnemyGenerator.Instance.ResetEnemy(); // Reset the enemies
-                                              // in the game world
-
+                                         
         _floorDetector.SetActive(false); // Hiding floor line
-
-        _previousStage = -1; // Resetting for next stage
     }
 
     /// <summary>
@@ -200,8 +213,6 @@ public class Player : BasicAnimation
     /// </summary>
     protected override void CheckHeight()
     {
-        // base.CheckHeight();
-
         if (isHeightStop) // Player crossed the threshold
         {
             ForceReset(); // Stopping Movement
@@ -234,11 +245,6 @@ public class Player : BasicAnimation
             // Activating the stage action
             other.GetComponent<BouncyStage>().StageAction();
 
-            // Requesting leader position
-            RaceTracker.Instance.AddRequest(
-                other.GetComponent<BouncyStage>().StageNumber,
-                ModelInfo);
-
             // Updating the Player bar UI
             StageGenerator.Instance
                 .SetPlayerUIBar(other.GetComponent<BouncyStage>()
@@ -248,6 +254,13 @@ public class Player : BasicAnimation
             CheckLongJump(other.GetComponent<BouncyStage>()
                                 .StageNumber,
                                 other.CompareTag("Good"));
+
+            // Updating stage number
+            SetStageNumber(other
+                .GetComponent<BouncyStage>().StageNumber);
+
+            // Calling to update the race position
+            RaceTracker.Instance.UpdateRacePosition();
         }
         else if (other.CompareTag("Booster"))
         {
@@ -265,12 +278,6 @@ public class Player : BasicAnimation
             other.transform.parent
                 .GetComponent<BouncyStage>().StageAction();
 
-            // Requesting leader position
-            RaceTracker.Instance.AddRequest(
-                other.transform.parent
-                .GetComponent<BouncyStage>().StageNumber,
-                ModelInfo);
-
             // Updating the Player bar UI
             StageGenerator.Instance
                 .SetPlayerUIBar(other.transform.parent
@@ -285,9 +292,12 @@ public class Player : BasicAnimation
                                              _colourPerfect2);
 
             // Updating the previous stage number
-            _previousStage = other.transform.parent
+            SetStageNumber(other.transform.parent
                     .GetComponent<BouncyStage>()
-                    .StageNumber;
+                    .StageNumber);
+
+            // Calling to update the race position
+            RaceTracker.Instance.UpdateRacePosition();
         }
         // Condition for long jump
         else if (other.CompareTag("LongBouncyStage"))
@@ -301,10 +311,12 @@ public class Player : BasicAnimation
             // Activating disappearing process
             other.GetComponent<BouncyStageLong>().StageAction();
 
-            _previousStage = 0; // Making previous stage to 0 so that
-                                // landing on any stages will show
-                                // long jump message except for
-                                // landing on booster
+            // This may or may not be included later but will need
+            // to be thought about
+            //_previousStage = 0; // Making previous stage to 0 so that
+                                  // landing on any stages will show
+                                  // long jump message except for
+                                  // landing on booster
         }
         // Condition to check if to show booster
         else if (other.CompareTag("PlayerDetector"))
@@ -341,6 +353,18 @@ public class Player : BasicAnimation
     public override void ForceReset()
     {
         base.ForceReset();
+
+        // Stopping to increase the level and allowing
+        // to regenerate the current level
+        StageGenerator.Instance.NotIncreaseLevel();
+
+        SetStageNumber(-1); // Resetting the stage number
+
+        // Calling to update the race position
+        //RaceTracker.Instance.UpdateRacePosition(true);
+
+        _timerEndScreenCurrent = 0;  // Resetting the timer
+        _isEndScreenProcess = true;  // Starting the end screen process
 
         SetRagdoll(true); // Starting ragdoll
         _floorDetector.SetActive(false); // Hiding floor line

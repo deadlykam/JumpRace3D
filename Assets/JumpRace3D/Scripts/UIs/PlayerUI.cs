@@ -18,7 +18,15 @@ public class PlayerUI : MonoBehaviour
 
     [SerializeField]
     private Image _bar; // For implementing the bar
-    
+
+    [SerializeField]
+    private GameObject[] _posBacks; // Array of position backgrounds
+
+    [SerializeField]
+    private TextMeshProUGUI[] _posTexts; // Array of position texts
+
+    private int _posIndex; // Index of the positions
+
     /// <summary>
     /// Setting the stage numbers of the Player UI
     /// </summary>
@@ -46,5 +54,41 @@ public class PlayerUI : MonoBehaviour
                      percentage;
 
         _bar.fillAmount = percentage; // Setting the bar
+    }
+
+    /// <summary>
+    /// This method sets the race position text.
+    /// </summary>
+    /// <param name="racePosition">The race position of the character,
+    ///                            of type int</param>
+    /// <param name="isPlayer">Flag to check if the character is the 
+    ///                        player, of type bool</param>
+    /// <param name="name">The name of the character, of type string</param>
+    public void SetInGameRacePosition(int racePosition, bool isPlayer, string name)
+    {
+        // Fixing any errors in race position
+        _posIndex = racePosition >= _posBacks.Length ?
+                                       _posBacks.Length - 1 : 
+                                       racePosition;
+
+        // Renaming the race position text
+        _posTexts[_posIndex].text 
+            = (racePosition + 1).ToString() + ". " + name;
+
+        if (isPlayer) // Checking if it is player
+        {
+            // Loop for highlighting the player
+            for(int i = 0; i < _posBacks.Length; i++)
+            {
+                // Checking if the position is player's
+                if (i == _posIndex)
+                {
+                    // Showing player's highlight
+                    _posBacks[i].SetActive(true);
+                }
+                // Hiding others highlight
+                else _posBacks[i].SetActive(false);
+            }
+        }
     }
 }

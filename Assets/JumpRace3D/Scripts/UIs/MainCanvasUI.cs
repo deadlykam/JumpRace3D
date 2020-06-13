@@ -19,6 +19,9 @@ public class MainCanvasUI : MonoBehaviour
     private PlayerUI _playerUI; // The player UI screen
 
     [SerializeField]
+    private EndScreenUI _endScreenUI; // The end screen UI
+
+    [SerializeField]
     private PopupUI _popupUI; // The popup message
 
     [SerializeField]
@@ -78,6 +81,21 @@ public class MainCanvasUI : MonoBehaviour
     }
 
     /// <summary>
+    /// This method shows or hides the end screen UI.
+    /// </summary>
+    /// <param name="active"></param>
+    public void SetEndScreenUI(bool active)
+    {
+        if (active) _endScreenUI.ShowUI(); // Showing end screen
+        else _endScreenUI.HideUI();        // Hiding end screen
+    }
+
+    /// <summary>
+    /// This method sets the end screen position UI.
+    /// </summary>
+    public void SetEndScreenPosition() { _endScreenUI.SetUI(); }
+
+    /// <summary>
     /// This method starts the game.
     /// </summary>
     public void StartGame()
@@ -87,6 +105,21 @@ public class MainCanvasUI : MonoBehaviour
 
         EnemyGenerator.Instance.StartEnemy(); // Starting the enemies
         Player.Instance.StartCharacter(); // Starting the player
+    }
+
+    /// <summary>
+    /// This method starts the generation of next stage.
+    /// </summary>
+    public void StartNextLevel()
+    {
+        _endScreenUI.DisableTrigger(); // Disabling the trigger event UI
+
+        // Showing the loading screen
+        SetLoadingUI(true);
+
+        StageGenerator.Instance.ResetStage(); // Resetting the stage
+                                              // and starting a new
+                                              // stage
     }
 
     /// <summary>
@@ -122,5 +155,27 @@ public class MainCanvasUI : MonoBehaviour
         // Setting popup text and colours
         _popupUI.SetText(text, colour1, colour2);
         _popupUI.ShowPopup(); // Showing the popup
+    }
+
+    /// <summary>
+    /// This method checks if the loading screen has slid in.
+    /// </summary>
+    /// <returns>Flag that checks if the loading screen has slid in,
+    ///          <para>true = has slid in</para>
+    ///          <para>false = has NOT slid in</para>
+    ///          of type bool</returns>
+    public bool IsLoadingScreenSlidIn() { return _loadingUI.IsSlideIn; }
+
+    /// <summary>
+    /// This method sets the race position text.
+    /// </summary>
+    /// <param name="racePosition">The race position of the character,
+    ///                            of type int</param>
+    /// <param name="isPlayer">Flag to check if the character is the 
+    ///                        player, of type bool</param>
+    /// <param name="name">The name of the character, of type string</param>
+    public void SetInGameRacePosition(int racePosition, bool isPlayer, string name)
+    {
+        _playerUI.SetInGameRacePosition(racePosition, isPlayer, name);
     }
 }

@@ -116,6 +116,13 @@ public class EnemyGenerator : MonoBehaviour
         EnemiesAvailable[index]
             .SetStartPosition(_currentStage.StagePosition);
 
+        // Setting the stage number of the enemy
+        EnemiesAvailable[index]
+            .SetStageNumber(_currentStage.StageNumber);
+
+        // Making the enemy into a racer
+        EnemiesAvailable[index].MakeRacer();
+
         // Adding the enemy in the used list
         _enemiesUsed.Add(EnemiesAvailable[index]);
 
@@ -153,7 +160,7 @@ public class EnemyGenerator : MonoBehaviour
         _processCounter = 0; // Resetting the process counter
 
         _status = ProcessStatus.Generating; // Starting to add
-                                           // enemies
+                                            // enemies
     }
 
     /// <summary>
@@ -175,6 +182,6 @@ public class EnemyGenerator : MonoBehaviour
         _processCounter = 0; // Resetting the process counter
 
         _status = ProcessStatus.Resetting; // Start the reset
-                                          // process
+                                           // process
     }
 }
