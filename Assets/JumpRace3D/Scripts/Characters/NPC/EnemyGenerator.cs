@@ -182,6 +182,6 @@ public class EnemyGenerator : MonoBehaviour
         _processCounter = 0; // Resetting the process counter
 
         _status = ProcessStatus.Resetting; // Start the reset
-                                          // process
+                                           // process
     }
 }
