@@ -14,6 +14,22 @@ public class Player : BasicAnimation
     public float RotationSpeed; // Rotating camera speed
     public float HeightLong; // Long jump height
 
+    [SerializeField]
+    private float _timerEndScreen; // The time needed to show the
+                                   // end screen
+
+    private float _timerEndScreenCurrent; // The current time for
+                                          // showing the end screen
+
+    private bool _isEndScreenProcess = false; // Flag to start the
+                                              // end screen process
+
+    /// <summary>
+    /// Flag to check if to show the end screen, of type bool
+    /// </summary>
+    private bool _isShowEndScreen
+    { get { return _timerEndScreenCurrent >= _timerEndScreen; } }
+
     [Header("Popup Text Colour Properties")]
     [SerializeField]
     private Color _colourPerfect1; // Perfect colour front
@@ -55,6 +71,9 @@ public class Player : BasicAnimation
         UpdateBasicAnimation(); // Calling the animation update
         HorizontalMovement();   // Making player go forward
 
+        // Condition to show the end screen
+        if (_isEndScreenProcess) ShowEndScreen();
+
         if (Input.GetKeyDown(KeyCode.R))
         {
             SetRagdoll(true); // Starting ragdoll
@@ -64,6 +83,19 @@ public class Player : BasicAnimation
         {
             SetRagdoll(false); // Starting ragdoll
         }
+    }
+
+    private void ShowEndScreen()
+    {
+        if (_isShowEndScreen)
+        {
+            // Calling to update the race position
+            RaceTracker.Instance.UpdateRacePosition(true);
+            _isEndScreenProcess = false; // Stopping the end screen process
+            _timerEndScreenCurrent = 0;  // Resetting the timer
+        }
+        // Increasing the timer
+        else _timerEndScreenCurrent += Time.deltaTime;
     }
 
     /// <summary>
@@ -163,27 +195,15 @@ public class Player : BasicAnimation
     {
         base.RaceFinished();
 
-        Debug.Log("Raced Finished!");
-
-        //TODO: The game has ended. Give end scene here
-
         // Calling to update the race position
-        RaceTracker.Instance.UpdateRacePosition();
+        //RaceTracker.Instance.UpdateRacePosition(true);
+
+        _timerEndScreenCurrent = 0;  // Resetting the timer
+        _isEndScreenProcess = true;  // Starting the end screen process
 
         MainCanvasUI.Instance.SetBar(1); // Level finished updating
                                          // bar to full
-
-        // Showing the loading screen
-        MainCanvasUI.Instance.SetLoadingUI(true); // <-- Remove from
-                                                  //     here please
-
-        StageGenerator.Instance.ResetStage(); // Resetting the stage
-                                              // and starting a new
-                                              // stage
-
-        EnemyGenerator.Instance.ResetEnemy(); // Reset the enemies
-                                              // in the game world
-
+                                         
         _floorDetector.SetActive(false); // Hiding floor line
     }
 
@@ -193,8 +213,6 @@ public class Player : BasicAnimation
     /// </summary>
     protected override void CheckHeight()
     {
-        // base.CheckHeight();
-
         if (isHeightStop) // Player crossed the threshold
         {
             ForceReset(); // Stopping Movement
@@ -336,8 +354,19 @@ public class Player : BasicAnimation
     {
         base.ForceReset();
 
+        // Stopping to increase the level and allowing
+        // to regenerate the current level
+        StageGenerator.Instance.NotIncreaseLevel();
+
+        SetStageNumber(-1); // Resetting the stage number
+
+        // Calling to update the race position
+        //RaceTracker.Instance.UpdateRacePosition(true);
+
+        _timerEndScreenCurrent = 0;  // Resetting the timer
+        _isEndScreenProcess = true;  // Starting the end screen process
+
         SetRagdoll(true); // Starting ragdoll
         _floorDetector.SetActive(false); // Hiding floor line
-        SetStageNumber(-1); // Resetting for next stage
     }
 }
