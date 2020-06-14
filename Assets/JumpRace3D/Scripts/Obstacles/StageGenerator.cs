@@ -214,6 +214,8 @@ public class StageGenerator : MonoBehaviour
         _gridGenerator = GetComponent<GridGenerator>(); // Setting the grid
                                                         // generator
 
+        CheckLevel(); // Checking if the level is correct at the start
+
         CalculateNumberOfLines(); // Calculating the number of points needed
                                   // for line renderer
     }
@@ -767,6 +769,14 @@ public class StageGenerator : MonoBehaviour
         _offsetObstacle = _offsetObstacle + 1 > OffsetObstacle ? 
                           1 : 
                           _offsetObstacle + 1;
+    }
+
+    /// <summary>
+    /// This method checks if the level value is correct.
+    /// </summary>
+    private void CheckLevel()
+    {
+        _level = _level > LevelMax ? LevelMax : _level;
     }
 
     /// <summary>
