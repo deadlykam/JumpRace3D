@@ -5146,7 +5146,7 @@ Transform:
   - {fileID: 1052353865}
   - {fileID: 635512039}
   m_Father: {fileID: 1101819407}
-  m_RootOrder: 2
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &310072487
 PrefabInstance:
@@ -8350,7 +8350,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1101819407}
-  m_RootOrder: 1
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 50, y: -30, z: 0}
 --- !u!1001 &520256683
 PrefabInstance:
@@ -15497,7 +15497,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1101819407}
-  m_RootOrder: 4
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!120 &900565780
 LineRenderer:
@@ -19075,6 +19075,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 650628415}
+  - {fileID: 2065120585}
   - {fileID: 519032498}
   - {fileID: 296248204}
   - {fileID: 1537590641}
@@ -19212,7 +19213,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: 1.099997, y: -109.4198}
+  m_AnchoredPosition: {x: 1.099997, y: -109.41968}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!114 &1117046255
@@ -26133,7 +26134,7 @@ Transform:
   - {fileID: 1924087912}
   - {fileID: 1380578123}
   m_Father: {fileID: 1101819407}
-  m_RootOrder: 3
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1537590642
 MonoBehaviour:
@@ -26154,7 +26155,7 @@ MonoBehaviour:
   OffsetHeight: 5
   OffsetSide: 7
   LevelMax: 14
-  _level: 15
+  _level: 1
   StageNumber: 5
   CorrectionCounter: 2
   ObstacleContainer: {fileID: 1924087912}
@@ -27760,7 +27761,7 @@ Transform:
   - {fileID: 743999938}
   - {fileID: 196402484}
   m_Father: {fileID: 1101819407}
-  m_RootOrder: 6
+  m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1631798212
 MonoBehaviour:
@@ -28407,7 +28408,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: -0.00012207031}
+  m_AnchoredPosition: {x: 0, y: -0.00024414062}
   m_SizeDelta: {x: 0.000061035156, y: -0.00012207031}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1672894671
@@ -32833,7 +32834,7 @@ Transform:
   - {fileID: 1641125553}
   - {fileID: 1142257371}
   m_Father: {fileID: 1101819407}
-  m_RootOrder: 5
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &2004729918
 MonoBehaviour:
@@ -34070,6 +34071,52 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 2059209503}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &2065120584
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2065120585}
+  - component: {fileID: 2065120586}
+  m_Layer: 0
+  m_Name: JumpRaceInput
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2065120585
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2065120584}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1101819407}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2065120586
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2065120584}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 68eea5cc390a699449a9d28671080c41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _speedMove: 1000
+  _touchMin: 10
+  _resetSpeed: 50
 --- !u!1001 &2069341818
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -34199,7 +34246,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: -0.0019601507, y: -0.12023926}
+  m_AnchoredPosition: {x: -0.0019601507, y: -0.12036133}
   m_SizeDelta: {x: 519.6113, y: 923.7604}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!114 &2074168963
@@ -36008,6 +36055,26 @@ PrefabInstance:
         type: 3}
       propertyPath: _timerEndScreen
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 861884978610079828, guid: 9640657236198274796e882072ff69c8,
+        type: 3}
+      propertyPath: RotationSpeed
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 861884978610079828, guid: 9640657236198274796e882072ff69c8,
+        type: 3}
+      propertyPath: AutoRotationSpeed
+      value: 100
+      objectReference: {fileID: 0}
+    - target: {fileID: 861884978610079828, guid: 9640657236198274796e882072ff69c8,
+        type: 3}
+      propertyPath: _touchDetection
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 861884978610079828, guid: 9640657236198274796e882072ff69c8,
+        type: 3}
+      propertyPath: SpeedHorizontal
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 861884978610079830, guid: 9640657236198274796e882072ff69c8,
         type: 3}
