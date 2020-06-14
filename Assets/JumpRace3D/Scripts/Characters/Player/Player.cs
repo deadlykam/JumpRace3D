@@ -23,6 +23,11 @@ public class Player : BasicAnimation
 
     private bool _isEndScreenProcess = false; // Flag to start the
                                               // end screen process
+              
+    private Vector3 _rotatePlayer; // Needed to store
+                                   // the rotation
+                                   // value and to avoid
+                                   // GC
 
     /// <summary>
     /// Flag to check if to show the end screen, of type bool
@@ -73,16 +78,6 @@ public class Player : BasicAnimation
 
         // Condition to show the end screen
         if (_isEndScreenProcess) ShowEndScreen();
-
-        if (Input.GetKeyDown(KeyCode.R))
-        {
-            SetRagdoll(true); // Starting ragdoll
-        }
-
-        if (Input.GetKeyDown(KeyCode.T))
-        {
-            SetRagdoll(false); // Starting ragdoll
-        }
     }
 
     private void ShowEndScreen()
@@ -103,11 +98,25 @@ public class Player : BasicAnimation
     /// </summary>
     private void RotatePlayer()
     {
+#if UNITY_EDITOR
         // Rotating the player
         transform.Rotate(new Vector3(0, 
                                      Input.GetAxis("Mouse X"),
                                      0) * Time.deltaTime * RotationSpeed);
+
+#endif
+        
+#if UNITY_ANDROID && !UNITY_EDITOR
+        // Setting the rotation value of the player
+        _rotatePlayer.Set(0,
+                          JumpRaceInput.Instance.X_Axis,
+                          0);
+
+        // Rotating the player
+        transform.Rotate(_rotatePlayer * Time.deltaTime * RotationSpeed);
+#endif
     }
+
 
     /// <summary>
     /// This method checks if the Long Jump popup conditions
