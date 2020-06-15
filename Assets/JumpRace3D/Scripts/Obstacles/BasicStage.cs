@@ -9,15 +9,27 @@ using UnityEngine;
 /// </summary>
 public class BasicStage : MonoBehaviour
 {
-    //TODO: Add fields for particle effects
+    [Header("Particle Effect Properties")]
+    [SerializeField]
+    [Tooltip("The type of effect to play when action is called, " +
+             "1 = Medium Shockwave, 2 = Small Shockwave, " +
+             "3 = Large Shockwave")]
+    private int _effectType; // The type of effect to play
+
+    [SerializeField]
+    private Vector3 _particleOffset; // The offset position to add
+                                     // to the particle position
 
     /// <summary>
     /// This method activates the stage action.
     /// </summary>
     public virtual void StageAction()
     {
-        //TODO: Activate the particle effect here
-        Debug.Log("Particle Effects*");
+        // Starting a shockwave effect
+        ParticleGenerator.Instance
+            .AddShockwaveRequest(_effectType,
+                                 transform.position + 
+                                 _particleOffset);
     }
 
     /// <summary>
@@ -27,7 +39,10 @@ public class BasicStage : MonoBehaviour
     ///                           action, of type bool</param>
     public virtual void StageAction(bool isActivated)
     {
-        //TODO: Activate the particle effect here
-        Debug.Log("Particle Effects*");
+        // Starting a shockwave effect
+        ParticleGenerator.Instance
+            .AddShockwaveRequest(_effectType, 
+                                 transform.position + 
+                                 _particleOffset);
     }
 }
