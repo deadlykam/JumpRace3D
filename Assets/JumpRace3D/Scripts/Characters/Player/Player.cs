@@ -102,7 +102,7 @@ public class Player : BasicAnimation
         // Rotating the player
         transform.Rotate(new Vector3(0, 
                                      Input.GetAxis("Mouse X"),
-                                     0) * Time.deltaTime * RotationSpeed);
+                                     0) * Time.deltaTime * RotationSpeed * 10);
 
 #endif
         
@@ -204,8 +204,8 @@ public class Player : BasicAnimation
     {
         base.RaceFinished();
 
-        // Calling to update the race position
-        //RaceTracker.Instance.UpdateRacePosition(true);
+        // Plays the confetti effect
+        ParticleGenerator.Instance.PlayConfetti();
 
         _timerEndScreenCurrent = 0;  // Resetting the timer
         _isEndScreenProcess = true;  // Starting the end screen process
@@ -214,6 +214,9 @@ public class Player : BasicAnimation
                                          // bar to full
                                          
         _floorDetector.SetActive(false); // Hiding floor line
+
+        // Hiding the booster effect
+        ParticleGenerator.Instance.SetBooster(false);
     }
 
     /// <summary>
@@ -225,6 +228,18 @@ public class Player : BasicAnimation
         if (isHeightStop) // Player crossed the threshold
         {
             ForceReset(); // Stopping Movement
+
+            /* Hint: If the floor detection gives problem or
+             *       doesn't look good for the water splash
+             *       then commenting out the code below will
+             *       give more accurate value and also show
+             *       water splash effect. The reason for using
+             *       floot detection for now is that it looks
+             *       and feels better.
+             */
+            /*// Showing the water splash effect
+            ParticleGenerator.Instance
+                .PlaceWaterSplash(transform.position);*/
         }
     }
     
@@ -270,6 +285,9 @@ public class Player : BasicAnimation
 
             // Calling to update the race position
             RaceTracker.Instance.UpdateRacePosition();
+
+            // Hiding the booster effect
+            ParticleGenerator.Instance.SetBooster(false);
         }
         else if (other.CompareTag("Booster"))
         {
@@ -307,6 +325,9 @@ public class Player : BasicAnimation
 
             // Calling to update the race position
             RaceTracker.Instance.UpdateRacePosition();
+
+            // Showing the booster effect
+            ParticleGenerator.Instance.SetBooster(true);
         }
         // Condition for long jump
         else if (other.CompareTag("LongBouncyStage"))
@@ -320,12 +341,15 @@ public class Player : BasicAnimation
             // Activating disappearing process
             other.GetComponent<BouncyStageLong>().StageAction();
 
+            // Hiding the booster effect
+            ParticleGenerator.Instance.SetBooster(false);
+
             // This may or may not be included later but will need
             // to be thought about
             //_previousStage = 0; // Making previous stage to 0 so that
-                                  // landing on any stages will show
-                                  // long jump message except for
-                                  // landing on booster
+            // landing on any stages will show
+            // long jump message except for
+            // landing on booster
         }
         // Condition to check if to show booster
         else if (other.CompareTag("PlayerDetector"))
@@ -344,6 +368,23 @@ public class Player : BasicAnimation
         {
             ForceReset(); // Stopping Movement
         }
+        // Condition for touch the floor and activating
+        // water splash effect
+        else if (other.CompareTag("Floor"))
+        {
+            // Showing the water splash effect
+            ParticleGenerator.Instance
+                .PlaceWaterSplash(transform.position);
+        }
+    }
+
+    /// <summary>
+    /// This method places the booster on to the player's
+    /// character feet.
+    /// </summary>
+    public void SetBoosters()
+    {
+        ParticleGenerator.Instance.PlaceBooster(ModelInfo);
     }
 
     /// <summary>
