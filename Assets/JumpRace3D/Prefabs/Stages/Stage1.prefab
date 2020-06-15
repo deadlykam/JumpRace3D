@@ -401,6 +401,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 19d5f87596b84d446bf2a49a456b388d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _effectType: 1
+  _particleOffset: {x: 0, y: 0.85, z: 0}
   _stageAnimator: {fileID: 6476614058260406452}
   Booster: {fileID: 6476614056878086322}
   Text3DHolder: {fileID: 6476614056731022102}
