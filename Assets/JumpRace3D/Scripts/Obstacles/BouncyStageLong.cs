@@ -55,6 +55,7 @@ public class BouncyStageLong : BasicStage
     public override void StageAction()
     {
         base.StageAction(); // Calling particle effect
+
         _timerCurrent = 1;  // Starting the disappearing process
     }
 }
