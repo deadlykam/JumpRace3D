@@ -52,6 +52,20 @@ public class BouncyStageBreakable : BouncyStage
     }
 
     /// <summary>
+    /// This method starts to break down the stage and starts
+    /// the slow motion.
+    /// </summary>
+    private void BreakStage()
+    {
+        _pointer = 0; // Starting the stage action process
+
+        _isReset = false; // Breaking stage
+
+        // Activating the simulation speed effect
+        GameData.Instance.StartSimulationSpeedEffect();
+    }
+
+    /// <summary>
     /// This method resets the breakable objects
     /// </summary>
     public void ResetStage()
@@ -69,11 +83,29 @@ public class BouncyStageBreakable : BouncyStage
     {
         base.StageAction(); // Showing particle effects
 
-        _pointer = 0; // Starting the stage action process
+        /*_pointer = 0; // Starting the stage action process
 
         _isReset = false; // Breaking stage
 
         // Activating the simulation speed effect
-        GameData.Instance.StartSimulationSpeedEffect();
+        GameData.Instance.StartSimulationSpeedEffect();*/
+
+        BreakStage(); // Breaking the stage
+    }
+
+    /// <summary>
+    /// This method shows the particle effects and 
+    /// breaks the stage
+    /// </summary>
+    /// <param name="isActivated">Flat to break the stage,
+    ///                           <para>true = break stage</para>
+    ///                           <para>false = NOT break stage</para>
+    ///                           of type bool</param>
+    public override void StageAction(bool isActivated)
+    {
+        base.StageAction(isActivated);
+
+        // Condition to check if to break the stage
+        if (isActivated) BreakStage(); // Breaking the stage
     }
 }
