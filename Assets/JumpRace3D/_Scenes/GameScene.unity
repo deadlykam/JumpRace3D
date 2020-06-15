@@ -39749,6 +39749,41 @@ PrefabInstance:
       propertyPath: m_BackGroundColor.a
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 861884977445021717, guid: 9640657236198274796e882072ff69c8,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 8.78
+      objectReference: {fileID: 0}
+    - target: {fileID: 861884977445021717, guid: 9640657236198274796e882072ff69c8,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -10.65
+      objectReference: {fileID: 0}
+    - target: {fileID: 861884978585546126, guid: 9640657236198274796e882072ff69c8,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0.08715578
+      objectReference: {fileID: 0}
+    - target: {fileID: 861884978585546126, guid: 9640657236198274796e882072ff69c8,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 861884978585546126, guid: 9640657236198274796e882072ff69c8,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 861884978585546126, guid: 9640657236198274796e882072ff69c8,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.9961947
+      objectReference: {fileID: 0}
+    - target: {fileID: 861884978585546126, guid: 9640657236198274796e882072ff69c8,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 10
+      objectReference: {fileID: 0}
     - target: {fileID: 861884978610079828, guid: 9640657236198274796e882072ff69c8,
         type: 3}
       propertyPath: _colourPerfect1.r
