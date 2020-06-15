@@ -27,6 +27,14 @@ public class CharacterInfo : MonoBehaviour
                                  // head bone
 
     [SerializeField]
+    private Transform _leftFootBone; // The location of the
+                                     // left foot bone
+
+    [SerializeField]
+    private Transform _rightFootBone; // The location of the
+                                      // right foot bone
+
+    [SerializeField]
     private Animator _characterAnimator; // The animator of the
                                          // character
 
@@ -65,5 +73,30 @@ public class CharacterInfo : MonoBehaviour
 
         // Resetting the crown rotation
         crown.localRotation = Quaternion.identity;
+    }
+
+    /// <summary>
+    /// This method places the feet objects to the feet.
+    /// </summary>
+    /// <param name="leftFoot">The left foot object to be placed,
+    ///                        of type Transform</param>
+    /// <param name="rightFoot">The right foot object to be placed,
+    ///                         of type Transform</param>
+    public void SetFeetObject(Transform leftFoot, Transform rightFoot)
+    {
+        leftFoot.SetParent(_leftFootBone); // Putting on the left foot
+        rightFoot.SetParent(_rightFootBone); // Putting on the right foot
+
+        leftFoot.localPosition = Vector3.zero; // Resetting the leftfoot
+                                               // object position
+
+        rightFoot.localPosition = Vector3.zero; // Resetting the leftfoot
+                                                // object position
+
+        leftFoot.localRotation = Quaternion.identity; // Resetting the leftfoot
+                                                      // object rotation
+
+        rightFoot.localRotation = Quaternion.identity; // Resetting the leftfoot
+                                                       // object rotation
     }
 }
