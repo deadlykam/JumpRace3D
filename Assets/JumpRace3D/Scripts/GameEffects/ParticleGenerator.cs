@@ -249,6 +249,8 @@ public class ParticleGenerator : MonoBehaviour
     public void ResetParticleGenerator()
     {
         SetBooster(false); // Hiding the booster
+
+        _particleRequests.Clear(); // Removing all requests
     }
 
     public struct ParticleRequest
