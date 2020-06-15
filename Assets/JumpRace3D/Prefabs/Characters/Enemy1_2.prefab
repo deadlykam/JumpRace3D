@@ -77,6 +77,7 @@ MonoBehaviour:
   mainCollider: {fileID: 8856598960027531100}
   mainRigidbody: {fileID: 8856598960027531101}
   ModelInfo: {fileID: 0}
+  CharacterName: 
   SpeedHorizontal: 5
   SpeedGravity: 10
   SpeedJump: 5
@@ -84,7 +85,7 @@ MonoBehaviour:
   StartOffset: {x: 0, y: 5, z: 0}
   HeightNormal: 6
   HeightPerfect: 12
-  _heightStop: -10
+  _heightStop: -12
   JumpSmooth: 0.05
   GravitySmooth: 1
   AutoRotationSpeed: 100
