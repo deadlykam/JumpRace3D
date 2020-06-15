@@ -63,6 +63,14 @@ public class Enemy : BasicAnimation
 
             JumpAnimation(); // Playing jump animation
 
+            // Condition to check if stage is breakable and NOT
+            // calling to break the stage
+            if (other.GetComponent<BouncyStageBreakable>() != null)
+                other.GetComponent<BouncyStage>().StageAction(false);
+            else // Condition for NON breakable stages
+                other.GetComponent<BouncyStage>().StageAction();
+
+
             // Looking at the next stage
             StartAutoRotation(other.GetComponent<BouncyStage>()
                 .LinkedStagePosition);
