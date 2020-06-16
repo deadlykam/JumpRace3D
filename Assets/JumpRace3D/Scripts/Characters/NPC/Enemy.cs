@@ -85,6 +85,9 @@ public class Enemy : BasicAnimation
             SetRagdoll(true); // Starting ragdoll
             DieCharacter(); // Killing the character
 
+            // Play hurt sfx
+            AudioManager.Instance.PlayHurt();
+
             // Setting the stage number to max stage number
             SetStageNumber(-1);
         }
