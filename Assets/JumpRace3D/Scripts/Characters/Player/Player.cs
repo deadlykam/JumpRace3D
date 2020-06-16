@@ -317,7 +317,7 @@ public class Player : BasicAnimation
             // Showing the popup
             MainCanvasUI.Instance.StartPopup("Perfect", _colourPerfect1, 
                                              _colourPerfect2);
-
+            
             // Updating the previous stage number
             SetStageNumber(other.transform.parent
                     .GetComponent<BouncyStage>()
@@ -325,6 +325,10 @@ public class Player : BasicAnimation
 
             // Calling to update the race position
             RaceTracker.Instance.UpdateRacePosition();
+
+            // Starting the booster pickup effect
+            ParticleGenerator.Instance
+                .PlaceBoosterPickup(transform.position);
 
             // Showing the booster effect
             ParticleGenerator.Instance.SetBooster(true);
@@ -432,6 +436,8 @@ public class Player : BasicAnimation
         _timerEndScreenCurrent = 0;  // Resetting the timer
         _isEndScreenProcess = true;  // Starting the end screen process
 
+        // Removing booster so that ragdoll has no errors
+        ParticleGenerator.Instance.RemoveBooster();
         SetRagdoll(true); // Starting ragdoll
         _floorDetector.SetActive(false); // Hiding floor line
     }
