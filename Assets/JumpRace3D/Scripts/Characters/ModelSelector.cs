@@ -70,7 +70,7 @@ public class ModelSelector : MonoBehaviour
     }
 
     /// <summary>
-    /// This method processes a request.
+    /// This method processes a character model request.
     /// </summary>
     private void ProcessRequest()
     {
@@ -83,6 +83,9 @@ public class ModelSelector : MonoBehaviour
         // Setting the character model
         _currentRequest.CharacterAnimation
             .SetupCharacterModel(_modelsAvailable[_modelIndex]);
+
+        // Showing the hover effect
+        _modelsAvailable[_modelIndex].SetHoverEffect(true);
 
         // Moving the model to the used list
         _modelUsed.Add(_modelsAvailable[_modelIndex]);
