@@ -13,6 +13,10 @@ public class ParticleGenerator : MonoBehaviour
                                         // booster effect
 
     [SerializeField]
+    private BasicParticle _boosterPickup; // The star effect
+                                      // for booster pickup
+
+    [SerializeField]
     private BasicParticle _waterSplash; // The water splash
                                         // effect
 
@@ -176,6 +180,17 @@ public class ParticleGenerator : MonoBehaviour
     }
 
     /// <summary>
+    /// This method starts the booster pickup effect.
+    /// </summary>
+    /// <param name="position">The position to place the booster pickup 
+    ///                        effect, of type Vector3</param>
+    public void PlaceBoosterPickup(Vector3 position)
+    {
+        // Starting the booster pickup effect
+        _boosterPickup.StartParticleEffect(position);
+    }
+
+    /// <summary>
     /// This method places the booster particles on to the
     /// character feet.
     /// </summary>
@@ -185,6 +200,15 @@ public class ParticleGenerator : MonoBehaviour
     {
         // Placing the booster
         character.SetFeetObject(_leftFootBooster, _rightFootBooster);
+    }
+
+    /// <summary>
+    /// This method removes the booster from the character.
+    /// </summary>
+    public void RemoveBooster()
+    {
+        _leftFootBooster.SetParent(transform);
+        _rightFootBooster.SetParent(transform);
     }
 
     /// <summary>
