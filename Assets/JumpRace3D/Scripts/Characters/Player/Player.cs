@@ -379,6 +379,22 @@ public class Player : BasicAnimation
     }
 
     /// <summary>
+    /// This method checks for collision exits.
+    /// </summary>
+    /// <param name="other">The exiting colliding object, 
+    ///                     of type Collider</param>
+    protected void OnTriggerExit(Collider other)
+    {
+        // Condition for exiting the player detector
+        if (other.CompareTag("PlayerDetector"))
+        {
+            // Hiding the booster
+            other.transform.parent.GetChild(0)
+                .GetComponent<BouncyStage>().SetBooster(false);
+        }
+    }
+
+    /// <summary>
     /// This method places the booster on to the player's
     /// character feet.
     /// </summary>
