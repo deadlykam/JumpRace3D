@@ -215,6 +215,9 @@ public class Player : BasicAnimation
                                          
         _floorDetector.SetActive(false); // Hiding floor line
 
+        // Playing confetti sfx
+        AudioManager.Instance.PlayConfetti();
+
         // Hiding the booster effect
         ParticleGenerator.Instance.SetBooster(false);
     }
@@ -288,6 +291,9 @@ public class Player : BasicAnimation
 
             // Hiding the booster effect
             ParticleGenerator.Instance.SetBooster(false);
+
+            // Playing stage bounce sfx
+            AudioManager.Instance.PlayStageBounce();
         }
         else if (other.CompareTag("Booster"))
         {
@@ -332,6 +338,9 @@ public class Player : BasicAnimation
 
             // Showing the booster effect
             ParticleGenerator.Instance.SetBooster(true);
+
+            // Playing Booster Pickup sfx
+            AudioManager.Instance.PlayBoosterPickup();
         }
         // Condition for long jump
         else if (other.CompareTag("LongBouncyStage"))
@@ -347,6 +356,9 @@ public class Player : BasicAnimation
 
             // Hiding the booster effect
             ParticleGenerator.Instance.SetBooster(false);
+
+            // Playing stage bounce sfx
+            AudioManager.Instance.PlayStageBounce();
 
             // This may or may not be included later but will need
             // to be thought about
@@ -371,6 +383,9 @@ public class Player : BasicAnimation
         else if (other.CompareTag("Obstacle"))
         {
             ForceReset(); // Stopping Movement
+
+            // Playing hurt sfx
+            AudioManager.Instance.PlayHurt();
         }
         // Condition for touch the floor and activating
         // water splash effect
@@ -379,6 +394,9 @@ public class Player : BasicAnimation
             // Showing the water splash effect
             ParticleGenerator.Instance
                 .PlaceWaterSplash(transform.position);
+
+            // Playing water splash sfx
+            AudioManager.Instance.PlayerWaterSplash();
         }
     }
 
