@@ -187,6 +187,9 @@ public class BasicAnimation : BasicCharacter
     {
         base.StartCharacter();
 
+        // Stopping the hover effect
+        if (ModelInfo != null) ModelInfo.SetHoverEffect(false);
+
         FallAnimation(); // Playing a fall animation
     }
 
