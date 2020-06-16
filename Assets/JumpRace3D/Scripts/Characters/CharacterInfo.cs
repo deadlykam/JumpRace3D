@@ -44,6 +44,10 @@ public class CharacterInfo : MonoBehaviour
     public Animator CharacterAnimator
     { get { return _characterAnimator; } }
 
+    [SerializeField]
+    private GameObject[] _hoverEffects; // Contains all the hover
+                                      // effects
+
     /// <summary>
     /// This method sets the crown on the character model.
     /// </summary>
@@ -98,5 +102,19 @@ public class CharacterInfo : MonoBehaviour
 
         rightFoot.localRotation = Quaternion.identity; // Resetting the leftfoot
                                                        // object rotation
+    }
+
+    /// <summary>
+    /// This method shows/hides the hover effect.
+    /// </summary>
+    /// <param name="activate">The flag to show/hide hover effect,
+    ///                        <para>true = show hover effect</para>
+    ///                        <para>false = hide hover effect</para>
+    ///                        of type bool</param>
+    public void SetHoverEffect(bool activate)
+    {
+        // Loop for showing/hiding hover effect
+        for (int i = 0; i < _hoverEffects.Length; i++)
+            _hoverEffects[i].SetActive(activate);
     }
 }
