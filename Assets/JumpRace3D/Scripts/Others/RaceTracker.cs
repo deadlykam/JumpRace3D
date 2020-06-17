@@ -186,6 +186,14 @@ public class RaceTracker : MonoBehaviour
             // Showing the end screen
             MainCanvasUI.Instance.SetEndScreenUI(true);
 
+            // Condition to play winner sfx
+            if (_racersToArray[0].CharacterName
+                == GameData.Instance.PlayerName)
+                AudioManager.Instance.PlayWinner();
+
+            // Condition to play loser sfx
+            else AudioManager.Instance.PlayLoser();
+
             _isShowEndScreen = false; // End screen shown
         }
 

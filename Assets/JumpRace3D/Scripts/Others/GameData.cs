@@ -33,6 +33,16 @@ public class GameData : MonoBehaviour
     /// </summary>
     public float SimulationSpeed { get { return _simulationSpeed; } }
 
+    /// <summary>
+    /// Getting the normalized value of the simulation speed,
+    /// of type float
+    /// </summary>
+    public float SimulationSpeedNormalized
+    {
+        get { return (_simulationSpeed - SimulationSpeedMin) / 
+                     (1 - SimulationSpeedMin); }
+    }
+
     // Flag to check if simulation speed effect is activated
     private bool _isSimulationActive
     { get { return _simulationSpeed < 1; } }
