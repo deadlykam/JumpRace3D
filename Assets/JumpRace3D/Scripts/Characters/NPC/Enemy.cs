@@ -5,10 +5,15 @@ using UnityEngine;
 public class Enemy : BasicAnimation
 {
     [Header("Enemy Properties")]
+    [SerializeField]
+    private float _offsetXAxis; // Random x axis value for end stage
+
+    [SerializeField]
+    private float _offsetZAxis; // Random z axis value for end stage
 
     private Vector3 _nextStagePosition; // Storing the next stage
                                         // position
-    
+
     // Update is called once per frame
     void Update()
     {
@@ -78,6 +83,16 @@ public class Enemy : BasicAnimation
             // Updating stage number
             SetStageNumber(other
                 .GetComponent<BouncyStage>().StageNumber);
+
+            // Condition to check if it is the last stage and giving
+            // a random position within limit
+            if (isLastStage)
+                _nextStagePosition.Set(
+                    _nextStagePosition.x + Random.Range(-_offsetXAxis, 
+                                                        _offsetXAxis),
+                    _nextStagePosition.y,
+                    _nextStagePosition.z + Random.Range(-_offsetZAxis, 
+                                                         _offsetZAxis));
         }
         // Condition for dying and turning on ragdoll
         else if (other.CompareTag("Player"))
