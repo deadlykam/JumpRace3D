@@ -119,6 +119,12 @@ public class BasicCharacter : MonoBehaviour, IComparable<BasicCharacter>
     /// </summary>
     protected bool isRaceFinished { get { return _stageNumber == 0; } }
 
+    /// <summary>
+    /// This flag checks if the character is in the last stage,
+    /// of type bool
+    /// </summary>
+    protected bool isLastStage { get { return _stageNumber == 1; } }
+
     // Start is called before the first frame update
     void Start()
     {
