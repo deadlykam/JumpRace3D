@@ -30,6 +30,9 @@ public class AudioManager : MonoBehaviour
     private BasicAudio _stageBounce;
 
     [SerializeField]
+    private BasicAudio _stageHitBottom;
+
+    [SerializeField]
     private BasicAudio _waterSplash;
 
     [SerializeField]
@@ -99,6 +102,11 @@ public class AudioManager : MonoBehaviour
     /// This method plays the stage bounce sfx.
     /// </summary>
     public void PlayStageBounce() => PlaySoundFx(_stageBounce);
+
+    /// <summary>
+    /// This method plays the stage hit bottom sfx.
+    /// </summary>
+    public void PlayHitBottom() => PlaySoundFx(_stageHitBottom);
 
     /// <summary>
     /// This method plays a random hurt sfx.
