@@ -532,7 +532,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: e66e7c65adba3914f9a457fba1e63cc8, type: 2}
+  - {fileID: 2100000, guid: 7e585be8e62c0eb48a53882212099bb8, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -2736,6 +2736,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3fab3884788f50048b25aad70a100ba6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _effectType: 1
+  _particleOffset: {x: 0, y: 0.85, z: 0}
   _stageAnimator: {fileID: 0}
   Booster: {fileID: 7843887597716370221}
   Text3DHolder: {fileID: 7843887597561444489}

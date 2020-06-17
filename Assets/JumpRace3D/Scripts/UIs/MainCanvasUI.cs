@@ -100,11 +100,12 @@ public class MainCanvasUI : MonoBehaviour
     /// </summary>
     public void StartGame()
     {
-        //TODO: Start the game from here
         SetStartUI(false);
 
         EnemyGenerator.Instance.StartEnemy(); // Starting the enemies
         Player.Instance.StartCharacter(); // Starting the player
+
+        AudioManager.Instance.PlayWind(); // Starting wind sfx
     }
 
     /// <summary>

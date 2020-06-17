@@ -102,7 +102,7 @@ public class Player : BasicAnimation
         // Rotating the player
         transform.Rotate(new Vector3(0, 
                                      Input.GetAxis("Mouse X"),
-                                     0) * Time.deltaTime * RotationSpeed);
+                                     0) * Time.deltaTime * RotationSpeed * 10);
 
 #endif
         
@@ -204,8 +204,8 @@ public class Player : BasicAnimation
     {
         base.RaceFinished();
 
-        // Calling to update the race position
-        //RaceTracker.Instance.UpdateRacePosition(true);
+        // Plays the confetti effect
+        ParticleGenerator.Instance.PlayConfetti();
 
         _timerEndScreenCurrent = 0;  // Resetting the timer
         _isEndScreenProcess = true;  // Starting the end screen process
@@ -214,6 +214,15 @@ public class Player : BasicAnimation
                                          // bar to full
                                          
         _floorDetector.SetActive(false); // Hiding floor line
+
+        // Playing confetti sfx
+        AudioManager.Instance.PlayConfetti();
+
+        // Stop playing wind sfx
+        AudioManager.Instance.StopWind();
+
+        // Hiding the booster effect
+        ParticleGenerator.Instance.SetBooster(false);
     }
 
     /// <summary>
@@ -225,6 +234,18 @@ public class Player : BasicAnimation
         if (isHeightStop) // Player crossed the threshold
         {
             ForceReset(); // Stopping Movement
+
+            /* Hint: If the floor detection gives problem or
+             *       doesn't look good for the water splash
+             *       then commenting out the code below will
+             *       give more accurate value and also show
+             *       water splash effect. The reason for using
+             *       floot detection for now is that it looks
+             *       and feels better.
+             */
+            /*// Showing the water splash effect
+            ParticleGenerator.Instance
+                .PlaceWaterSplash(transform.position);*/
         }
     }
     
@@ -270,6 +291,15 @@ public class Player : BasicAnimation
 
             // Calling to update the race position
             RaceTracker.Instance.UpdateRacePosition();
+
+            // Hiding the booster effect
+            ParticleGenerator.Instance.SetBooster(false);
+
+            // Playing stage bounce sfx
+            AudioManager.Instance.PlayStageBounce();
+
+            // Resetting the wind volume
+            AudioManager.Instance.ResetWindVolume();
         }
         else if (other.CompareTag("Booster"))
         {
@@ -299,7 +329,7 @@ public class Player : BasicAnimation
             // Showing the popup
             MainCanvasUI.Instance.StartPopup("Perfect", _colourPerfect1, 
                                              _colourPerfect2);
-
+            
             // Updating the previous stage number
             SetStageNumber(other.transform.parent
                     .GetComponent<BouncyStage>()
@@ -307,6 +337,19 @@ public class Player : BasicAnimation
 
             // Calling to update the race position
             RaceTracker.Instance.UpdateRacePosition();
+
+            // Starting the booster pickup effect
+            ParticleGenerator.Instance
+                .PlaceBoosterPickup(transform.position);
+
+            // Showing the booster effect
+            ParticleGenerator.Instance.SetBooster(true);
+
+            // Playing Booster Pickup sfx
+            AudioManager.Instance.PlayBoosterPickup();
+
+            // Resetting the wind volume
+            AudioManager.Instance.ResetWindVolume();
         }
         // Condition for long jump
         else if (other.CompareTag("LongBouncyStage"))
@@ -320,12 +363,21 @@ public class Player : BasicAnimation
             // Activating disappearing process
             other.GetComponent<BouncyStageLong>().StageAction();
 
+            // Hiding the booster effect
+            ParticleGenerator.Instance.SetBooster(false);
+
+            // Playing stage bounce sfx
+            AudioManager.Instance.PlayStageBounce();
+
+            // Resetting the wind volume
+            AudioManager.Instance.ResetWindVolume();
+
             // This may or may not be included later but will need
             // to be thought about
             //_previousStage = 0; // Making previous stage to 0 so that
-                                  // landing on any stages will show
-                                  // long jump message except for
-                                  // landing on booster
+            // landing on any stages will show
+            // long jump message except for
+            // landing on booster
         }
         // Condition to check if to show booster
         else if (other.CompareTag("PlayerDetector"))
@@ -338,12 +390,65 @@ public class Player : BasicAnimation
         else if (other.CompareTag("StageBottom"))
         {
             InstantFall(); // Instantly falling
+
+            // Playing hitting stage bottom sfx
+            AudioManager.Instance.PlayHitBottom();
+
+            // Resetting the wind volume
+            AudioManager.Instance.ResetWindVolume();
+
+            //TODO: Bottom stage hit sfx
         }
         // Condition for dying and turning on ragdoll
         else if (other.CompareTag("Obstacle"))
         {
             ForceReset(); // Stopping Movement
+
+            // Playing hurt sfx
+            AudioManager.Instance.PlayHurt();
+
+            // Stopping the wind volume
+            AudioManager.Instance.StopWind();
         }
+        // Condition for touch the floor and activating
+        // water splash effect
+        else if (other.CompareTag("Floor"))
+        {
+            // Showing the water splash effect
+            ParticleGenerator.Instance
+                .PlaceWaterSplash(transform.position);
+
+            // Playing water splash sfx
+            AudioManager.Instance.PlayerWaterSplash();
+
+            // Stopping the wind volume
+            AudioManager.Instance.StopWind();
+        }
+    }
+
+    /// <summary>
+    /// This method checks for collision exits.
+    /// </summary>
+    /// <param name="other">The exiting colliding object, 
+    ///                     of type Collider</param>
+    protected void OnTriggerExit(Collider other)
+    {
+        // Condition for exiting the player detector
+        if (other.CompareTag("PlayerDetector"))
+        {
+            // Hiding the booster
+            other.transform.parent.GetChild(0)
+                .GetComponent<BouncyStage>().SetBooster(false);
+        }
+    }
+
+    /// <summary>
+    /// This method places the booster on to the player's
+    /// character feet.
+    /// </summary>
+    public void SetBoosters()
+    {
+        ParticleGenerator.Instance.PlaceBooster(ModelInfo);
     }
 
     /// <summary>
@@ -375,6 +480,8 @@ public class Player : BasicAnimation
         _timerEndScreenCurrent = 0;  // Resetting the timer
         _isEndScreenProcess = true;  // Starting the end screen process
 
+        // Removing booster so that ragdoll has no errors
+        ParticleGenerator.Instance.RemoveBooster();
         SetRagdoll(true); // Starting ragdoll
         _floorDetector.SetActive(false); // Hiding floor line
     }

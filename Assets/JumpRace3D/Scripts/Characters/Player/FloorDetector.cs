@@ -7,36 +7,40 @@ public class FloorDetector : MonoBehaviour
     [Header("Floor Detector Properties")]
     public LineRenderer FloorLine;
 
-    private Ray ray;        // For creating a ray
-    private RaycastHit hit; // For storing hit objects
+    [SerializeField]
+    private Transform _lineBottom; // Object to show at the bottom
+                                  // of the line
+
+    private Ray _ray;        // For creating a ray
+    private RaycastHit _hit; // For storing hit objects
 
     // Update is called once per frame
     void Update()
     {
         // Casting a ray downward
-        ray = new Ray(transform.position, Vector3.down);
+        _ray = new Ray(transform.position, Vector3.down);
 
         // Checking if the ray hit anything
-        if (Physics.Raycast(ray, out hit))
+        if (Physics.Raycast(_ray, out _hit))
         {
             // Checking if the RaycastHit has any hit stored
-            if (hit.collider != null)
+            if (_hit.collider != null)
             {
                 // Condition for hitting BouncyStage
-                if (hit.collider.CompareTag("BouncyStage")
-                    || hit.collider.CompareTag("Booster")
-                    || hit.collider.CompareTag("EndStage")
-                    || hit.collider.CompareTag("LongBouncyStage")
-                    || hit.collider.CompareTag("Good"))
+                if (_hit.collider.CompareTag("BouncyStage")
+                    || _hit.collider.CompareTag("Booster")
+                    || _hit.collider.CompareTag("EndStage")
+                    || _hit.collider.CompareTag("LongBouncyStage")
+                    || _hit.collider.CompareTag("Good"))
                 {
                     // Setting the FloorLine
-                    SetFloorLine(hit.point, Color.green);
+                    SetFloorLine(_hit.point, Color.green);
                 }
                 // Condition for hitting the floor
-                else if (hit.collider.CompareTag("Floor"))
+                else if (_hit.collider.CompareTag("Floor"))
                 {
                     // Setting the FloorLine
-                    SetFloorLine(hit.point, Color.red);
+                    SetFloorLine(_hit.point, Color.red);
                 }
             }
         }
@@ -60,5 +64,8 @@ public class FloorDetector : MonoBehaviour
 
         // Setting the ending point of the line
         FloorLine.SetPosition(1, hitPoint);
+
+        // Setting the position of the line end object
+        _lineBottom.position = hitPoint;
     }
 }

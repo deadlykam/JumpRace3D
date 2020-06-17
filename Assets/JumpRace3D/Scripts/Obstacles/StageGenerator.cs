@@ -311,20 +311,9 @@ public class StageGenerator : MonoBehaviour
                 // and then showing the start UI
                 if (EnemyGenerator.Instance.Status == ProcessStatus.None)
                 {
-                    //Player.Instance.StartCharacter(); // <-- This will NOT be called 
-                    // from here. This will be
-                    // called from tapping the
-                    // screen for the first
-                    // time in a gameplay.
-                    // REMOVE LATER!
-
-                    //EnemyGenerator.Instance.StartEnemy(); // <-- This will NOT be called
-                    // from here. This will be 
-                    // called from tapping the 
-                    // screen for the first time
-                    // in a gameplay.
-                    // REMOVE LATER!
-
+                    Player.Instance.SetBoosters(); // Setting the player
+                                                   // booster
+                    
                     // Starting the RaceTracker
                     RaceTracker.Instance.StartRaceTracker();
 
@@ -409,6 +398,9 @@ public class StageGenerator : MonoBehaviour
 
                 ResetGenerationVariables(); // Resetting all the generating
                                             // variables
+
+                // Resetting the particle generator
+                ParticleGenerator.Instance.ResetParticleGenerator();
 
                 ModelSelector.Instance.ResetModelSelector(); // Resetting the
                                                              // model selector

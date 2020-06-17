@@ -27,6 +27,14 @@ public class CharacterInfo : MonoBehaviour
                                  // head bone
 
     [SerializeField]
+    private Transform _leftFootBone; // The location of the
+                                     // left foot bone
+
+    [SerializeField]
+    private Transform _rightFootBone; // The location of the
+                                      // right foot bone
+
+    [SerializeField]
     private Animator _characterAnimator; // The animator of the
                                          // character
 
@@ -35,6 +43,10 @@ public class CharacterInfo : MonoBehaviour
     /// </summary>
     public Animator CharacterAnimator
     { get { return _characterAnimator; } }
+
+    [SerializeField]
+    private GameObject[] _hoverEffects; // Contains all the hover
+                                      // effects
 
     /// <summary>
     /// This method sets the crown on the character model.
@@ -65,5 +77,44 @@ public class CharacterInfo : MonoBehaviour
 
         // Resetting the crown rotation
         crown.localRotation = Quaternion.identity;
+    }
+
+    /// <summary>
+    /// This method places the feet objects to the feet.
+    /// </summary>
+    /// <param name="leftFoot">The left foot object to be placed,
+    ///                        of type Transform</param>
+    /// <param name="rightFoot">The right foot object to be placed,
+    ///                         of type Transform</param>
+    public void SetFeetObject(Transform leftFoot, Transform rightFoot)
+    {
+        leftFoot.SetParent(_leftFootBone); // Putting on the left foot
+        rightFoot.SetParent(_rightFootBone); // Putting on the right foot
+
+        leftFoot.localPosition = Vector3.zero; // Resetting the leftfoot
+                                               // object position
+
+        rightFoot.localPosition = Vector3.zero; // Resetting the leftfoot
+                                                // object position
+
+        leftFoot.localRotation = Quaternion.identity; // Resetting the leftfoot
+                                                      // object rotation
+
+        rightFoot.localRotation = Quaternion.identity; // Resetting the leftfoot
+                                                       // object rotation
+    }
+
+    /// <summary>
+    /// This method shows/hides the hover effect.
+    /// </summary>
+    /// <param name="activate">The flag to show/hide hover effect,
+    ///                        <para>true = show hover effect</para>
+    ///                        <para>false = hide hover effect</para>
+    ///                        of type bool</param>
+    public void SetHoverEffect(bool activate)
+    {
+        // Loop for showing/hiding hover effect
+        for (int i = 0; i < _hoverEffects.Length; i++)
+            _hoverEffects[i].SetActive(activate);
     }
 }
