@@ -218,6 +218,9 @@ public class Player : BasicAnimation
         // Playing confetti sfx
         AudioManager.Instance.PlayConfetti();
 
+        // Stop playing wind sfx
+        AudioManager.Instance.StopWind();
+
         // Hiding the booster effect
         ParticleGenerator.Instance.SetBooster(false);
     }
@@ -294,6 +297,9 @@ public class Player : BasicAnimation
 
             // Playing stage bounce sfx
             AudioManager.Instance.PlayStageBounce();
+
+            // Resetting the wind volume
+            AudioManager.Instance.ResetWindVolume();
         }
         else if (other.CompareTag("Booster"))
         {
@@ -341,6 +347,9 @@ public class Player : BasicAnimation
 
             // Playing Booster Pickup sfx
             AudioManager.Instance.PlayBoosterPickup();
+
+            // Resetting the wind volume
+            AudioManager.Instance.ResetWindVolume();
         }
         // Condition for long jump
         else if (other.CompareTag("LongBouncyStage"))
@@ -360,6 +369,9 @@ public class Player : BasicAnimation
             // Playing stage bounce sfx
             AudioManager.Instance.PlayStageBounce();
 
+            // Resetting the wind volume
+            AudioManager.Instance.ResetWindVolume();
+
             // This may or may not be included later but will need
             // to be thought about
             //_previousStage = 0; // Making previous stage to 0 so that
@@ -378,6 +390,11 @@ public class Player : BasicAnimation
         else if (other.CompareTag("StageBottom"))
         {
             InstantFall(); // Instantly falling
+
+            // Resetting the wind volume
+            AudioManager.Instance.ResetWindVolume();
+
+            //TODO: Bottom stage hit sfx
         }
         // Condition for dying and turning on ragdoll
         else if (other.CompareTag("Obstacle"))
@@ -386,6 +403,9 @@ public class Player : BasicAnimation
 
             // Playing hurt sfx
             AudioManager.Instance.PlayHurt();
+
+            // Stopping the wind volume
+            AudioManager.Instance.StopWind();
         }
         // Condition for touch the floor and activating
         // water splash effect
@@ -397,6 +417,9 @@ public class Player : BasicAnimation
 
             // Playing water splash sfx
             AudioManager.Instance.PlayerWaterSplash();
+
+            // Stopping the wind volume
+            AudioManager.Instance.StopWind();
         }
     }
 
