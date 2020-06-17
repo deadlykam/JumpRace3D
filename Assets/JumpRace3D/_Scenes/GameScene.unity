@@ -29657,6 +29657,9 @@ MonoBehaviour:
   _stageBounce:
     _clip: {fileID: 8300000, guid: 5af6974416a9e3b4396f4fb44aeef1e1, type: 3}
     _volume: 1
+  _stageHitBottom:
+    _clip: {fileID: 8300000, guid: 8a04f292de0d2684288f06a0823bc26d, type: 3}
+    _volume: 1
   _waterSplash:
     _clip: {fileID: 8300000, guid: 366e3f336a2cc564d9358d578182f385, type: 3}
     _volume: 1
