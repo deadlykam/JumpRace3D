@@ -12,7 +12,13 @@ public class AudioManager : MonoBehaviour
     private AudioSource _soundfxSource;
 
     [SerializeField]
+    private AudioSource _ambientSource;
+
+    [SerializeField]
     private BasicAudio _music;
+
+    [SerializeField]
+    private AudioVolumeEffect _wind;
 
     [SerializeField]
     private BasicAudio[] _hurt;
@@ -38,6 +44,8 @@ public class AudioManager : MonoBehaviour
     [SerializeField]
     private BasicAudio _loserMusic;
 
+    private bool _isWindEffect = false; // Flag to check if to play 
+                                        // the wind effect
 
     public static AudioManager Instance;
 
@@ -58,6 +66,20 @@ public class AudioManager : MonoBehaviour
         _musicSource.clip = _music.Clip;
         _musicSource.volume = _music.Volume;
         _musicSource.Play(); // Playing the music
+
+        // Setting the ambient wind sfx
+        _ambientSource.clip = _wind.Clip;
+        _ambientSource.volume = _wind.CurrentVolume;
+    }
+
+    private void Update()
+    {
+        // Condition for updating the wind effect
+        if (_isWindEffect)
+        {
+            _wind.UpdateAudioVolumeEffect(); // Updating the volume value
+            _ambientSource.volume = _wind.CurrentVolume; // Setting the volume
+        }
     }
 
     /// <summary>
@@ -106,4 +128,28 @@ public class AudioManager : MonoBehaviour
     /// This method plays the looser sfx.
     /// </summary>
     public void PlayLoser() => PlaySoundFx(_loserMusic);
+
+    /// <summary>
+    /// This method starts to play the wind sfx.
+    /// </summary>
+    public void PlayWind()
+    {
+        _ambientSource.Play(); // Playing the wind sfx
+        _isWindEffect = true;  // Starting wind update
+    }
+
+    /// <summary>
+    /// This method resets the wind volume to minimum.
+    /// </summary>
+    public void ResetWindVolume() { _wind.ResetVolume(); }
+
+    /// <summary>
+    /// This method stops the wind sfx.
+    /// </summary>
+    public void StopWind()
+    {
+        _isWindEffect = false; // Stopping wind sfx update
+        _ambientSource.Stop(); // Stop playing wind sfx
+        ResetWindVolume();     // Resetting the volume
+    }
 }
