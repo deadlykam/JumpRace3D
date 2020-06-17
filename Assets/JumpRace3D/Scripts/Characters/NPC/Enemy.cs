@@ -82,14 +82,18 @@ public class Enemy : BasicAnimation
         // Condition for dying and turning on ragdoll
         else if (other.CompareTag("Player"))
         {
-            SetRagdoll(true); // Starting ragdoll
-            DieCharacter(); // Killing the character
+            // Condition for able to die
+            if (!isRaceFinished)
+            {
+                SetRagdoll(true); // Starting ragdoll
+                DieCharacter(); // Killing the character
 
-            // Play hurt sfx
-            AudioManager.Instance.PlayHurt();
+                // Play hurt sfx
+                AudioManager.Instance.PlayHurt();
 
-            // Setting the stage number to max stage number
-            SetStageNumber(-1);
+                // Setting the stage number to max stage number
+                SetStageNumber(-1);
+            }
         }
     }
 
