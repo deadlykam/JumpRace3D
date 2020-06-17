@@ -91,3 +91,5 @@ MonoBehaviour:
   AutoRotationSpeed: 100
   _fallAnimations: 2
   _jumpAnimations: 2
+  _offsetXAxis: 1.6
+  _offsetZAxis: 1.6
