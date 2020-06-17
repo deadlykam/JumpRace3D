@@ -14,7 +14,7 @@ public class BasicAudio
     public AudioClip Clip { get { return _clip; } }
 
     [SerializeField]
-    [Range(0, 1)]
+    [Range(0f, 1f)]
     private float _volume;
 
     /// <summary>
