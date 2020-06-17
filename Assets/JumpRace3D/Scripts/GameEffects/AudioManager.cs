@@ -15,6 +15,9 @@ public class AudioManager : MonoBehaviour
     private AudioSource _ambientSource;
 
     [SerializeField]
+    private AudioMufflerEffect _mufflerEffect;
+
+    [SerializeField]
     private BasicAudio _music;
 
     [SerializeField]
@@ -80,6 +83,8 @@ public class AudioManager : MonoBehaviour
             _wind.UpdateAudioVolumeEffect(); // Updating the volume value
             _ambientSource.volume = _wind.CurrentVolume; // Setting the volume
         }
+
+        _mufflerEffect.UpdateAudioMufflerEffect(); // Updating the muffler effect
     }
 
     /// <summary>
