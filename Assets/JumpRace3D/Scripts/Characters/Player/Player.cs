@@ -391,6 +391,9 @@ public class Player : BasicAnimation
         {
             InstantFall(); // Instantly falling
 
+            // Playing hitting stage bottom sfx
+            AudioManager.Instance.PlayHitBottom();
+
             // Resetting the wind volume
             AudioManager.Instance.ResetWindVolume();
 
