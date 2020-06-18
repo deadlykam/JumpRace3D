@@ -398,6 +398,9 @@ public class StageGenerator : MonoBehaviour
             // Condition to check if enemies has been resetted
             if (EnemyGenerator.Instance.Status == ProcessStatus.None)
             {
+                // Hiding the player UI
+                MainCanvasUI.Instance.SetPlayerUI(false);
+
                 _isPlaceCharacters = false; // Characters needs to be placed
                                             // again in the new stage
 
