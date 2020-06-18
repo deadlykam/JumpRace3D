@@ -2,14 +2,14 @@
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class LoadUI : SideMoveUI
 {
     [Header("Load UI Properties")]
     [SerializeField]
     private TextMeshProUGUI _text;
-
-    [SerializeField]
+    
     private float _currentValue; // The target value
 
     /// <summary>
@@ -36,6 +36,7 @@ public class LoadUI : SideMoveUI
                                               rightTarget.position,
                                               step);
 
+            // Updating the text
             _text.text = _percentageValue.ToString() + "%";
         }
     }
