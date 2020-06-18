@@ -213,11 +213,6 @@ public class StageGenerator : MonoBehaviour
     {
         _gridGenerator = GetComponent<GridGenerator>(); // Setting the grid
                                                         // generator
-
-        CheckLevel(); // Checking if the level is correct at the start
-
-        CalculateNumberOfLines(); // Calculating the number of points needed
-                                  // for line renderer
     }
 
     void Update()
@@ -807,7 +802,15 @@ public class StageGenerator : MonoBehaviour
         CalculateNumberOfLines(); // Resetting the LineRenderer
 
         _gridGenerator.ResetGrid(); // Resetting the GridGenerator
+
+        SaveStage(); // Saving stage data
     }
+
+    /// <summary>
+    /// This method saves the current stage data
+    /// </summary>
+    private void SaveStage() => GameData.Instance
+                                .SaveData(_level, _levelNumberCurrent);
 
     /// <summary>
     /// This method resets the stage.
@@ -836,6 +839,30 @@ public class StageGenerator : MonoBehaviour
         // stage number starts from the end
         MainCanvasUI.Instance.SetBar
             (1f - ((float)currentStage) / ((float)TotalStages));
+    }
+
+    /// <summary>
+    /// This method loads the game stage.
+    /// </summary>
+    /// <param name="level">The current level of the game, of type
+    ///                     int</param>
+    /// <param name="levelNumberCurrent">The current stage number
+    ///                                  of the game, of type
+    ///                                  int</param>
+    public void LoadStage(int level, int levelNumberCurrent)
+    {
+        _level = level; // Setting the current level
+
+        // Setting the current stage number
+        _levelNumberCurrent = levelNumberCurrent;
+
+        CheckLevel(); // Checking if the level is correct at the start
+
+        CalculateNumberOfLines(); // Calculating the number of points needed
+                                  // for line renderer
+
+        // Starting the generation process
+        Status = ProcessStatus.Generating;
     }
 
     /// <summary>
