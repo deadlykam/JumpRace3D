@@ -29751,7 +29751,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   BouncyStagesAvailable: {fileID: 1785445014}
   StageObjectsUsed: {fileID: 1178383317}
-  Status: 1
+  Status: 0
   OffsetStage: -15
   OffsetHeight: 10
   OffsetSide: 7

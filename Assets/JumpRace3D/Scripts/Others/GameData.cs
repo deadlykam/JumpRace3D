@@ -65,8 +65,9 @@ public class GameData : MonoBehaviour
     /// </summary>
     public string PlayerName { get { return _playerName; } }
 
-    /*[Header("UI Properties")]
-    public RectTransform MainCanvas; // The main canvas for the UI*/
+    private int _level; // For storing the loaded value of level
+    private int _levelNumberCurrent; // For storing the loaded
+                                     // value of stage number
 
     public static GameData Instance; // Singleton
 
@@ -86,7 +87,7 @@ public class GameData : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+        LoadData(); // Loading the game
     }
 
     // Update is called once per frame
@@ -112,6 +113,33 @@ public class GameData : MonoBehaviour
         _simulationSpeed = _simulationAccelerationValue >= 1 ?
                             1 :
                             _simulationAccelerationValue;
+    }
+    
+    /// <summary>
+    /// This method loads the game data.
+    /// </summary>
+    private void LoadData()
+    {
+        // Getting the level number
+        _level = PlayerPrefs.GetInt("level", 1);
+
+        // Gettng the stage number
+        _levelNumberCurrent = PlayerPrefs.GetInt("levelNumberCurrent", 1);
+
+        // Loading the stage data
+        StageGenerator.Instance.LoadStage(_level, _levelNumberCurrent);
+    }
+
+    /// <summary>
+    /// This method saves the data from the game.
+    /// </summary>
+    /// <param name="level">Current level to store, of type int</param>
+    /// <param name="levelNumberCurrent">Current level number to store,
+    ///                                  of type int</param>
+    public void SaveData(int level, int levelNumberCurrent)
+    {
+        PlayerPrefs.SetInt("level", level);
+        PlayerPrefs.SetInt("levelNumberCurrent", levelNumberCurrent);
     }
 
     /// <summary>
