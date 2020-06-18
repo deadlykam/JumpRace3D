@@ -234,6 +234,10 @@ public class StageGenerator : MonoBehaviour
         // Condition to check if level generation is NOT done
         if (_levelCurrent < _level)
         {
+            // Checking and setting progress bar
+            if (MainCanvasUI.Instance.CheckLoadingBar(0.25f))
+                MainCanvasUI.Instance.SetLoadingBar(0.25f);
+
             // Checking if stage limit NOT reached
             if (_stageGeneratedCounter < StageNumber)
             {
@@ -256,6 +260,10 @@ public class StageGenerator : MonoBehaviour
         // Condition for processing the long bouncy stage generation
         else if (_isProcessingLongBouncy && LongBouncyStageProbability != 0f)
         {
+            // Checking and setting progress bar
+            if (MainCanvasUI.Instance.CheckLoadingBar(0.98f))
+                MainCanvasUI.Instance.SetLoadingBar(0.98f);
+
             if (!_isProcessing) // Checking if no long bouncy stage being processed
             {
                 if (!_isRequest) // Checking if no requests available
@@ -274,6 +282,10 @@ public class StageGenerator : MonoBehaviour
         {
             if (!_isPlaceCharacters) // Characters not placed
             {
+                // Checking and setting progress bar
+                if (MainCanvasUI.Instance.CheckLoadingBar(0.99f))
+                    MainCanvasUI.Instance.SetLoadingBar(0.99f);
+
                 // Starting the 3D text from the last added stage
                 Stage3DTextManager.Instance
                     .Generate3DTexts(_currentBouncyStage);
@@ -288,6 +300,10 @@ public class StageGenerator : MonoBehaviour
 
                 // Setting the player position
                 Player.Instance.SetStartPosition(_stagePosition);
+
+                // Setting the player rotation
+                Player.Instance.SetStartRotation(_currentBouncyStage
+                                                 .LinkedStagePosition);
 
                 // Requesting a character model for player
                 Player.Instance.GetCharacterModel();
@@ -306,6 +322,10 @@ public class StageGenerator : MonoBehaviour
                 // and then showing the start UI
                 if (EnemyGenerator.Instance.Status == ProcessStatus.None)
                 {
+                    // Checking and setting progress bar
+                    if (MainCanvasUI.Instance.CheckLoadingBar(1f))
+                        MainCanvasUI.Instance.SetLoadingBar(1f);
+
                     Player.Instance.SetBoosters(); // Setting the player
                                                    // booster
                     
@@ -382,6 +402,9 @@ public class StageGenerator : MonoBehaviour
             // Condition to check if enemies has been resetted
             if (EnemyGenerator.Instance.Status == ProcessStatus.None)
             {
+                // Hiding the player UI
+                MainCanvasUI.Instance.SetPlayerUI(false);
+
                 _isPlaceCharacters = false; // Characters needs to be placed
                                             // again in the new stage
 
@@ -802,7 +825,7 @@ public class StageGenerator : MonoBehaviour
         CalculateNumberOfLines(); // Resetting the LineRenderer
 
         _gridGenerator.ResetGrid(); // Resetting the GridGenerator
-
+        
         SaveStage(); // Saving stage data
     }
 

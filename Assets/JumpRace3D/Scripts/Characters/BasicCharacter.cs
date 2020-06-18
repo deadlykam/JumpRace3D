@@ -370,6 +370,31 @@ public class BasicCharacter : MonoBehaviour, IComparable<BasicCharacter>
     }
 
     /// <summary>
+    /// This method rotates the character towards the target.
+    /// </summary>
+    /// <param name="target">The target to rotate towards, of type
+    ///                      Vector3</param>
+    public virtual void SetStartRotation(Vector3 target)
+    {
+        // Fixing the target position for calculating
+        // accurate rotation
+        target.Set(target.x, 0, target.z);
+
+        // Fixing character position for calculating
+        // accurate rotation
+        _characterPosition.Set(transform.position.x,
+                               0,
+                               transform.position.z);
+
+        // Storing the target rotation
+        _targetRotation = Quaternion.LookRotation(target -
+                                                  _characterPosition);
+
+        // Making the character rotate instantly
+        transform.rotation = _targetRotation;
+    }
+
+    /// <summary>
     /// This method sets the position of the character.
     /// </summary>
     /// <param name="x">The start position, of type Vector3</param>

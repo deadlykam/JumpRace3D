@@ -27,6 +27,9 @@ public class MainCanvasUI : MonoBehaviour
     [SerializeField]
     private MoveUI _loadingUI; // The loading screen
 
+    [SerializeField]
+    private LoadUI _loadingBar; // The loading bar
+
     /// <summary>
     /// Flag checking if loading screen being shown,
     /// of type bool
@@ -83,7 +86,10 @@ public class MainCanvasUI : MonoBehaviour
     /// <summary>
     /// This method shows or hides the end screen UI.
     /// </summary>
-    /// <param name="active"></param>
+    /// <param name="active">Flag to show/hide end screen UI,
+    ///                      <para>true = show end UI</para>
+    ///                      <para>false = hide end UI</para>
+    ///                      of type bool</param>
     public void SetEndScreenUI(bool active)
     {
         if (active) _endScreenUI.ShowUI(); // Showing end screen
@@ -96,11 +102,26 @@ public class MainCanvasUI : MonoBehaviour
     public void SetEndScreenPosition() { _endScreenUI.SetUI(); }
 
     /// <summary>
+    /// This method shows the player UI.
+    /// </summary>
+    /// <param name="active">Flag to show/hide player UI,
+    ///                      <para>true = show player UI</para>
+    ///                      <para>false = hide player UI</para>
+    ///                      of type bool</param>
+    public void SetPlayerUI(bool active)
+    {
+        if (active) _playerUI.ShowUI(); // Showing player UI
+        else _playerUI.HideUI();        // Hiding player UI
+    }
+
+    /// <summary>
     /// This method starts the game.
     /// </summary>
     public void StartGame()
     {
         SetStartUI(false);
+
+        SetPlayerUI(true); // Showing the player UI
 
         EnemyGenerator.Instance.StartEnemy(); // Starting the enemies
         Player.Instance.StartCharacter(); // Starting the player
@@ -117,6 +138,11 @@ public class MainCanvasUI : MonoBehaviour
 
         // Showing the loading screen
         SetLoadingUI(true);
+
+        //_playerUI.HideUI(); // Hiding the player UI
+
+        // Setting progress bar back to 0%
+        SetLoadingBar(0);
 
         StageGenerator.Instance.ResetStage(); // Resetting the stage
                                               // and starting a new
@@ -144,7 +170,7 @@ public class MainCanvasUI : MonoBehaviour
     }
 
     /// <summary>
-    /// This method shows the popup
+    /// This method shows the popup.
     /// </summary>
     /// <param name="text">The text of the popup, of type string</param>
     /// <param name="colour1">The colour of the first text,
@@ -166,6 +192,25 @@ public class MainCanvasUI : MonoBehaviour
     ///          <para>false = has NOT slid in</para>
     ///          of type bool</returns>
     public bool IsLoadingScreenSlidIn() { return _loadingUI.IsSlideIn; }
+
+    /// <summary>
+    /// Setting the loading bar progress.
+    /// </summary>
+    /// <param name="amount">The progress value to set between 0 - 1,
+    ///                      of type float</param>
+    public void SetLoadingBar(float amount) => _loadingBar.SetPercentage(amount);
+
+    /// <summary>
+    /// This method checks if the current progress has not been done.
+    /// </summary>
+    /// <param name="amount">The progress amount to check if NOT done,
+    ///                      of type float</param>
+    /// <returns>True means progress NOT done, fales otherwise, 
+    ///          of type bool</returns>
+    public bool CheckLoadingBar(float amount)
+    {
+        return _loadingBar.CheckProgress(amount);
+    }
 
     /// <summary>
     /// This method sets the race position text.
