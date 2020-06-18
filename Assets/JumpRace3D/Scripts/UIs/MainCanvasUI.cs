@@ -27,6 +27,9 @@ public class MainCanvasUI : MonoBehaviour
     [SerializeField]
     private MoveUI _loadingUI; // The loading screen
 
+    [SerializeField]
+    private LoadUI _loadingBar; // The loading bar
+
     /// <summary>
     /// Flag checking if loading screen being shown,
     /// of type bool
@@ -118,6 +121,9 @@ public class MainCanvasUI : MonoBehaviour
         // Showing the loading screen
         SetLoadingUI(true);
 
+        // Setting progress bar back to 0%
+        SetLoadingBar(0);
+
         StageGenerator.Instance.ResetStage(); // Resetting the stage
                                               // and starting a new
                                               // stage
@@ -144,7 +150,7 @@ public class MainCanvasUI : MonoBehaviour
     }
 
     /// <summary>
-    /// This method shows the popup
+    /// This method shows the popup.
     /// </summary>
     /// <param name="text">The text of the popup, of type string</param>
     /// <param name="colour1">The colour of the first text,
@@ -166,6 +172,25 @@ public class MainCanvasUI : MonoBehaviour
     ///          <para>false = has NOT slid in</para>
     ///          of type bool</returns>
     public bool IsLoadingScreenSlidIn() { return _loadingUI.IsSlideIn; }
+
+    /// <summary>
+    /// Setting the loading bar progress.
+    /// </summary>
+    /// <param name="amount">The progress value to set between 0 - 1,
+    ///                      of type float</param>
+    public void SetLoadingBar(float amount) => _loadingBar.SetPercentage(amount);
+
+    /// <summary>
+    /// This method checks if the current progress has not been done.
+    /// </summary>
+    /// <param name="amount">The progress amount to check if NOT done,
+    ///                      of type float</param>
+    /// <returns>True means progress NOT done, fales otherwise, 
+    ///          of type bool</returns>
+    public bool CheckLoadingBar(float amount)
+    {
+        return _loadingBar.CheckProgress(amount);
+    }
 
     /// <summary>
     /// This method sets the race position text.
