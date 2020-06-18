@@ -116,6 +116,10 @@ public class EnemyGenerator : MonoBehaviour
         EnemiesAvailable[index]
             .SetStartPosition(_currentStage.StagePosition);
 
+        // Setting the enemy's rotation
+        EnemiesAvailable[index]
+            .SetStartRotation(_currentStage.LinkedStagePosition);
+
         // Setting the stage number of the enemy
         EnemiesAvailable[index]
             .SetStageNumber(_currentStage.StageNumber);
