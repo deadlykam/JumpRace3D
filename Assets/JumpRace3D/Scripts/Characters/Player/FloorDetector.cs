@@ -2,22 +2,25 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class FloorDetector : MonoBehaviour
+public class FloorDetector : BasicLineDetector
 {
     [Header("Floor Detector Properties")]
     public LineRenderer FloorLine;
 
     [SerializeField]
     private Transform _lineBottom; // Object to show at the bottom
-                                  // of the line
+                                   // of the line
 
-    private Ray _ray;        // For creating a ray
-    private RaycastHit _hit; // For storing hit objects
+    [SerializeField]
+    private string _floorColliderTag;
+
+    /*private Ray _ray;        // For creating a ray
+    private RaycastHit _hit; // For storing hit objects*/
 
     // Update is called once per frame
     void Update()
     {
-        // Casting a ray downward
+        /*// Casting a ray downward
         _ray = new Ray(transform.position, Vector3.down);
 
         // Checking if the ray hit anything
@@ -43,7 +46,15 @@ public class FloorDetector : MonoBehaviour
                     SetFloorLine(_hit.point, Color.red);
                 }
             }
-        }
+        }*/
+
+        UpdateBasicLineDetector(); // Calling the BasicLineDetector update
+
+        // Condition for hitting the bouncy stages
+        if (isHitCollider) SetFloorLine(hitPoint, Color.green);
+        // Condition for hitting the floor
+        else if (RayHitCollision(_floorColliderTag))
+            SetFloorLine(hitPoint, Color.red);
     }
 
     /// <summary>
