@@ -11,6 +11,9 @@ public class Enemy : BasicAnimation
     [SerializeField]
     private float _offsetZAxis; // Random z axis value for end stage
 
+    [SerializeField]
+    private FakeShadow _shadow; // The fake shadow
+
     private Vector3 _nextStagePosition; // Storing the next stage
                                         // position
 
@@ -50,6 +53,17 @@ public class Enemy : BasicAnimation
     }
 
     /// <summary>
+    /// This method kills the enemy.
+    /// </summary>
+    protected override void DieCharacter()
+    {
+        base.DieCharacter(); // Killing the enemy
+
+        // Hiding the shadow
+        _shadow.SetFakeShadow(false);
+    }
+
+    /// <summary>
     /// This method checks for collisions.
     /// </summary>
     /// <param name="other">The collided object, of type Collider</param>
@@ -85,14 +99,18 @@ public class Enemy : BasicAnimation
                 .GetComponent<BouncyStage>().StageNumber);
 
             // Condition to check if it is the last stage and giving
-            // a random position within limit
+            // a random position within limit and changing shadow offset
             if (isLastStage)
+            {
                 _nextStagePosition.Set(
-                    _nextStagePosition.x + Random.Range(-_offsetXAxis, 
+                    _nextStagePosition.x + Random.Range(-_offsetXAxis,
                                                         _offsetXAxis),
                     _nextStagePosition.y,
-                    _nextStagePosition.z + Random.Range(-_offsetZAxis, 
+                    _nextStagePosition.z + Random.Range(-_offsetZAxis,
                                                          _offsetZAxis));
+
+                _shadow.SetEnd(true); // Doing the end stage offset
+            }
         }
         // Condition for dying and turning on ragdoll
         else if (other.CompareTag("Player"))
@@ -121,5 +139,7 @@ public class Enemy : BasicAnimation
     {
         base.SetStartPosition(position); // Setting start position
         _nextStagePosition = position; // Setting stage position
+
+        _shadow.SetFakeShadow(true); // Showing the shadow
     }
 }
