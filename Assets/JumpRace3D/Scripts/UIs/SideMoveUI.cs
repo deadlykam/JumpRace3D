@@ -8,9 +8,19 @@ public class SideMoveUI : BasicUISpeedEffect
     [SerializeField]
     private Transform _leftTarget; // Left target
 
+    /// <summary>
+    /// Returns the left target, of type Transform
+    /// </summary>
+    protected Transform leftTarget { get { return _leftTarget; } }
+
     [SerializeField]
     private Transform _rightTarget; // Right target
-    
+
+    /// <summary>
+    /// Returns the right target, of type Transform
+    /// </summary>
+    protected Transform rightTarget { get { return _rightTarget; } }
+
     // Update is called once per frame
     void Update()
     {
