@@ -86,7 +86,10 @@ public class MainCanvasUI : MonoBehaviour
     /// <summary>
     /// This method shows or hides the end screen UI.
     /// </summary>
-    /// <param name="active"></param>
+    /// <param name="active">Flag to show/hide end screen UI,
+    ///                      <para>true = show end UI</para>
+    ///                      <para>false = hide end UI</para>
+    ///                      of type bool</param>
     public void SetEndScreenUI(bool active)
     {
         if (active) _endScreenUI.ShowUI(); // Showing end screen
@@ -99,11 +102,26 @@ public class MainCanvasUI : MonoBehaviour
     public void SetEndScreenPosition() { _endScreenUI.SetUI(); }
 
     /// <summary>
+    /// This method shows the player UI.
+    /// </summary>
+    /// <param name="active">Flag to show/hide player UI,
+    ///                      <para>true = show player UI</para>
+    ///                      <para>false = hide player UI</para>
+    ///                      of type bool</param>
+    public void SetPlayerUI(bool active)
+    {
+        if (active) _playerUI.ShowUI(); // Showing player UI
+        else _playerUI.HideUI();        // Hiding player UI
+    }
+
+    /// <summary>
     /// This method starts the game.
     /// </summary>
     public void StartGame()
     {
         SetStartUI(false);
+
+        SetPlayerUI(true); // Showing the player UI
 
         EnemyGenerator.Instance.StartEnemy(); // Starting the enemies
         Player.Instance.StartCharacter(); // Starting the player
@@ -120,6 +138,8 @@ public class MainCanvasUI : MonoBehaviour
 
         // Showing the loading screen
         SetLoadingUI(true);
+
+        //_playerUI.HideUI(); // Hiding the player UI
 
         // Setting progress bar back to 0%
         SetLoadingBar(0);
