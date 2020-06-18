@@ -19,7 +19,7 @@ RenderSettings:
   m_FogMode: 1
   m_FogDensity: 0.01
   m_LinearFogStart: 25
-  m_LinearFogEnd: 100
+  m_LinearFogEnd: 75
   m_AmbientSkyColor: {r: 0.6886792, g: 0.6886792, b: 0.6886792, a: 1}
   m_AmbientEquatorColor: {r: 0.114, g: 0.125, b: 0.133, a: 1}
   m_AmbientGroundColor: {r: 0.047, g: 0.043, b: 0.035, a: 1}
@@ -732,6 +732,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Stage4 (1)
+      objectReference: {fileID: 0}
+    - target: {fileID: 5833366218499324323, guid: d7349d9efc0f03244b6278440f718e9a,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d7349d9efc0f03244b6278440f718e9a, type: 3}
@@ -4716,6 +4721,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Stage4
       objectReference: {fileID: 0}
+    - target: {fileID: 5833366218499324323, guid: d7349d9efc0f03244b6278440f718e9a,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d7349d9efc0f03244b6278440f718e9a, type: 3}
 --- !u!4 &218296407 stripped
@@ -5222,6 +5232,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Stage4 (8)
+      objectReference: {fileID: 0}
+    - target: {fileID: 5833366218499324323, guid: d7349d9efc0f03244b6278440f718e9a,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d7349d9efc0f03244b6278440f718e9a, type: 3}
@@ -9070,6 +9085,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Stage4 (6)
       objectReference: {fileID: 0}
+    - target: {fileID: 5833366218499324323, guid: d7349d9efc0f03244b6278440f718e9a,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d7349d9efc0f03244b6278440f718e9a, type: 3}
 --- !u!4 &484998522 stripped
@@ -11495,6 +11515,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Stage4 (4)
+      objectReference: {fileID: 0}
+    - target: {fileID: 5833366218499324323, guid: d7349d9efc0f03244b6278440f718e9a,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d7349d9efc0f03244b6278440f718e9a, type: 3}
@@ -21303,6 +21328,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Stage4 (7)
       objectReference: {fileID: 0}
+    - target: {fileID: 5833366218499324323, guid: d7349d9efc0f03244b6278440f718e9a,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d7349d9efc0f03244b6278440f718e9a, type: 3}
 --- !u!4 &1056068702 stripped
@@ -25189,6 +25219,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Stage4 (9)
       objectReference: {fileID: 0}
+    - target: {fileID: 5833366218499324323, guid: d7349d9efc0f03244b6278440f718e9a,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d7349d9efc0f03244b6278440f718e9a, type: 3}
 --- !u!4 &1276035518 stripped
@@ -28903,6 +28938,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Stage4 (2)
       objectReference: {fileID: 0}
+    - target: {fileID: 5833366218499324323, guid: d7349d9efc0f03244b6278440f718e9a,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d7349d9efc0f03244b6278440f718e9a, type: 3}
 --- !u!4 &1433464100 stripped
@@ -30243,7 +30283,7 @@ MonoBehaviour:
     _minFreq: 0
   _music:
     _clip: {fileID: 8300000, guid: 3c7ee05095e0f6540bc8a765fe066d5e, type: 3}
-    _volume: 0.3
+    _volume: 0
   _wind:
     _clip: {fileID: 8300000, guid: 2c8d096f25a706042aa0ff09384bd07a, type: 3}
     _volume: 1
@@ -35759,6 +35799,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Stage4 (5)
       objectReference: {fileID: 0}
+    - target: {fileID: 5833366218499324323, guid: d7349d9efc0f03244b6278440f718e9a,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d7349d9efc0f03244b6278440f718e9a, type: 3}
 --- !u!4 &1869765979 stripped
@@ -35839,6 +35884,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Stage4 (3)
+      objectReference: {fileID: 0}
+    - target: {fileID: 5833366218499324323, guid: d7349d9efc0f03244b6278440f718e9a,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d7349d9efc0f03244b6278440f718e9a, type: 3}
@@ -41314,7 +41364,7 @@ PrefabInstance:
     - target: {fileID: 861884977445021716, guid: 9640657236198274796e882072ff69c8,
         type: 3}
       propertyPath: far clip plane
-      value: 100
+      value: 75
       objectReference: {fileID: 0}
     - target: {fileID: 861884977445021716, guid: 9640657236198274796e882072ff69c8,
         type: 3}
