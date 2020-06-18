@@ -301,6 +301,10 @@ public class StageGenerator : MonoBehaviour
                 // Setting the player position
                 Player.Instance.SetStartPosition(_stagePosition);
 
+                // Setting the player rotation
+                Player.Instance.SetStartRotation(_currentBouncyStage
+                                                 .LinkedStagePosition);
+
                 // Requesting a character model for player
                 Player.Instance.GetCharacterModel();
 
