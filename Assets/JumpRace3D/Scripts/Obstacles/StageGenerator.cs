@@ -29,15 +29,18 @@ public class StageGenerator : MonoBehaviour
 
     [Tooltip("The amount of distance between each stages.")]
     public float OffsetStage; // Distance between each stages
-    private float _offsetStageCurrent = 0; // Current Distance offset
+    private float _offsetZAxis = 0; // Current z-axis value
 
     [Tooltip("The stage height offset when going up.")]
     public float OffsetHeight; // Height offset of stages
-    private float _offsetHeightCurrent = 0; // Current Height offset
+    private float _offsetYAxis = 0; // Current y-axis value
 
     [Tooltip("The horizontal offset for each stages in the same level.")]
     public float OffsetSide; // Horizontal offset of stages
-    private float _offsetSideCurrent; // Current side offset
+    private float _offsetXAxis; // Current x-axis value
+
+    // Flag to check if a stage level should be generated in the z-axis
+    private bool _isOffsetStageZAxis = true;
 
     private BouncyStage _currentBouncyStage; // For storing the current 
                                              // or last BouncyStage,
@@ -575,23 +578,32 @@ public class StageGenerator : MonoBehaviour
     /// <param name="index">The index of the bouncy stage, of type int</param>
     private void AddBouncyStage(int index)
     {
-        _offsetStageCurrent += OffsetStage; // Getting the new stage
-                                            // distance value
+        // Condition for getting new stage distance value for z-axis
+        if (_isOffsetStageZAxis) CalculateStageOffset(ref _offsetZAxis);
+        // Condition for getting new stage distance value for x-axis
+        else CalculateStageOffset(ref _offsetXAxis);
 
         _stagePosition = Vector3.zero; // Resetting the value
                                        // to get accurate
                                        // calculation
-
+                                            
         // Condition to change the x-axis position randomly
-        if(_stageGeneratedCounter != 0) _offsetSideCurrent += 
-                                        Random.Range(
-                                            -OffsetSide, 
-                                            OffsetSide);
+        if (_isOffsetStageZAxis)
+            CalculateStageSideOffset(ref _offsetXAxis,
+                                         Random.Range(
+                                             -OffsetSide,
+                                              OffsetSide));
+        // Condition to change the z-axis position randomly
+        else
+            CalculateStageSideOffset(ref _offsetZAxis,
+                                         Random.Range(
+                                             -OffsetSide,
+                                              OffsetSide));
 
         // Setting up the new stage object position
-        _stagePosition.Set(_offsetSideCurrent,
-                           _offsetHeightCurrent,
-                           _offsetStageCurrent);
+        _stagePosition.Set(_offsetXAxis,
+                           _offsetYAxis,
+                           _offsetZAxis);
 
         _currentBouncyStage = null; // Removing the previous stage
 
@@ -661,19 +673,36 @@ public class StageGenerator : MonoBehaviour
 
         _levelCurrent++; // Starting new level
 
-        _offsetHeightCurrent += OffsetHeight; // Getting new level height
+        _offsetYAxis += OffsetHeight; // Getting new level height
 
-        // 50% probability to go +ve or -ve in the x-axis
-        _offsetSideCurrent += (Random.Range(0, 10) < 5) ? 
-                              OffsetSide * -1 : OffsetSide;
-        
+        // Condition to change the stage level axis direction
+        if (!_isCorrectionProcess)
+            _isOffsetStageZAxis = (Random.Range(0, 10) < 5) ? // 50% chance
+                                   true :                     // to change
+                                   false;                     // the axis
+                                                              // direction
+                              
+        // Condition to set x-axis side offset
+        if(_isOffsetStageZAxis)
+            CalculateStageSideOffset(ref _offsetXAxis); // 50% chance +ve
+                                                        // or -ve offset
+        // Condition to set z-axis side offset
+        else
+            CalculateStageSideOffset(ref _offsetZAxis); // 50% chance +ve
+                                                        // or -ve offset
+
         // Condition for starting the correction process
-        if(_offsetStageCurrent >= _gridGenerator.ActualWorldSize
-            || _offsetStageCurrent <= -_gridGenerator.ActualWorldSize)
+        if (_offsetZAxis >= _gridGenerator.ActualWorldSize
+            || _offsetZAxis <= -_gridGenerator.ActualWorldSize)
         {
-            OffsetStage = -OffsetStage; // Correction value
-            _correctionCounter = 0; // Resetting the correction
-                                    // counter
+            AxisCorrection(_offsetZAxis, true); // Going in z-axis
+                                                // direction
+        }
+        else if(_offsetXAxis >= _gridGenerator.ActualWorldSize
+            || _offsetXAxis <= -_gridGenerator.ActualWorldSize)
+        {
+            AxisCorrection(_offsetXAxis, false); // Going in x-axis
+                                                 // direction
         }
 
         // Condition for NOT doing the correction process and doing
@@ -761,13 +790,27 @@ public class StageGenerator : MonoBehaviour
             else // NOT adding obstacles
             {
                 // Calculating the average point
+                _linePoint.Set(_isOffsetStageZAxis ?
+                                stage.LinkedStagePosition.x :
+                                (stage.transform.position.x
+                                + stage.LinkedStagePosition.x) / 2,
+
+                                (stage.transform.position.y
+                                + stage.LinkedStagePosition.y) / 2,
+
+                                _isOffsetStageZAxis ?
+                                (stage.transform.position.z
+                                + stage.LinkedStagePosition.z) / 2 :
+                                stage.LinkedStagePosition.z);
+
+                /*// Calculating the average point
                 _linePoint.Set(stage.LinkedStagePosition.x,
 
                               (stage.transform.position.y
                               + stage.LinkedStagePosition.y) / 2,
 
                               (stage.transform.position.z
-                              + stage.LinkedStagePosition.z) / 2);
+                              + stage.LinkedStagePosition.z) / 2);*/
             }
 
             AddLinkPoint(_linePoint); // Adding the average point
@@ -801,14 +844,68 @@ public class StageGenerator : MonoBehaviour
     }
 
     /// <summary>
+    /// This method adds OffsetStage value to the referred axis.
+    /// </summary>
+    /// <param name="axis">The axis to which to add OffsetStage value,
+    ///                    of type float</param>
+    private void CalculateStageOffset(ref float axis) => axis += OffsetStage;
+
+    /// <summary>
+    /// This method adds OffsetSide value to the referred axis, there is a
+    /// 50% chance the value will be +ve or -ve
+    /// </summary>
+    /// <param name="axis">The axis to which to add OffsetSide value,
+    ///                    of type float</param>
+    private void CalculateStageSideOffset(ref float axis) 
+        => axis += (Random.Range(0, 10) < 5) ? OffsetSide * -1 : 
+                                               OffsetSide;
+
+    /// <summary>
+    /// This method adds a value to the referred axis.
+    /// </summary>
+    /// <param name="axis">The axis to which to add value, of type
+    ///                    float</param>
+    /// <param name="value">The amount of value to add to the axis, of
+    ///                     type float</param>
+    private void CalculateStageSideOffset(ref float axis, float value)
+        => axis += value;
+    
+    /// <summary>
+    /// This method corrects the direction of the stage generation
+    /// axis.
+    /// </summary>
+    /// <param name="axis">The axis to check which direction should
+    ///                    the stage generation take, of type
+    ///                    float</param>
+    /// <param name="isOffsetStageZAxis">Flag to set the z-axis
+    ///                                  direction,
+    ///                                  <para>true = go z-axis</para>
+    ///                                  <para>false = go x-axis</para>
+    ///                                  of type bool</param>
+    private void AxisCorrection(float axis, bool isOffsetStageZAxis)
+    {
+        // Setting the correct OffsetStage value
+        OffsetStage = (axis >= _gridGenerator.ActualWorldSize && OffsetStage > 0) ?
+                                                                      -OffsetStage :
+                      (axis <= -_gridGenerator.ActualWorldSize && OffsetStage < 0) ?
+                                                                      -OffsetStage :
+                                                                       OffsetStage;
+
+        _isOffsetStageZAxis = isOffsetStageZAxis; // Setting the z-axis direction
+
+        _correctionCounter = 0; // Resetting the correction
+                                // counter
+    }
+
+    /// <summary>
     /// This method resets all the variables needed by stage generation
     /// process.
     /// </summary>
     private void ResetGenerationVariables()
     {
-        _offsetStageCurrent = 0; // Resetting current distance offset
-        _offsetHeightCurrent = 0; // Resetting current Height offset
-        _offsetSideCurrent = 0; // Resetting current side offset
+        _offsetZAxis = 0; // Resetting current distance offset
+        _offsetYAxis = 0; // Resetting current Height offset
+        _offsetXAxis = 0; // Resetting current side offset
 
         _levelCurrent = 0; // Resetting level counter
 
