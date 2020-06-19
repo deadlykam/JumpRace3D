@@ -30283,7 +30283,7 @@ MonoBehaviour:
     _minFreq: 0
   _music:
     _clip: {fileID: 8300000, guid: 3c7ee05095e0f6540bc8a765fe066d5e, type: 3}
-    _volume: 0
+    _volume: 0.3
   _wind:
     _clip: {fileID: 8300000, guid: 2c8d096f25a706042aa0ff09384bd07a, type: 3}
     _volume: 1
@@ -30373,7 +30373,7 @@ MonoBehaviour:
   StageObjectsUsed: {fileID: 1178383317}
   Status: 0
   OffsetStage: -15
-  OffsetHeight: 10
+  OffsetHeight: 12
   OffsetSide: 7
   LevelMax: 14
   _level: 1
