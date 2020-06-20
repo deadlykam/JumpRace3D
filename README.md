@@ -19,6 +19,7 @@ The main objective is to get to the final floating stage which is green in colou
   - [UI UML](#4-ui-element-uml-this-structure-shows-how-the-games-ui-element-system-functions)
 - [Versioning](#versioning)
 - [Authors](#authors)
+- [License](#license)
 
 ## Prerequisites
 #### Unity Game Engine
@@ -81,3 +82,6 @@ The project uses [Semantic Versioning](https://semver.org/). Available versions 
 ***
 ## Authors
 - Syed Shaiyan Kamran Waliullah \- [DeadlyKam](https://github.com/deadlykam)
+***
+## License
+This project is licensed under the MIT License - see the [LICENSE.md](LICENSE) file for details.
