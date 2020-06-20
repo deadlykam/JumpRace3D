@@ -1,3 +1,5 @@
+<img src="https://imgur.com/f26jBTU.png" align="center">
+
 # JumpRace3D
 
 ### Introduction of the game:
