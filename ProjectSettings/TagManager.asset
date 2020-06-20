@@ -3,7 +3,17 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags: []
+  tags:
+  - BouncyStage
+  - Booster
+  - PlayerDetector
+  - EndStage
+  - Floor
+  - Obstacle
+  - LongBouncyStage
+  - StageBottom
+  - Enemy
+  - Good
   layers:
   - Default
   - TransparentFX
@@ -13,12 +23,12 @@ TagManager:
   - UI
   - 
   - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
+  - Player
+  - Stage
+  - NPC
+  - PlayerDetector
+  - FloorDetector
+  - Enemy
   - 
   - 
   - 

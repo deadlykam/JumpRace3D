@@ -4,5 +4,8 @@
 EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
-  m_Scenes: []
+  m_Scenes:
+  - enabled: 1
+    path: Assets/JumpRace3D/_Scenes/GameScene.unity
+    guid: 614d5fa5eb1d69740947b4f28cc2b144
   m_configObjects: {}
