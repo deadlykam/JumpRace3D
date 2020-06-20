@@ -10,6 +10,7 @@ The main objective is to get to the final floating stage which is green in colou
 
 ## Table of Contents:
 - [Prerequisites](#prerequisites)
+- [Stable Build](#stable-build)
 - [Controls](#controls)
 - [Stage](#stage)
 - [UML](#uml)
@@ -25,6 +26,9 @@ The main objective is to get to the final floating stage which is green in colou
 #### Unity Game Engine
 Unity version of the build is **2019.3.15f1**. Install Unity game engine from version **2019.3.15f1** or above. Install [Unity Hub (recommended)](https://store.unity.com/download?ref=personal) and add Unity version **2019.3.15f1**. Once installed then open the latest stable build.
 ***
+## Stable Build
+[Stable-v1.0.0](https://github.com/deadlykam/JumpRace3D/releases/tag/stable-v1.0.0) is the latest stable build of the game. The apk file can also be found there for running the game in android.
+**
 ## Controls
 1. Unity Editor: Press and hold the left mouse button to move the player forward. Press and hold the left mouse button and move the mouse in x-axis to rotate the player.
 
