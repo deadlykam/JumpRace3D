@@ -1,4 +1,4 @@
-<img src="https://imgur.com/f26jBTU.png" align="center">
+<p align="center"><img src="https://imgur.com/f26jBTU.png"></p>
 
 # JumpRace3D
 
