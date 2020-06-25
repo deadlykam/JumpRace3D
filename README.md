@@ -30,7 +30,7 @@ Unity version of the build is **2019.3.15f1**. Install Unity game engine from ve
 ***
 ## Stable Build
 [Stable-v1.0.0](https://github.com/deadlykam/JumpRace3D/releases/tag/stable-v1.0.0) is the latest stable build of the game. The apk file can also be found there for running the game in android.
-**
+***
 ## Controls
 1. Unity Editor: Press and hold the left mouse button to move the player forward. Press and hold the left mouse button and move the mouse in x-axis to rotate the player.
 
