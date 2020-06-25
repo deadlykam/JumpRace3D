@@ -50,7 +50,7 @@ Sharing some UML diagram to show the hierarchy of some classes and system and a 
 <img src="https://imgur.com/4byzjvQ.png" alt="Character UML">
 
    - **[BasicCharacter](https://github.com/deadlykam/JumpRace3D/blob/f4f84a42352ad65a2cbdfcc2519d5df0d2ed0b15/Assets/JumpRace3D/Scripts/Characters/BasicCharacter.cs):** Handles the movement, rotation, jumping, falling and auto rotation functions of a character.
-   - **[BasicAnimation](https://github.com/deadlykam/JumpRace3D/blob/f4f84a42352ad65a2cbdfcc2519d5df0d2ed0b15/Assets/JumpRace3D/Scripts/Characters/BasicAnimation.cs):** Handles all the animation functions of a character. Also enables/disables the ragdool.
+   - **[BasicAnimation](https://github.com/deadlykam/JumpRace3D/blob/f4f84a42352ad65a2cbdfcc2519d5df0d2ed0b15/Assets/JumpRace3D/Scripts/Characters/BasicAnimation.cs):** Handles all the animation functions of a character. Also enables/disables the ragdoll.
    - **[Player](https://github.com/deadlykam/JumpRace3D/blob/f4f84a42352ad65a2cbdfcc2519d5df0d2ed0b15/Assets/JumpRace3D/Scripts/Characters/Player/Player.cs):** Makes the player character move forward or rotate by taking input from the user.
    - **[Enemy](https://github.com/deadlykam/JumpRace3D/blob/f4f84a42352ad65a2cbdfcc2519d5df0d2ed0b15/Assets/JumpRace3D/Scripts/Characters/NPC/Enemy.cs):** Makes the enemy character move towards the next stage and also rotates the enemy to face the next stage. Colliding with the player kills the enemy character.
 
@@ -84,7 +84,7 @@ Sharing some UML diagram to show the hierarchy of some classes and system and a 
    - **[SizeUI](https://github.com/deadlykam/JumpRace3D/blob/f4f84a42352ad65a2cbdfcc2519d5df0d2ed0b15/Assets/JumpRace3D/Scripts/UIs/SizeUI.cs):** This class changes the size of an UI element continuously. The class uses the parent's **float step** property to lerp between the minimum size(**float \_minSize**) and the maximum size(**float \_maxSize**).
 ***
 ## Versioning
-The project uses [Semantic Versioning](https://semver.org/). Available versions can be seen in [tags on this repository](https://github.com/deadlykam/LastTry/releases).
+The project uses [Semantic Versioning](https://semver.org/). Available versions can be seen in [tags on this repository](https://github.com/deadlykam/JumpRace3D/tags).
 ***
 ## Authors
 - Syed Shaiyan Kamran Waliullah \- [DeadlyKam](https://github.com/deadlykam)
